@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { cn } from "@/lib/utils"
 import { useController, useFormContext } from "react-hook-form";
+import { cn } from "../../utils/utils";
 
 type InputTextProps = React.InputHTMLAttributes<HTMLInputElement> & {
   placeholders?: string[];
@@ -120,13 +120,13 @@ export function InputText({ error, label, formatNumberSeparator, placeholders = 
       )}
       <div
         className={cn(
-          "w-full relative bg-white dark:bg-zinc-800 px-3 py-3 text-sm rounded overflow-hidden transition duration-200 border",
+          "w-full relative bg-white px-3 py-3 text-sm rounded overflow-hidden transition duration-200 border",
           error ? "border-danger" : "border-primary-200",
         )}
       >
         <canvas
           className={cn(
-            "absolute pointer-events-none  text-base transform scale-50 top-[20%] left-2 sm:left-8 origin-top-left filter invert dark:invert-0 pr-20 opacity-0",
+            "absolute pointer-events-none  text-base transform scale-50 top-[20%] left-2 sm:left-8 origin-top-left filter invert pr-20 opacity-0",
           )}
           ref={canvasRef}
         />
@@ -150,7 +150,7 @@ export function InputText({ error, label, formatNumberSeparator, placeholders = 
           ref={inputRef}
           placeholder=""
           className={cn(
-            "w-full text-sm relative z-50 border-none dark:text-white bg-transparent text-black h-full font-medium pl-1",
+            "w-full text-sm relative z-50 border-none bg-transparent text-black h-full font-medium pl-1",
             props.className
           )}
         />

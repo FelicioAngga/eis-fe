@@ -1,11 +1,11 @@
-import { cn } from "@/lib/utils";
 import { useRef, useState } from "react";
 import { motion } from "motion/react";
 import { GrUpload } from "react-icons/gr";
 import { BiSolidFilePdf, BiSolidImageAlt } from "react-icons/bi";
 import { IoDocumentText } from "react-icons/io5";
-import Button from "../Button";
 import { FiTrash } from "react-icons/fi";
+import Button from "../Button";
+import { cn } from "../../utils/utils";
 
 type InputFileProps = React.InputHTMLAttributes<HTMLInputElement> & {
   error?: string;

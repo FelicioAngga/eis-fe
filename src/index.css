@@ -1,9 +1,62 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+@font-face {
+  font-family: 'Montserrat';
+  font-weight: 400;
+  src: url('./assets/fonts/Montserrat-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  font-weight: 500;
+  src: url('./assets/fonts/Montserrat-Medium.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  font-weight: 600;
+  src: url('./assets/fonts/Montserrat-SemiBold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  font-weight: 700;
+  src: url('./assets/fonts/Montserrat-Bold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  font-weight: 800;
+  src: url('./assets/fonts/Montserrat-ExtraBold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  font-weight: 900;
+  src: url('./assets/fonts/Montserrat-Black.ttf') format('truetype');
+}
+
 * {
   font-family: 'Montserrat', sans-serif;
 }
+
+@theme {
+  --color-blue: #3D5EE1;
+  --color-primary: #222;
+  --color-success: #28C76F;
+  --color-warning: #FFA726;
+  --color-danger: #F44336;
+  --color-primary-100: #F6F6F6;
+  --color-primary-200: #DCDCDC;
+  --color-primary-300: #C1C1C1;
+  --color-primary-400: #A7A7A7;
+  --color-primary-500: #8C8C8C;
+  --color-primary-600: #727272;
+  --color-primary-700: #575757;
+  --color-primary-800: #3D3D3D;
+}
+
 
 input:focus-visible {
   outline: none;
