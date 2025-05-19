@@ -3,11 +3,12 @@ import Button from "./Button";
 import { useState } from "react";
 
 interface Props {
-  buttonText?: string;
   onSearch: (value: string) => void;
+  buttonText?: string;
+  buttonOnClick?: () => void;
 }
 
-function SearchTableLayout({ buttonText, onSearch }: Props) {
+function SearchTableLayout({ buttonText, onSearch, buttonOnClick }: Props) {
   const [search, setSearch] = useState("");
   return (
     <div className="flex gap-3 items-center justify-between">
@@ -27,7 +28,7 @@ function SearchTableLayout({ buttonText, onSearch }: Props) {
         </div>
         <Button onClick={() => onSearch(search)}>Cari</Button>
       </div>
-      <Button className="h-full">{buttonText}</Button>
+      <Button onClick={buttonOnClick} className="h-full">{buttonText}</Button>
     </div>
   )
 }

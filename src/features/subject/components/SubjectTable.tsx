@@ -2,8 +2,11 @@ import { ColumnDef } from "@tanstack/react-table";
 import { useMemo } from "react";
 import { SubjectModel } from "../../../api-hooks/subjects/models/SubjectModel";
 import Table, { PaginationModelProps } from "../../../components/Table";
-import { useSubjectsQuery } from "../../../api-hooks/subjects/api";
+import { useDeleteSubject, useSubjectsQuery } from "../../../api-hooks/subjects/api";
 import { FiTrash2 } from "react-icons/fi";
+import Swal from 'sweetalert2'
+import { useAlert } from "../../../contexts/AlertContext";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface SubjectTableProps {
   search: string;
@@ -11,6 +14,10 @@ interface SubjectTableProps {
 }
 
 function SubjectTable({ paginationModel, search }: SubjectTableProps) {
+  const { showAlert } = useAlert();
+  const queryClient = useQueryClient();
+  const { mutateAsync: mutateDeleteSubject } = useDeleteSubject();
+  
   const { data } = useSubjectsQuery({
     pagination: {
       limit: paginationModel.pageSize,
@@ -21,9 +28,26 @@ function SubjectTable({ paginationModel, search }: SubjectTableProps) {
     search: search || "",
   });
 
-  const handleDelete = (id: number) => {
-    
-    console.log("Delete subject with ID:", id);
+  const handleDelete = async (id: number) => {
+    const modalResult = await Swal.fire({
+      title: "Konfirmasi",
+      text: "Apakah anda yakin untuk menghapus?",
+      icon: "warning",
+      confirmButtonText: "Ya",
+      showCancelButton: true,
+    });
+    if (!modalResult.isConfirmed) return;
+    const response = await mutateDeleteSubject(id);
+    if (response.status === 200) {
+      queryClient.invalidateQueries({
+        queryKey: ["subjects"]
+      });
+      showAlert({
+        title: "Berhasil",
+        message: response.message,
+        type: "success",
+      });
+    }
   };
 
   const columns = useMemo<ColumnDef<SubjectModel>[]>(

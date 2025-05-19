@@ -1,6 +1,6 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { BASE_URL } from "../../utils/base-url";
-import { ResponsePaginationModel } from "../method";
+import { ResponseModel, ResponsePaginationModel } from "../method";
 import { useApiCall } from "../../hooks/useApiCall";
 import { SubjectModel, SubjectParams } from "./models/SubjectModel";
 
@@ -18,6 +18,21 @@ export const useSubjectsQuery = (params?: SubjectParams) => {
     queryKey: ["subjects", params],
     queryFn: async () => {
       return await apiCall();
+    },
+  });
+}
+
+export const useDeleteSubject = () => {
+  const apiCall = useApiCall<ResponseModel<any>>({
+    method: "DELETE",
+    url: `${BASE_URL}/subjects`,
+  });
+
+  return useMutation({
+    mutationFn: async (id: number) => {
+      return await apiCall({ 
+        url: `${BASE_URL}/subjects/${id}`,
+      });
     },
   });
 }

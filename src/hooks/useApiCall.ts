@@ -68,6 +68,9 @@ export const useApiCall = <T>(defaultConfig: ApiCallConfig) => {
     let response = await makeApiCall(token);
 
     const data = await response.json();
-    return data as T;
+    return {
+      ...data,
+      status: response.status,
+    } as T;
   };
 };
