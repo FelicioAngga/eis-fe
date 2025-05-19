@@ -34,6 +34,7 @@ import Teacher from "./features/teacher";
 import Users from "./features/users";
 import NewsEvent from "./features/news-event";
 import AccessRights from "./features/access-rights";
+import { AlertProvider } from "./contexts/AlertContext";
 
 function App() {
   const queryClient = new QueryClient();
@@ -41,37 +42,39 @@ function App() {
   return (
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          <NavBar />
-          <BrowserRouter>
-            <Routes>
-              <Route path="/login" element={<Login />} />
-              <Route element={<PrivateRoute />}>
-                <Route path="/" element={<Dashboard />} />
-                <Route path="/registration" element={<Registration />} />
-                <Route path="/student-data" element={<StudentData />} />
-                <Route path="/class" element={<Classes />} />
-                <Route path="/absence" element={<Absence />} />
-                <Route path="/subject" element={<Subject />} />
-                <Route path="/class-schedule" element={<ClassSchedule />} />
-                <Route path="/absence-recap" element={<AbsenceRecap />} />
-                <Route path="/exam-recap" element={<ExamRecap />} />
-                <Route path="/grade" element={<Grade />} />
-                <Route path="/config/class" element={<ConfigClass />} />
-                <Route path="/config/class-schedule" element={<ConfigClassSchedule />} />
-                <Route path="/document" element={<Document />} />
-                <Route path="/config/document-type" element={<DocumentType />} />
-                <Route path="/teacher" element={<Teacher />} />
-                <Route path="/teacher-absence" element={<TeacherAbsence />} />
-                <Route path="/teacher-absence-recap" element={<TeacherAbsenceRecap />} />
-                <Route path="/config/working-schedule" element={<WorkingSchedule />} />
-                <Route path="/news-event" element={<NewsEvent />} />
-                <Route path="/users" element={<Users />} />
-                <Route path="/access-rights" element={<AccessRights />} />
-              </Route>
-            </Routes>
-          </BrowserRouter>
-        </AuthProvider>
+        <AlertProvider>
+
+          <AuthProvider>
+            <BrowserRouter>
+              <Routes>
+                <Route path="/login" element={<Login />} />
+                <Route element={<PrivateRoute />}>
+                  <Route path="/" element={<Dashboard />} />
+                  <Route path="/registration" element={<Registration />} />
+                  <Route path="/student-data" element={<StudentData />} />
+                  <Route path="/class" element={<Classes />} />
+                  <Route path="/absence" element={<Absence />} />
+                  <Route path="/subject" element={<Subject />} />
+                  <Route path="/class-schedule" element={<ClassSchedule />} />
+                  <Route path="/absence-recap" element={<AbsenceRecap />} />
+                  <Route path="/exam-recap" element={<ExamRecap />} />
+                  <Route path="/grade" element={<Grade />} />
+                  <Route path="/config/class" element={<ConfigClass />} />
+                  <Route path="/config/class-schedule" element={<ConfigClassSchedule />} />
+                  <Route path="/document" element={<Document />} />
+                  <Route path="/config/document-type" element={<DocumentType />} />
+                  <Route path="/teacher" element={<Teacher />} />
+                  <Route path="/teacher-absence" element={<TeacherAbsence />} />
+                  <Route path="/teacher-absence-recap" element={<TeacherAbsenceRecap />} />
+                  <Route path="/config/working-schedule" element={<WorkingSchedule />} />
+                  <Route path="/news-event" element={<NewsEvent />} />
+                  <Route path="/users" element={<Users />} />
+                  <Route path="/access-rights" element={<AccessRights />} />
+                </Route>
+              </Routes>
+            </BrowserRouter>
+          </AuthProvider>
+        </AlertProvider>
       </QueryClientProvider>
     </Provider>
   );
@@ -82,13 +85,16 @@ export default App;
 const PrivateRoute = () => {
   const { isAuthenticated } = useAuth();
 
-  return !isAuthenticated ? (
-    <div className="flex h-[92.5vh]">
-      <Sidebar />
-      <div className="flex-1 overflow-auto p-6">
-        <Outlet />
+  return isAuthenticated ? (
+    <>
+      <NavBar />
+      <div className="flex h-[92.5vh]">
+        <Sidebar />
+        <div className="flex-1 overflow-auto p-6">
+          <Outlet />
+        </div>
       </div>
-    </div>
+    </>
   ) : (
     <Navigate to="/login" replace />
   );

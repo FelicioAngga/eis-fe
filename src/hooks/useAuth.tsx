@@ -1,19 +1,18 @@
 import React from "react";
 
-interface UserModel {
-  userId: number,
-  employeeId: number,
-  employeeName: string,
+export interface UserModel {
+  id: number,
+  name: string,
   email: string,
   token: string,
-  refreshToken: string
+  role_id: number,
 }
 
 interface AuthContextType {
   isAuthenticated: boolean;
   logout: () => void;
-  // getUser: () => UserModel;
-  // setUser: (user: UserModel) => void;
+  getUser: () => UserModel;
+  setUser: (user: UserModel) => void;
   onChangeAuthenticate: (value: any) => void;
 }
 interface AuthProviderProps {
@@ -27,28 +26,27 @@ const AuthContext = React.createContext<AuthContextType | undefined>(
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = React.useState(
-    typeof window !== 'undefined' ? !!localStorage.getItem(import.meta.env.VITE_ENCRYPTED_USER_KEY) : false
+    typeof window !== 'undefined' ? !!localStorage.getItem("user-eis-fe") : false
   );
 
-  // const getUser = () => {
-  //   const userLocalStorage = localStorage.getItem(import.meta.env.VITE_ENCRYPTED_USER_KEY);
-  //   if (userLocalStorage) {
-  //     return JSON.parse(decryptString(userLocalStorage));
-  //   }
-  //   return null;
-  // };
+  const getUser = () => {
+    const userLocalStorage = localStorage.getItem("user-eis-fe");
+    if (userLocalStorage) {
+      return JSON.parse(userLocalStorage);
+    }
+    return null;
+  };
 
-  // const setUser = (user: UserModel) => {
-  //   const encryptedUser = encryptString(JSON.stringify(user));
-  //   localStorage.setItem(
-  //     import.meta.env.VITE_ENCRYPTED_USER_KEY,
-  //     encryptedUser
-  //   );
-  // }
+  const setUser = (user: UserModel) => {
+    localStorage.setItem(
+      "user-eis-fe",
+      JSON.stringify(user)
+    );
+  }
 
   const logout = () => {
     if (window) {
-      localStorage.removeItem(import.meta.env.VITE_ENCRYPTED_USER_KEY);
+      localStorage.removeItem("user-eis-fe");
       setIsAuthenticated(false);
     }
   };
@@ -57,10 +55,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     if (window) {
       if (value) {
         setIsAuthenticated(value);
-        // setUser(value);
+        setUser(value);
       }
       else if(!value){
-        localStorage.removeItem(import.meta.env.VITE_ENCRYPTED_USER_KEY);
+        localStorage.removeItem("user-eis-fe");
         setIsAuthenticated(false);
       }
     }
@@ -70,9 +68,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     <AuthContext.Provider
       value={{
         isAuthenticated,
-        // setUser,
+        setUser,
         logout,
-        // getUser,
+        getUser,
         onChangeAuthenticate,
       }}
     >

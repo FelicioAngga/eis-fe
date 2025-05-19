@@ -1,7 +1,9 @@
+
+
 export default function() {
   return (
     <>
-      Registration
+      <p>Registration</p>
     </>
   )
 }

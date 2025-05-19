@@ -1,27 +1,68 @@
-import { useDispatch, useSelector } from "react-redux";
-import { login } from "./authSlice";
-import { RootState } from "../../store";
 import jumbotronLogin from "../../assets/images/jumbotron-login.png";
 import { Input } from "../../components/input/Input";
 import Form from "../../components/Form";
 import { useForm } from "react-hook-form";
 import Button from "../../components/Button";
+import useYupValidationResolver from "../../hooks/useYupValidationResolver";
+import * as Yup from "yup";
+import { useLoginUser } from "../../api-hooks/auth/api";
+import { AuthModel } from "../../api-hooks/auth/models/AuthModel";
+import { useAlert } from "../../contexts/AlertContext";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useAuth } from "../../hooks/useAuth";
 
 export default function() {
-	const dispatch = useDispatch();
-	const { email } = useSelector((states: RootState) => states.auth);
-	const methods = useForm();
+	const navigate = useNavigate();
+	const { isAuthenticated, onChangeAuthenticate, setUser } = useAuth();
+	const { showAlert } = useAlert();
+	const yupSchema = Yup.object().shape({
+		email: Yup.string().email("Email tidak valid").required("Email tidak boleh kosong"),
+		password: Yup.string().required("Password tidak boleh kosong")
+	});
 
-	const handleSubmit = (data: any) => {
-		
+	const resolver = useYupValidationResolver(yupSchema);
+	const methods = useForm({
+		mode: "onSubmit",
+		resolver,
+		defaultValues: {
+			email: "",
+			password: ""
+		}
+	});
+	const { formState: { isValid } } = methods;
+	const { mutateAsync, isPending } = useLoginUser();
+
+	const handleSubmit = async (data: AuthModel) => {
+		const response = await mutateAsync(data);
+		if (response.status !== 200 || !response.result) {
+			showAlert({
+				title: "Gagal",
+				message: response?.message || "Login Gagal",
+				type: "error",
+			});
+			return;
+		}
+		setUser(response.result)
+		onChangeAuthenticate(response.result);
+		showAlert({
+			title: "Berhasil",
+			message: "Login Berhasil",
+			type: "success",
+		});
+		navigate("/registration");
 	}
+
+	useEffect(() => {
+		if (isAuthenticated) navigate("/registration");
+	}, []);
 
 	return (
 		<Form methods={methods} onSubmit={handleSubmit}>
 			<div className="flex">
-				<img src={jumbotronLogin} className="w-1/2 h-screen object-cover" />
-				<div className="px-4 lg:px-16 flex flex-col gap-10 justify-center items-center w-1/2 h-screen">
-					<p className="font-bold text-3xl">Portal Guru Letjend Haryono M.T</p>
+				<img src={jumbotronLogin} className="w-1/2 object-cover h-screen" />
+				<div className="px-4 lg:px-16 flex flex-col gap-10 justify-center items-center w-1/2">
+					<p className="font-bold text-3xl">Portal Letjen Haryono M.T</p>
 					<Input 
 						name="email"
 						type="text"
@@ -34,7 +75,7 @@ export default function() {
 						placeholder="Password"
 						label="Password"
 					/>
-					<Button className="w-full">Login</Button>
+					<Button disabled={!isValid || isPending} className="w-full">Login</Button>
 				</div>
 			</div>
 		</Form>
