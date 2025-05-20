@@ -12,3 +12,8 @@ export type DocumentTypeModel = {
   created_at: string;
   updated_at: string;
 }
+
+export type DocumentTypeCreateModel = {
+  name: string;
+  description: string;
+}

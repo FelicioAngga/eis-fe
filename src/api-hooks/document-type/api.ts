@@ -2,7 +2,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useApiCall } from "../../hooks/useApiCall";
 import { BASE_URL } from "../../utils/base-url";
 import { ResponseModel, ResponsePaginationModel } from "../method";
-import { DocumentTypeModel, DocumentTypeParams } from "./models/DocumentTypeModel";
+import { DocumentTypeCreateModel, DocumentTypeModel, DocumentTypeParams } from "./models/DocumentTypeModel";
 
 export const useDocumentTypeQuery = (params?: DocumentTypeParams) => {
   const apiCall = useApiCall<ResponsePaginationModel<DocumentTypeModel>>({
@@ -22,7 +22,22 @@ export const useDocumentTypeQuery = (params?: DocumentTypeParams) => {
   });
 }
 
-export const useDeleteSubject = () => {
+export const useCreateDocumentType = () => {
+  const apiCall = useApiCall<ResponseModel<any>>({
+    method: "POST",
+    url: `${BASE_URL}/doctypes`,
+  });
+
+  return useMutation({
+    mutationFn: async (data: DocumentTypeCreateModel) => {
+      return await apiCall({ 
+        body: data
+      });
+    },
+  });
+}
+
+export const useDeleteDocumentType = () => {
   const apiCall = useApiCall<ResponseModel<any>>({
     method: "DELETE",
     url: `${BASE_URL}/doctypes`,

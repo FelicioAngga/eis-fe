@@ -65,6 +65,21 @@ function DocumentTypeTable({ paginationModel, search }: DocumentTypeProps) {
         enableSorting: true,
       },
       {
+        accessorKey: "name",
+        header: () => "Deskripsi",
+        enableSorting: true,
+      },
+      {
+        accessorKey: "created_by",
+        header: () => "Dibuat Oleh",
+        enableSorting: true,
+      },
+      {
+        accessorKey: "created_at",
+        header: () => "Dibuat Pada",
+        enableSorting: true,
+      },
+      {
         accessorKey: "action",
         header: () => "Action",
         cell: ({ row }) => (
