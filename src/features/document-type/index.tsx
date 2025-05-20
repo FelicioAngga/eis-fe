@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { usePaginationModel } from "../../hooks/use-pagination-model";
 import SearchTableLayout from "../../components/SearchTableLayout";
+import DocumentTypeTable from "./components/DocumentTypeTable";
 
 export default function() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -19,7 +20,7 @@ export default function() {
         buttonText="Tambah Tipe"
         buttonOnClick={() => setIsAddModalOpen(true)}
       />
-      
+      <DocumentTypeTable paginationModel={paginationModel} search={search} />
     </div>
   )
 }
