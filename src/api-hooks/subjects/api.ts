@@ -22,6 +22,21 @@ export const useSubjectsQuery = (params?: SubjectParams) => {
   });
 }
 
+export const useCreateSubject = () => {
+  const apiCall = useApiCall<ResponseModel<any>>({
+    method: "POST",
+    url: `${BASE_URL}/subjects`,
+  });
+
+  return useMutation({
+    mutationFn: async (data: { name: string }) => {
+      return await apiCall({ 
+        body: data
+      });
+    },
+  });
+}
+
 export const useDeleteSubject = () => {
   const apiCall = useApiCall<ResponseModel<any>>({
     method: "DELETE",
