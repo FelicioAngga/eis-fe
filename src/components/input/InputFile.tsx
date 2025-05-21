@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { forwardRef, useImperativeHandle, useRef, useState } from "react";
 import { motion } from "motion/react";
 import { GrUpload } from "react-icons/gr";
 import { BiSolidFilePdf, BiSolidImageAlt } from "react-icons/bi";
@@ -6,6 +6,7 @@ import { IoDocumentText } from "react-icons/io5";
 import { FiTrash } from "react-icons/fi";
 import Button from "../Button";
 import { cn } from "../../utils/utils";
+import { useController, useFormContext } from "react-hook-form";
 
 type InputFileProps = React.InputHTMLAttributes<HTMLInputElement> & {
   error?: string;
@@ -33,17 +34,19 @@ const secondaryVariant = {
   },
 };
 
-export const InputFile = ({
+export const InputFile = forwardRef(({
   error,
   label,
   onChange,
   ...props
-}: InputFileProps) => {
+}: InputFileProps, parentRef: any) => {
   const [preview, setPreview] = useState<string | null>(null);
   const [files, setFiles] = useState<File[]>([]);
   const [progress, setProgress] = useState(0);
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const fileInputRef = useRef<any>(null);
+  const { control } = useFormContext();
+  const { field } = useController({ name: props.name || "", control });
 
   const startLoading = () => {
     setProgress(0);
@@ -66,6 +69,7 @@ export const InputFile = ({
     setFiles(newFiles);
     setProgress(0);
     startLoading();
+    field.onChange(newFiles[0]);
     if (newFiles[0]?.type.startsWith("image/")) {
       const objectUrl = URL.createObjectURL(newFiles[0]);
       setPreview(objectUrl);
@@ -77,15 +81,47 @@ export const InputFile = ({
     fileInputRef.current?.click();
   };
 
+  useImperativeHandle(parentRef, () => ({
+    resetFile: () => {
+      setFiles([]);
+      setPreview(null);
+      setProgress(0);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    },
+    setFile: (fileString: string) => {
+      setPreview(fileString);
+      setProgress(100);
+    }
+  }))
+
+  const handleOpenPreview = () => {
+    if (!preview?.startsWith("data:image/")) return;
+
+    const newTab = window.open();
+    if (newTab) {
+      newTab.document.write(`
+        <html>
+          <head><title>Image Preview</title></head>
+          <body style="margin:0;">
+            <img src="${preview}" style="max-width:100vw; max-height:100vh; display:block; margin:auto;" />
+          </body>
+        </html>
+      `);
+      newTab.document.close();
+    }
+  };
+
   return (
     <div className="w-full">
       <motion.div
-        onClick={files.length > 0 ? () => {} : handleClick}
         whileHover="animate"
         className={`group/file block rounded-lg ${files.length <= 0 && "cursor-pointer"} w-full relative`}
       >
         <input
-          {...props}
           ref={fileInputRef}
           id="file-upload-handle"
           type="file"
@@ -94,12 +130,12 @@ export const InputFile = ({
           className="hidden"
         />
         {label && (
-          <label className="mb-2 block text-xs font-medium">
+          <label className="mb-2 block text-sm font-medium">
             {label}{" "}
             {props.required && <span className="font-semibold text-danger">*</span>}
           </label>
         )}
-        {files.length > 0 && (
+        {(files.length > 0 || preview) && (
           <div>
             <div className="flex gap-2">
               {progress !== 100 ? (
@@ -110,20 +146,19 @@ export const InputFile = ({
                   }
                 </div>
               ) : (
-                <div className="size-8 shrink-0">
-                  {files[0].type.startsWith("image/") ?
+                <div onClick={handleOpenPreview} className="size-8 shrink-0">
+                  {files[0]?.type.startsWith("image/") || preview?.startsWith("data:image/") ?
                     <img src={preview || ""} alt="preview" className="size-8 rounded object-cover" /> :
                     <BiSolidFilePdf size={32} />
                   }
                 </div>
               )}
-              <div className="w-full">
+              <div onClick={handleOpenPreview} className="w-full">
                 <div className="flex gap-1 text-xs font-medium">
-                  <p className="text-primary-700 max-w-[180px] truncate">{files[0].name}</p>
-                  <p className="text-primary-400 max-w-[170px] truncate">• 20 January 2025 • {(files[0].size / 1024).toFixed(2)}kb</p>
+                  <p className="text-primary-700 max-w-[180px] truncate">{files[0]?.name || "-"}</p>
                 </div>
                 {progress === 100 ? 
-                  <p className="text-xs font-medium mt-0.5">Berhasil</p> : (
+                  <p className="text-xs font-medium mt-0.5">File siap untuk diunggah</p> : (
                   <div className="flex gap-2 items-center mt-0.5">
                     <div className="relative bg-primary-200 rounded h-1 w-full">
                       <div style={{ width: `${progress}%` }} className="transition-all absolute h-1 bg-primary rounded"></div>
@@ -134,16 +169,18 @@ export const InputFile = ({
               </div>
               {progress === 100 && (
                 <div className="flex gap-2 items-center shrink-0">
-                  <Button onClick={handleClick} variant="outline" className="text-xs !px-3 py-2 h-[30px]">Ganti</Button>
-                  <FiTrash className="cursor-pointer text-danger" size={16} />
+                  <Button type="button" onClick={handleClick} variant="outline" className="text-xs !px-3 py-2 h-[30px]">Ganti</Button>
                 </div>
               )}
             </div>
           </div>
         )}
 
-        {!files.length && (
-          <div className="relative px-2 py-1.5 flex items-center justify-between border border-primary-200 rounded">
+        {(!files.length && !preview) && (
+          <div 
+            onClick={files.length > 0 ? () => {} : handleClick} 
+            className="relative px-2 py-1.5 flex items-center justify-between border border-primary-200 rounded"
+          >
             <p className="text-xs font-medium text-primary-500">{props.placeholder}</p>
             <div className="relative">
               <motion.div
@@ -169,6 +206,7 @@ export const InputFile = ({
           </div>
         )}
       </motion.div>
+      {error && <p className="text-danger text-xs font-medium mt-0.5">{error}</p>}
     </div>
   );
-};
+});

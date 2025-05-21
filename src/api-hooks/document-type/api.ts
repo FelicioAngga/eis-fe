@@ -7,7 +7,7 @@ import { DocumentTypeCreateModel, DocumentTypeModel, DocumentTypeParams } from "
 export const useDocumentTypeQuery = (params?: DocumentTypeParams) => {
   const apiCall = useApiCall<ResponsePaginationModel<DocumentTypeModel>>({
     method: "GET",
-    url: `${BASE_URL}/doctypes/browse`,
+    url: `${BASE_URL}/doctypes`,
     inputOptions: {
       ...params?.pagination,
       ...(params?.search ? { search: params.search } : {}),

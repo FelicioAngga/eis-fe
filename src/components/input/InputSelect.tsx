@@ -34,17 +34,17 @@ export function InputSelect({ label, onValueChange, ...props }: InputSelectProps
           )}
         </label>
       )}
-      <Select onValueChange={handleChange} defaultValue={field.value}>
+      <Select onValueChange={handleChange} value={field.value} defaultValue={field.value}>
         <SelectTrigger error={error?.message} className={`w-full ${props.className}`}>
-          <SelectValue placeholder={props.placeholder} />
-          <SelectContent>
-            {props?.options?.map((option, idx) => (
-              <SelectItem key={option.value + idx} value={option.value}>
-                {option.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
+          <SelectValue defaultValue={field.value} placeholder={props.placeholder} />
         </SelectTrigger>
+        <SelectContent>
+          {props?.options?.map((option, idx) => (
+            <SelectItem key={`${option.value}` + idx} value={option.value.toString()}>
+              {option.label || "-"}
+            </SelectItem>
+          ))}
+        </SelectContent>
       </Select>
       {error && <p className="text-danger text-xs font-medium mt-0.5">{error.message}</p>}
     </div>

@@ -24,6 +24,7 @@ type InputProps = {
   formatNumberSeparator?: boolean;
   showEyeIcon?: boolean;
   onValueChange?: (value: string) => void;
+  ref?: any;
 } & React.InputHTMLAttributes<HTMLInputElement> &
   React.TextareaHTMLAttributes<HTMLTextAreaElement> &
   React.SelectHTMLAttributes<HTMLSelectElement>;
@@ -101,6 +102,7 @@ export function Input(props: InputProps) {
           {...field}
           error={error?.message}
           label={label}
+          ref={props.ref}
         />
       );
     default:

@@ -7,7 +7,7 @@ import { SubjectModel, SubjectParams } from "./models/SubjectModel";
 export const useSubjectsQuery = (params?: SubjectParams) => {
   const apiCall = useApiCall<ResponsePaginationModel<SubjectModel>>({
     method: "GET",
-    url: `${BASE_URL}/subjects/browse`,
+    url: `${BASE_URL}/subjects`,
     inputOptions: {
       ...params?.pagination,
       ...(params?.search ? { search: params.search } : {}),

@@ -28,6 +28,7 @@ function AddDocTypeModal({ isOpen, onClose }: AddDocTypeModalProps) {
     resolver,
     defaultValues: {
       name: "",
+      description: "",
     },
   });
 
@@ -44,8 +45,10 @@ function AddDocTypeModal({ isOpen, onClose }: AddDocTypeModalProps) {
         message: "Berhasil menambah tipe dokumen",
       });
       queryClient.invalidateQueries({
-        queryKey: ["subjects"],
+        queryKey: ["document-type"],
       });
+      methods.reset();
+      onClose();
     } else {
       showAlert({
         title: "Gagal",
@@ -62,7 +65,7 @@ function AddDocTypeModal({ isOpen, onClose }: AddDocTypeModalProps) {
       onCancel={onClose}
       maskClosable={false}
       centered
-      title="Tambah Mata Pelajaran"
+      title="Tambah Tipe Dokumen"
     >
       <Form methods={methods} onSubmit={handleSubmit}>
         <div>
@@ -71,7 +74,7 @@ function AddDocTypeModal({ isOpen, onClose }: AddDocTypeModalProps) {
             <Input type="textarea" rows={3} name="description" placeholder="Deskripsi" label="Deskripsi" />
           </div>
           <div className="flex gap-4 mt-8">
-            <Button className="w-full" variant="outline">Batal</Button>
+            <Button type="button" onClick={onClose} className="w-full" variant="outline">Batal</Button>
             <Button className="w-full" disabled={isPending || !isValid}>Tambah</Button>
           </div>
         </div>

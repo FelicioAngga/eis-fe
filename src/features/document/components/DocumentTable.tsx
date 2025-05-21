@@ -1,25 +1,26 @@
-import { useQueryClient } from "@tanstack/react-query";
-import { ColumnDef } from "@tanstack/react-table";
-import { useMemo } from "react";
-import { FiTrash2 } from "react-icons/fi";
-import Swal from "sweetalert2";
-import Table, { PaginationModelProps } from "../../../components/Table";
-import { useAlert } from "../../../contexts/AlertContext";
-import { useDeleteDocumentType, useDocumentTypeQuery } from "../../../api-hooks/document-type/api";
-import { formatDateTime } from "../../../utils/formatDate";
-import { DocumentTypeModel } from "../../../api-hooks/document-type/models/DocumentTypeModel";
+import { useMemo } from 'react'
+import Table, { PaginationModelProps } from '../../../components/Table';
+import { FiEdit, FiTrash2 } from 'react-icons/fi';
+import { ColumnDef } from '@tanstack/react-table';
+import { DocumentModel } from '../../../api-hooks/documents/models/DocumentModel';
+import { formatDateTime } from '../../../utils/formatDate';
+import { useDeleteDocument, useDocumentQuery } from '../../../api-hooks/documents/api';
+import { useQueryClient } from '@tanstack/react-query';
+import { useAlert } from '../../../contexts/AlertContext';
+import Swal from 'sweetalert2';
 
-interface DocumentTypeProps {
+interface DocumentProps {
   search: string;
   paginationModel: PaginationModelProps;
+  handleEditDoc: (id: DocumentModel) => void;
 }
 
-function DocumentTypeTable({ paginationModel, search }: DocumentTypeProps) {
+function DocumentTable({ handleEditDoc, paginationModel, search }: DocumentProps) {
   const { showAlert } = useAlert();
   const queryClient = useQueryClient();
-  const { mutateAsync: mutateDeleteDocType } = useDeleteDocumentType();
+  const { mutateAsync: mutateDeleteDocType } = useDeleteDocument();
   
-  const { data } = useDocumentTypeQuery({
+  const { data } = useDocumentQuery({
     pagination: {
       limit: paginationModel.pageSize,
       page: paginationModel.pageNumber,
@@ -41,7 +42,7 @@ function DocumentTypeTable({ paginationModel, search }: DocumentTypeProps) {
     const response = await mutateDeleteDocType(id);
     if (response.status === 200) {
       queryClient.invalidateQueries({
-        queryKey: ["document-type"],
+        queryKey: ["documents"],
       });
       showAlert({
         title: "Berhasil",
@@ -51,7 +52,7 @@ function DocumentTypeTable({ paginationModel, search }: DocumentTypeProps) {
     }
   };
 
-  const columns = useMemo<ColumnDef<DocumentTypeModel>[]>(
+  const columns = useMemo<ColumnDef<DocumentModel>[]>(
     () => [
       {
         accessorKey: "no",
@@ -61,7 +62,11 @@ function DocumentTypeTable({ paginationModel, search }: DocumentTypeProps) {
       },
       {
         accessorKey: "name",
-        header: () => "Name",
+        header: () => "Dokumen",
+      },
+      {
+        accessorKey: "type_name",
+        header: () => "Tipe",
       },
       {
         accessorKey: "description",
@@ -79,7 +84,11 @@ function DocumentTypeTable({ paginationModel, search }: DocumentTypeProps) {
         accessorKey: "action",
         header: () => "Action",
         cell: ({ row }) => (
-          <div>
+          <div className="flex gap-2">
+            <FiEdit
+              className="size-5 cursor-pointer"
+              onClick={() => handleEditDoc(row.original)}
+            />
             <FiTrash2
               className="text-danger size-5 cursor-pointer"
               onClick={() => handleDelete(row.original.id)}
@@ -101,4 +110,4 @@ function DocumentTypeTable({ paginationModel, search }: DocumentTypeProps) {
   );
 }
 
-export default DocumentTypeTable;
+export default DocumentTable

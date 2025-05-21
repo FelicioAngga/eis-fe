@@ -45,6 +45,8 @@ function AddSubjectModal({ isOpen, onClose }: AddSubjectModalProps) {
       queryClient.invalidateQueries({
         queryKey: ["subjects"],
       });
+      methods.reset();
+      onClose();
     } else {
       showAlert({
         title: "Gagal",
@@ -67,7 +69,7 @@ function AddSubjectModal({ isOpen, onClose }: AddSubjectModalProps) {
         <div>
           <Input type="text" name="name" placeholder="Nama" label="Nama" required />
           <div className="flex gap-4 mt-8">
-            <Button className="w-full" variant="outline">Batal</Button>
+            <Button type="button" onClick={onClose} className="w-full" variant="outline">Batal</Button>
             <Button className="w-full" disabled={isPending || !isValid}>Tambah</Button>
           </div>
         </div>
