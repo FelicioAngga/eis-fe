@@ -6,9 +6,10 @@ interface Props {
   onSearch: (value: string) => void;
   buttonText?: string;
   buttonOnClick?: () => void;
+  hideButton?: boolean;
 }
 
-function SearchTableLayout({ buttonText, onSearch, buttonOnClick }: Props) {
+function SearchTableLayout({ hideButton, buttonText, onSearch, buttonOnClick }: Props) {
   const [search, setSearch] = useState("");
   return (
     <div className="flex gap-3 items-center justify-between">
@@ -28,7 +29,7 @@ function SearchTableLayout({ buttonText, onSearch, buttonOnClick }: Props) {
         </div>
         <Button onClick={() => onSearch(search)}>Cari</Button>
       </div>
-      <Button onClick={buttonOnClick} className="h-full">{buttonText}</Button>
+      {hideButton || <Button onClick={buttonOnClick} className="h-full">{buttonText}</Button>}
     </div>
   )
 }

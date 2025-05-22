@@ -78,3 +78,7 @@ input:-webkit-autofill {
 input[type="number"] {
   -moz-appearance: textfield;
 }
+
+.ant-table-cell {
+  padding: 12px 14px !important;
+}
