@@ -55,7 +55,7 @@ function SubjectTable({ paginationModel, search }: SubjectTableProps) {
       {
         accessorKey: "no",
         header: () => "No",
-        cell: (info) => info.row.index + 1,
+        cell: (info) => info.row.index + 1 + (paginationModel.pageNumber - 1) * paginationModel.pageSize,
         size: 10,
       },
       {
@@ -76,7 +76,7 @@ function SubjectTable({ paginationModel, search }: SubjectTableProps) {
         ),
       },
     ],
-    []
+    [paginationModel]
   );
 
   return (

@@ -12,7 +12,7 @@ import Swal from 'sweetalert2';
 interface DocumentProps {
   search: string;
   paginationModel: PaginationModelProps;
-  handleEditDoc: (id: DocumentModel) => void;
+  handleEditDoc: (data: DocumentModel) => void;
 }
 
 function DocumentTable({ handleEditDoc, paginationModel, search }: DocumentProps) {
@@ -57,7 +57,7 @@ function DocumentTable({ handleEditDoc, paginationModel, search }: DocumentProps
       {
         accessorKey: "no",
         header: () => "No",
-        cell: (info) => info.row.index + 1,
+        cell: (info) => info.row.index + 1 + (paginationModel.pageNumber - 1) * paginationModel.pageSize,
         size: 10,
       },
       {
@@ -97,7 +97,7 @@ function DocumentTable({ handleEditDoc, paginationModel, search }: DocumentProps
         ),
       },
     ],
-    []
+    [paginationModel]
   );
 
   return (

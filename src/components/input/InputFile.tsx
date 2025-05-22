@@ -3,7 +3,6 @@ import { motion } from "motion/react";
 import { GrUpload } from "react-icons/gr";
 import { BiSolidFilePdf, BiSolidImageAlt } from "react-icons/bi";
 import { IoDocumentText } from "react-icons/io5";
-import { FiTrash } from "react-icons/fi";
 import Button from "../Button";
 import { cn } from "../../utils/utils";
 import { useController, useFormContext } from "react-hook-form";
