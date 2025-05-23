@@ -12,6 +12,7 @@ export type TeacherModel = {
 	profile_pic: string;
 	level_id?: number;
 	work_sched_id?: number;
+	deleted_at?: string | null;
 }
 
 export type TeacherParams = {

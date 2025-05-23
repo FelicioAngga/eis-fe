@@ -3,11 +3,13 @@ import SearchTableLayout from "../../components/SearchTableLayout";
 import { usePaginationModel } from "../../hooks/use-pagination-model";
 import TeacherTable from "./components/TeacherTable";
 import TeacherModal from "./components/TeacherModal";
+import { TeacherModel } from "../../api-hooks/teacher/models/TeacherModel";
 
 export default function() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [search, setSearch] = useState("");
   const paginationModel = usePaginationModel({});
+  const [editData, setEditData] = useState<TeacherModel | null>(null);
 
   const handleSubmit = (search: string) => {
     setSearch(search);
@@ -15,12 +17,13 @@ export default function() {
   }
 
   function handleEditTeacher(data: any) {
-
+    setIsModalOpen(true);
+    setEditData(data);
   }
 
   return (
     <div className="flex flex-col gap-5">
-      <TeacherModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      <TeacherModal editData={editData} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
       <SearchTableLayout 
         onSearch={handleSubmit}
         buttonText="Tambah Guru"

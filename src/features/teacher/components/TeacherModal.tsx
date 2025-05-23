@@ -1,5 +1,5 @@
 import { Modal } from 'antd';
-import { useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { TeacherModel } from '../../../api-hooks/teacher/models/TeacherModel';
 import { useForm } from 'react-hook-form';
 import useYupValidationResolver from '../../../hooks/useYupValidationResolver';
@@ -9,10 +9,11 @@ import defaultUser from '../../../assets/images/default-user.jpeg';
 import { FiEdit } from 'react-icons/fi';
 import { Input } from '../../../components/input/Input';
 import Button from '../../../components/Button';
-import { useCreateTeacher } from '../../../api-hooks/teacher/api';
+import { useCreateTeacher, useUpdateTeacher } from '../../../api-hooks/teacher/api';
 import { fileToBase64 } from '../../../utils/base64';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAlert } from '../../../contexts/AlertContext';
+import { useGradeQuery } from '../../../api-hooks/grade/api';
 
 interface TeacherModalProps {
   isOpen: boolean;
@@ -23,8 +24,10 @@ interface TeacherModalProps {
 function TeacherModal({ isOpen, onClose, editData }: TeacherModalProps) {
   const { showAlert } = useAlert();
   const queryClient = useQueryClient();
+  const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const inputFileRef = useRef<any>(null);
+  const { data: gradeData } = useGradeQuery({ pagination: { limit: 999 }, search: "" });
 
   const yupSchema = Yup.object().shape({
     profile_pic: Yup.string(),
@@ -35,13 +38,14 @@ function TeacherModal({ isOpen, onClose, editData }: TeacherModalProps) {
     address: Yup.string().required("Alamat tidak boleh kosong"),
     job_title: Yup.string().required("Jabatan tidak boleh kosong"),
     nuptk: Yup.string(),
-    level_id: Yup.number(),
-    work_sched_id: Yup.number(),
+    level_id: Yup.mixed(),
+    work_sched_id: Yup.mixed(),
   });
 
   const resolver = useYupValidationResolver(yupSchema);
   const defaultValues = useMemo(() => {
     return {
+      id: editData?.id || 0,
       profile_pic: editData?.profile_pic || "",
       identity_no: editData?.identity_no || "",
       name: editData?.name || "",
@@ -50,7 +54,7 @@ function TeacherModal({ isOpen, onClose, editData }: TeacherModalProps) {
       address: editData?.address || "",
       job_title: editData?.job_title || "",
       nuptk: editData?.nuptk || "",
-      level_id: editData?.level_id || "",
+      level_id: editData?.level_id?.toString() || "",
       work_sched_id: editData?.work_sched_id || "",
     };
   }, [editData])
@@ -61,12 +65,11 @@ function TeacherModal({ isOpen, onClose, editData }: TeacherModalProps) {
     defaultValues,
   });
 
-  const { formState: { isValid } } = methods;
-
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
     const objectUrl = URL.createObjectURL(file);
+    setFile(file);
     setPreview(objectUrl);
     return () => URL.revokeObjectURL(objectUrl);
   }
@@ -78,15 +81,17 @@ function TeacherModal({ isOpen, onClose, editData }: TeacherModalProps) {
     onClose();
   }
 
-  const { mutateAsync, isPending } = useCreateTeacher();
+  const { mutateAsync, isPending } = editData ? useUpdateTeacher() : useCreateTeacher();
 
   const handleSubmit = async (data: TeacherModel) => {
     let base64File = "";
-    if (data.profile_pic) base64File = await fileToBase64(data.profile_pic as any);
+    if (file) base64File = await fileToBase64(file);
     const response = await mutateAsync({
       ...data,
       phone: data.phone.toString(),
       profile_pic: base64File,
+      level_id: data.level_id ? +data.level_id : undefined,
+      work_sched_id: data.work_sched_id ? +data.work_sched_id : undefined,
     });
     if (response.status === 200) {
       showAlert({
@@ -107,6 +112,13 @@ function TeacherModal({ isOpen, onClose, editData }: TeacherModalProps) {
     }
   }
 
+  useEffect(() => {
+    if (defaultValues) {
+      methods.reset(defaultValues);
+      setPreview(defaultValues.profile_pic || "");
+    }
+  }, [defaultValues])
+
   return (
     <Modal
       open={isOpen}
@@ -125,7 +137,6 @@ function TeacherModal({ isOpen, onClose, editData }: TeacherModalProps) {
               onChange={handleFileChange}
               ref={inputFileRef}
               type="file"
-              name="profile_pic"
               className="hidden"
               multiple={false}
               accept='image/*'
@@ -151,6 +162,10 @@ function TeacherModal({ isOpen, onClose, editData }: TeacherModalProps) {
                 name="level_id" 
                 label="Jenjang" 
                 placeholder="Masukkan Jenjang"
+                options={gradeData?.data.map((grade) => ({
+                  value: grade?.id?.toString() || "",
+                  label: grade.name,
+                }))}
               />
               <Input 
                 type="select" 
@@ -163,7 +178,7 @@ function TeacherModal({ isOpen, onClose, editData }: TeacherModalProps) {
 
           <div className="flex gap-4 mt-5">
             <Button type="button" onClick={handleClose} className="w-full" variant="outline">Batal</Button>
-            <Button className="w-full" disabled={isPending || !isValid}>{editData ? "Edit" : "Tambah"}</Button>
+            <Button className="w-full" disabled={isPending}>{editData ? "Edit" : "Tambah"}</Button>
           </div>
         </div>
       </Form>

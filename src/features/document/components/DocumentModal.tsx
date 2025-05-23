@@ -55,6 +55,7 @@ function AddDocumentModal({ isOpen, onClose, editData }: DocModalProps) {
     const response = await mutateAsync({
       ...data,
       id: editData?.id || 0,
+      name: (data.uploaded_file as any).name,
       type_id: +data.type_id,
       uploaded_file: base64File
     });

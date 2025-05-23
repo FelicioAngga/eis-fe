@@ -36,3 +36,34 @@ export const useCreateTeacher = () => {
     },
   });
 }
+
+export const useUpdateTeacher = () => {
+  const apiCall = useApiCall<ResponseModel<any>>({
+    method: "PUT",
+    url: `${BASE_URL}/teachers`,
+  });
+
+  return useMutation({
+    mutationFn: async (data: TeacherModel) => {
+      return await apiCall({
+        url: `${BASE_URL}/teachers/${data.id}`,
+        body: data
+      });
+    },
+  });
+}
+
+export const useDeleteTeacher = () => {
+  const apiCall = useApiCall<ResponseModel<any>>({
+    method: "DELETE",
+    url: `${BASE_URL}/teachers`,
+  });
+
+  return useMutation({
+    mutationFn: async (id: number) => {
+      return await apiCall({ 
+        url: `${BASE_URL}/teachers/${id}`,
+      });
+    },
+  });
+}
