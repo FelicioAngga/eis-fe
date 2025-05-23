@@ -1,6 +1,8 @@
-
-import { WorkingScheduleModel } from '../../../api-hooks/working-schedule/models/WorkingScheduleModel';
-import { Modal } from 'antd';
+import { WorkingScheduleModel } from "../../../api-hooks/working-schedule/models/WorkingScheduleModel";
+import { Modal } from "antd";
+import { Input } from "../../../components/input/Input";
+import Form from "../../../components/Form";
+import { useForm } from "react-hook-form";
 
 interface WorkingScheduleModalProps {
   isOpen: boolean;
@@ -8,11 +10,16 @@ interface WorkingScheduleModalProps {
   editData?: WorkingScheduleModel | null;
 }
 
-function WorkingScheduleModal({ isOpen, onClose, editData }: WorkingScheduleModalProps) {
+function WorkingScheduleModal({
+  isOpen,
+  onClose,
+  editData,
+}: WorkingScheduleModalProps) {
+  const methods = useForm({});
 
   const handleClose = () => {
     onClose();
-  }
+  };
 
   return (
     <Modal
@@ -21,12 +28,21 @@ function WorkingScheduleModal({ isOpen, onClose, editData }: WorkingScheduleModa
       onCancel={handleClose}
       maskClosable={false}
       centered
-      title={editData ? "Edit Guru" : "Tambah Guru"}
+      title={editData ? "Edit Jadwal Kerja" : "Tambah Jadwal Kerja"}
       width={600}
     >
-
+      <Form methods={methods} onSubmit={() => {}}>
+        <Input
+          type="text"
+          name="name"
+          label="Nama"
+          placeholder="Nama Jadwal Kerja"
+        />
+        
+        
+      </Form>
     </Modal>
-  )
+  );
 }
 
-export default WorkingScheduleModal
+export default WorkingScheduleModal;
