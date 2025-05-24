@@ -35,6 +35,7 @@ import Users from "./features/users";
 import NewsEvent from "./features/news-event";
 import AccessRights from "./features/access-rights";
 import { AlertProvider } from "./contexts/AlertContext";
+import NewsForm from "./features/news-form";
 
 function App() {
   const queryClient = new QueryClient();
@@ -68,6 +69,7 @@ function App() {
                   <Route path="/teacher-absence-recap" element={<TeacherAbsenceRecap />} />
                   <Route path="/config/working-schedule" element={<WorkingSchedule />} />
                   <Route path="/news-event" element={<NewsEvent />} />
+                  <Route path="/news-event/create" element={<NewsForm />} />
                   <Route path="/users" element={<Users />} />
                   <Route path="/access-rights" element={<AccessRights />} />
                 </Route>

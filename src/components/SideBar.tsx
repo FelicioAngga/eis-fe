@@ -13,7 +13,7 @@ export const Sidebar: React.FC = () => {
     );
   };
 
-  const isActive = (path: string | undefined) => path && location.pathname === path;
+  const isActive = (path: string | undefined) => path && (location.pathname === path || location.pathname.startsWith(path + "/"));
 
   useEffect(() => {
     const match = sideBarCategoryMenu.find((category) =>

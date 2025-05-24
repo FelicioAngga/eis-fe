@@ -1,9 +1,20 @@
+import { useState } from "react";
+import SearchTableLayout from "../../components/SearchTableLayout";
 
 
 export default function() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleSubmit = (search: string) => {
+
+  }
+
   return (
-    <>
-      <p>Registration</p>
-    </>
+    <div>
+      <SearchTableLayout 
+        onSearch={handleSubmit}
+        hideButton
+      />
+    </div>
   )
 }
