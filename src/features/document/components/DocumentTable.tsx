@@ -67,6 +67,7 @@ function DocumentTable({ handleEditDoc, paginationModel, search }: DocumentProps
       {
         accessorKey: "type_name",
         header: () => "Tipe",
+        cell: ({ row }) => (<div>{(row.original as any)?.type?.name || "-"}</div>)
       },
       {
         accessorKey: "description",

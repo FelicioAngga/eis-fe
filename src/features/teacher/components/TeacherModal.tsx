@@ -14,6 +14,7 @@ import { fileToBase64 } from '../../../utils/base64';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAlert } from '../../../contexts/AlertContext';
 import { useGradeQuery } from '../../../api-hooks/grade/api';
+import { useWorkingScheduleQuery } from '../../../api-hooks/working-schedule/api';
 
 interface TeacherModalProps {
   isOpen: boolean;
@@ -27,7 +28,8 @@ function TeacherModal({ isOpen, onClose, editData }: TeacherModalProps) {
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const inputFileRef = useRef<any>(null);
-  const { data: gradeData } = useGradeQuery({ pagination: { limit: 999 }, search: "" });
+  const { data: gradeData } = useGradeQuery({ pagination: { limit: 9999 }, search: "" });
+  const { data: workSchedData } = useWorkingScheduleQuery({ pagination: { limit: 9999 }, search: "" });
 
   const yupSchema = Yup.object().shape({
     profile_pic: Yup.string(),
@@ -172,6 +174,10 @@ function TeacherModal({ isOpen, onClose, editData }: TeacherModalProps) {
                 name="work_sched_id" 
                 label="Jadwal Kerja" 
                 placeholder="Masukkan Jadwal Kerja" 
+                options={workSchedData?.data.map((sched) => ({
+                  value: sched?.id?.toString() || "",
+                  label: sched.name,
+                }))}
               />
             </div>
           </div>

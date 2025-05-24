@@ -1,17 +1,22 @@
-import { FiEdit, FiTrash2 } from "react-icons/fi";
+import { FiEdit } from "react-icons/fi";
 import { WorkingScheduleModel } from "../../../api-hooks/working-schedule/models/WorkingScheduleModel";
 import Table, { PaginationModelProps } from "../../../components/Table";
 import { useMemo } from "react";
 import { ColumnDef } from "@tanstack/react-table";
-import { useWorkingScheduleQuery } from "../../../api-hooks/working-schedule/api";
+import { useDeleteWorkingSchedule, useUnArchiveWorkingSchedule, useWorkingScheduleQuery } from "../../../api-hooks/working-schedule/api";
+import { MdArchive, MdUnarchive } from "react-icons/md";
+import { useQueryClient } from "@tanstack/react-query";
+import { useAlert } from "../../../contexts/AlertContext";
 
 interface WorkingScheduleProps {
   search: string;
   paginationModel: PaginationModelProps;
-  handleEditTeacher: (data: WorkingScheduleModel) => void;
+  handleEditWorkScheds: (data: WorkingScheduleModel) => void;
 }
 
-function WorkingScheduleTable({ handleEditTeacher, paginationModel, search }: WorkingScheduleProps) {
+function WorkingScheduleTable({ handleEditWorkScheds, paginationModel, search }: WorkingScheduleProps) {
+  const { showAlert } = useAlert();
+  const queryClient = useQueryClient();
   const { data } = useWorkingScheduleQuery({
     pagination: {
       limit: paginationModel.pageSize,
@@ -22,8 +27,35 @@ function WorkingScheduleTable({ handleEditTeacher, paginationModel, search }: Wo
     search: search || "",
   });
 
+  const { mutateAsync: deleteMutate } = useDeleteWorkingSchedule();
+  const { mutateAsync: unArchiveMutate } = useUnArchiveWorkingSchedule();
+
   const handleDelete = async (id: number) => {
-    
+    const response = await deleteMutate(id);
+    if (response.status === 200) {
+      queryClient.invalidateQueries({
+        queryKey: ["workscheds"],
+      });
+      showAlert({
+        title: "Berhasil",
+        message: response.message,
+        type: "success",
+      });
+    }
+  }
+
+  const handleUnArchive = async (data: WorkingScheduleModel) => {
+    const response = await unArchiveMutate(data.id || 0);
+    if (response.status === 200) {
+      queryClient.invalidateQueries({
+        queryKey: ["workscheds"],
+      });
+      showAlert({
+        title: "Berhasil",
+        message: response.message,
+        type: "success",
+      });
+    }
   }
 
   const columns = useMemo<ColumnDef<WorkingScheduleModel>[]>(
@@ -45,7 +77,7 @@ function WorkingScheduleTable({ handleEditTeacher, paginationModel, search }: Wo
         accessorKey: "deleted_at",
         header: () => "Status",
         cell: ({ row }) => {
-          return row.original ? (
+          return row.original.deleted_at ? (
             <div className="w-fit px-2 py-1 rounded-lg bg-danger text-center text-xs border text-white">Nonaktif</div>
           ) : (
             <div className="w-fit px-2 py-1 rounded-lg bg-success text-center text-xs border text-white">Aktif</div>
@@ -57,14 +89,24 @@ function WorkingScheduleTable({ handleEditTeacher, paginationModel, search }: Wo
         header: () => "Action",
         cell: ({ row }) => (
           <div className="flex gap-2">
-            <FiEdit
-              className="size-5 cursor-pointer"
-              onClick={() => handleEditTeacher(row.original)}
-            />
-            <FiTrash2
-              className="text-danger size-5 cursor-pointer"
-              onClick={() => handleDelete(row.original.id)}
-            />
+            {row.original.deleted_at ? (
+              <MdUnarchive
+                className="text-blue size-5 cursor-pointer"
+                onClick={() => handleUnArchive(row.original)}
+              />
+            ) : (
+              <>
+                <FiEdit
+                  className="size-5 cursor-pointer"
+                  onClick={() => handleEditWorkScheds(row.original)}
+                />
+
+                <MdArchive
+                  className="text-danger size-5 cursor-pointer"
+                  onClick={() => handleDelete(row.original.id || 0)}
+                />
+              </>
+            )}
           </div>
         ),
       },

@@ -16,20 +16,20 @@ export default function() {
     paginationModel.onChangePageValue(1);
   }
 
-  function handleEditTeacher(data: any) {
+  function handleEditWorkScheds(data: any) {
     setIsModalOpen(true);
     setEditData(data);
   }
 
   return (
     <div className="flex flex-col gap-5">
-      <WorkingScheduleModal editData={editData} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      <WorkingScheduleModal setEditData={setEditData} editData={editData} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
       <SearchTableLayout 
         onSearch={handleSubmit}
         buttonText="Tambah Jadwal"
         buttonOnClick={() => setIsModalOpen(true)}
       />
-      <WorkingScheduleTable handleEditTeacher={handleEditTeacher} paginationModel={paginationModel} search={search} />
+      <WorkingScheduleTable handleEditWorkScheds={handleEditWorkScheds} paginationModel={paginationModel} search={search} />
     </div>
   )
 }
