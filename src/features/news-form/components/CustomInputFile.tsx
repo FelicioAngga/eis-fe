@@ -1,4 +1,5 @@
 import React, { useState, useRef, DragEvent, ChangeEvent } from "react";
+import { GrClose } from "react-icons/gr";
 
 const MainUploadIcon: React.FC = () => (
   <svg
@@ -17,46 +18,12 @@ const MainUploadIcon: React.FC = () => (
   </svg>
 );
 
-const PlusIcon: React.FC<{ className?: string }> = ({
-  className = "w-7 h-7 text-gray-500 group-hover:text-gray-600 opacity-90 transition-colors",
-}) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    fill="none"
-    viewBox="0 0 24 24"
-    strokeWidth={1.5}
-    stroke="currentColor"
-    className={className}
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M12 4.5v15m7.5-7.5h-15"
-    />
-  </svg>
-);
+interface FileUploaderProps {
+  selectedFile: File | null;
+  setSelectedFile: React.Dispatch<React.SetStateAction<File | null>>;
+}
 
-const CloseIcon: React.FC<{ className?: string }> = ({
-  className = "w-5 h-5",
-}) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    fill="none"
-    viewBox="0 0 24 24"
-    strokeWidth={2}
-    stroke="currentColor"
-    className={className}
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M6 18L18 6M6 6l12 12"
-    />
-  </svg>
-);
-
-export const FileUploader: React.FC = () => {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+export const FileUploader = ({ selectedFile, setSelectedFile }: FileUploaderProps) => {
 
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
@@ -147,7 +114,7 @@ export const FileUploader: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col w-1/2">
+    <div className="flex flex-col w-1/2 items-end">
       <div className="w-full max-w-md bg-white p-6 sm:p-8 rounded-xl shadow-lg">
         <h1 className="text-xl font-semibold text-gray-800 mb-1 text-left">
           Upload Foto
@@ -204,7 +171,7 @@ export const FileUploader: React.FC = () => {
                   className="absolute top-2 right-2 bg-black bg-opacity-50 text-white rounded-full p-1.5 hover:bg-opacity-75 transition-all focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-75 opacity-0 group-hover/preview:opacity-100"
                   aria-label="Hapus gambar"
                 >
-                  <CloseIcon className="w-4 h-4" />
+                  <GrClose className="w-4 h-4 cursor-pointer" />
                 </button>
                 <button
                   onClick={triggerFileInput}
@@ -222,9 +189,6 @@ export const FileUploader: React.FC = () => {
             >
               <div className="relative mb-2">
                 <MainUploadIcon />
-                <div className="absolute inset-0 flex items-center justify-center mt-1">
-                  <PlusIcon />
-                </div>
               </div>
               <p className="text-base sm:text-lg font-medium text-gray-700 group-hover:text-gray-800 transition-colors">
                 Unggah Gambar

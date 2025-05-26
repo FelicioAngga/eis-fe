@@ -21,7 +21,9 @@ function NewsList({ paginationModel, search }: NewsListProps) {
   
   return (
     <div>
-      {newsData?.data.map((item, idx) => <NewsItem key={idx} {...item} />)}
+      <div className="flex gap-2">
+        {newsData?.data.map((item, idx) => <NewsItem key={idx} {...item} />)}
+      </div>
       <div className="flex justify-end mt-5">
         <Pagination
           current={paginationModel.pageNumber}

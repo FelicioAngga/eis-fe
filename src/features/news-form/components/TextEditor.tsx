@@ -9,7 +9,7 @@ interface TextEditorProps {
 export const TextEditor = ({ setValue, value }: TextEditorProps) => {
   return (
     <div>
-      <ReactQuill theme='snow' value={value} onChange={setValue} />
+      <ReactQuill theme='snow' value={value} onChange={setValue} className="h-[50vh]" />
     </div>
   )
 }
