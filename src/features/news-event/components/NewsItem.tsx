@@ -25,7 +25,7 @@ function NewsItem({
           loading="lazy"
         />
         <p className="text-lg md:text-xl font-bold">{title}</p>
-        <div className="text-xs text-[#878787] w-56 text-justify">
+        <div className="text-xs text-[#878787] w-56 overflow-hidden text-justify">
           {parsedContent}
         </div>
       </div>
