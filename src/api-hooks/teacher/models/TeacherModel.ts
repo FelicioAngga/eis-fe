@@ -4,7 +4,7 @@ export type TeacherModel = {
 	id: number;
   identity_no: string;
 	name: string;
-	nuptk: string;
+	nuptk: string | null;
 	phone: string;
 	email: string;
 	address: string;

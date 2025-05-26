@@ -1,10 +1,13 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { useMemo } from "react";
 import Table, { PaginationModelProps } from "../../../components/Table";
-import Swal from 'sweetalert2'
+import Swal from "sweetalert2";
 import { useAlert } from "../../../contexts/AlertContext";
 import { useQueryClient } from "@tanstack/react-query";
-import { useMarkRegistration, useRegistrationQuery } from "../../../api-hooks/registration/api";
+import {
+  useMarkRegistration,
+  useRegistrationQuery,
+} from "../../../api-hooks/registration/api";
 import { formatDateTime } from "../../../utils/formatDate";
 import Button from "../../../components/Button";
 import { BsEye } from "react-icons/bs";
@@ -16,11 +19,15 @@ interface RegistrationTableProps {
   handleOpenModal: (data: RegistrationModel) => void;
 }
 
-function RegistrationTable({ handleOpenModal, paginationModel, search }: RegistrationTableProps) {
+function RegistrationTable({
+  handleOpenModal,
+  paginationModel,
+  search,
+}: RegistrationTableProps) {
   const { showAlert } = useAlert();
   const queryClient = useQueryClient();
   const { mutateAsync: mutateMark } = useMarkRegistration();
-  
+
   const { data } = useRegistrationQuery({
     pagination: {
       limit: paginationModel.pageSize,
@@ -43,7 +50,7 @@ function RegistrationTable({ handleOpenModal, paginationModel, search }: Registr
     const response = await mutateMark(id);
     if (response.status === 200) {
       queryClient.invalidateQueries({
-        queryKey: ["applicants"]
+        queryKey: ["applicants"],
       });
       showAlert({
         title: "Berhasil",
@@ -58,7 +65,10 @@ function RegistrationTable({ handleOpenModal, paginationModel, search }: Registr
       {
         accessorKey: "no",
         header: () => "No",
-        cell: (info) => info.row.index + 1 + (paginationModel.pageNumber - 1) * paginationModel.pageSize,
+        cell: (info) =>
+          info.row.index +
+          1 +
+          (paginationModel.pageNumber - 1) * paginationModel.pageSize,
         size: 10,
       },
       {
@@ -91,7 +101,10 @@ function RegistrationTable({ handleOpenModal, paginationModel, search }: Registr
         header: () => "View",
         cell: ({ row }) => (
           <div className="">
-            <BsEye onClick={() => handleOpenModal(row.original)} className="cursor-pointer ml-2 text-blue text-xl" />
+            <BsEye
+              onClick={() => handleOpenModal(row.original)}
+              className="cursor-pointer ml-2 text-blue text-xl"
+            />
           </div>
         ),
       },
@@ -100,7 +113,13 @@ function RegistrationTable({ handleOpenModal, paginationModel, search }: Registr
         header: () => "Action",
         cell: ({ row }) => (
           <div>
-            <Button onClick={() => handleMark(row.original.id)}>Tandai</Button>
+            {row.original.state === "draft" ? (
+              <Button onClick={() => handleMark(row.original.id)}>
+                Tandai
+              </Button>
+            ) : (
+              <div className="bg-green-400 text-white w-fit px-2 py-1 rounded-lg">Marked</div>
+            )}
           </div>
         ),
       },

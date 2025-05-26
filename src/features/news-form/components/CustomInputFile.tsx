@@ -1,9 +1,8 @@
-import React, { useState, useRef, DragEvent, ChangeEvent, useEffect } from 'react';
+import React, { useState, useRef, DragEvent, ChangeEvent } from "react";
 
-// Main icon for the upload area (landscape outline)
 const MainUploadIcon: React.FC = () => (
   <svg
-    className="w-16 h-16 text-gray-400 group-hover:text-gray-500 transition-colors" // Added group-hover effect
+    className="w-16 h-16 text-gray-400 group-hover:text-gray-500 transition-colors"
     stroke="currentColor"
     fill="none"
     viewBox="0 0 48 48"
@@ -11,74 +10,81 @@ const MainUploadIcon: React.FC = () => (
   >
     <path
       d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-      strokeWidth="1.5" // Adjusted stroke width to match image
+      strokeWidth="1.5"
       strokeLinecap="round"
       strokeLinejoin="round"
     />
   </svg>
 );
 
-// Plus icon to overlay
-const PlusIcon: React.FC<{ className?: string }> = ({ className = "w-7 h-7 text-gray-500 group-hover:text-gray-600 opacity-90 transition-colors" }) => (
+const PlusIcon: React.FC<{ className?: string }> = ({
+  className = "w-7 h-7 text-gray-500 group-hover:text-gray-600 opacity-90 transition-colors",
+}) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     fill="none"
     viewBox="0 0 24 24"
-    strokeWidth={1.5} // Adjusted stroke width
+    strokeWidth={1.5}
     stroke="currentColor"
     className={className}
   >
-    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M12 4.5v15m7.5-7.5h-15"
+    />
   </svg>
 );
 
-// X icon for removing image
-const CloseIcon: React.FC<{ className?: string }> = ({ className = "w-5 h-5" }) => (
+const CloseIcon: React.FC<{ className?: string }> = ({
+  className = "w-5 h-5",
+}) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     fill="none"
     viewBox="0 0 24 24"
-    strokeWidth={2} // Slightly thicker for better visibility
+    strokeWidth={2}
     stroke="currentColor"
     className={className}
   >
-    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M6 18L18 6M6 6l12 12"
+    />
   </svg>
 );
 
 export const FileUploader: React.FC = () => {
-  // State for the selected file
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  // State for the image preview URL
+
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  // State for error messages
+
   const [error, setError] = useState<string | null>(null);
-  // State to track if a file is being dragged over the drop zone
+
   const [isDragging, setIsDragging] = useState<boolean>(false);
-  // Ref for the hidden file input element
+
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const MAX_FILE_SIZE_MB = 5;
   const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
-  const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/jpg'];
-  const ALLOWED_FILE_TYPES_STRING = 'JPG & JPEG';
+  const ALLOWED_FILE_TYPES = ["image/jpeg", "image/jpg"];
+  const ALLOWED_FILE_TYPES_STRING = "JPG & JPEG";
 
-
-  // Handles the file selection process (from input or drag-and-drop)
   const handleFile = (file: File | null) => {
     if (!file) {
       return;
     }
 
-    // Validate file type
     if (!ALLOWED_FILE_TYPES.includes(file.type.toLowerCase())) {
-      setError(`Format file tidak valid. Hanya ${ALLOWED_FILE_TYPES_STRING} yang diizinkan.`);
+      setError(
+        `Format file tidak valid. Hanya ${ALLOWED_FILE_TYPES_STRING} yang diizinkan.`
+      );
       setSelectedFile(null);
       setPreviewUrl(null);
       return;
     }
 
-    // Validate file size
     if (file.size > MAX_FILE_SIZE_BYTES) {
       setError(`Ukuran file maksimal ${MAX_FILE_SIZE_MB} MB.`);
       setSelectedFile(null);
@@ -86,9 +92,8 @@ export const FileUploader: React.FC = () => {
       return;
     }
 
-    // If file is valid, update state and create a preview
     setSelectedFile(file);
-    setError(null); // Clear any previous errors
+    setError(null);
 
     const reader = new FileReader();
     reader.onloadend = () => {
@@ -97,11 +102,10 @@ export const FileUploader: React.FC = () => {
     reader.readAsDataURL(file);
   };
 
-  // Triggered when the file input value changes
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     handleFile(file || null);
-    // Reset file input to allow re-uploading the same file if needed
+
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
@@ -152,14 +156,20 @@ export const FileUploader: React.FC = () => {
           className={`
             w-full
             border-2
-            ${isDragging ? 'border-blue-500 bg-blue-50' : (error ? 'border-red-400' : 'border-gray-300 group-hover:border-gray-400')}
-            ${previewUrl ? 'border-solid p-2' : 'border-dashed p-6'}
+            ${
+              isDragging
+                ? "border-blue-500 bg-blue-50"
+                : error
+                ? "border-red-400"
+                : "border-gray-300 group-hover:border-gray-400"
+            }
+            ${previewUrl ? "border-solid p-2" : "border-dashed p-6"}
             rounded-lg
             text-center
             transition-all duration-200 ease-in-out
             relative
             group 
-            ${!previewUrl ? 'cursor-pointer' : ''}
+            ${!previewUrl ? "cursor-pointer" : ""}
           `}
           onClick={!previewUrl ? triggerFileInput : undefined}
           onDragOver={handleDragOver}
@@ -167,14 +177,16 @@ export const FileUploader: React.FC = () => {
           onDrop={handleDrop}
           role="button"
           tabIndex={0}
-          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') triggerFileInput();}}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") triggerFileInput();
+          }}
           aria-label="Area unggah gambar"
         >
           <input
             type="file"
             ref={fileInputRef}
             onChange={handleChange}
-            accept={ALLOWED_FILE_TYPES.join(',')}
+            accept={ALLOWED_FILE_TYPES.join(",")}
             className="hidden"
             aria-labelledby="upload-label"
           />
@@ -187,24 +199,27 @@ export const FileUploader: React.FC = () => {
                 className="w-full h-60 object-cover rounded-md"
               />
               <div className="absolute inset-0 group-hover/preview:bg-black/20 transition-opacity duration-200 rounded-md flex items-center justify-center">
-                 <button
-                    onClick={removeImage}
-                    className="absolute top-2 right-2 bg-black bg-opacity-50 text-white rounded-full p-1.5 hover:bg-opacity-75 transition-all focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-75 opacity-0 group-hover/preview:opacity-100"
-                    aria-label="Hapus gambar"
-                  >
-                    <CloseIcon className="w-4 h-4"/>
-                  </button>
-                  <button
-                    onClick={triggerFileInput}
-                    className="bg-white text-gray-800 py-2 px-4 rounded-md shadow-md hover:bg-gray-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50 opacity-0 group-hover/preview:opacity-100 text-sm font-medium cursor-pointer"
-                    aria-label="Ganti gambar"
-                  >
-                    Ganti Gambar
-                  </button>
+                <button
+                  onClick={removeImage}
+                  className="absolute top-2 right-2 bg-black bg-opacity-50 text-white rounded-full p-1.5 hover:bg-opacity-75 transition-all focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-75 opacity-0 group-hover/preview:opacity-100"
+                  aria-label="Hapus gambar"
+                >
+                  <CloseIcon className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={triggerFileInput}
+                  className="bg-white text-gray-800 py-2 px-4 rounded-md shadow-md hover:bg-gray-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50 opacity-0 group-hover/preview:opacity-100 text-sm font-medium cursor-pointer"
+                  aria-label="Ganti gambar"
+                >
+                  Ganti Gambar
+                </button>
               </div>
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center py-6 sm:py-8" id="upload-label">
+            <div
+              className="flex flex-col items-center justify-center py-6 sm:py-8"
+              id="upload-label"
+            >
               <div className="relative mb-2">
                 <MainUploadIcon />
                 <div className="absolute inset-0 flex items-center justify-center mt-1">

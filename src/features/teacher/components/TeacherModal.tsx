@@ -39,9 +39,9 @@ function TeacherModal({ isOpen, onClose, editData }: TeacherModalProps) {
     phone: Yup.number().required("No Telepon tidak boleh kosong").typeError("No Telepon harus berupa angka"),
     address: Yup.string().required("Alamat tidak boleh kosong"),
     job_title: Yup.string().required("Jabatan tidak boleh kosong"),
-    nuptk: Yup.string(),
-    level_id: Yup.mixed(),
-    work_sched_id: Yup.mixed(),
+    nuptk: Yup.string().required("NUPTK tidak boleh kosong"),
+    level_id: Yup.string().required("Jenjang tidak boleh kosong"),
+    work_sched_id: Yup.string().required("Jadwal Kerja tidak boleh kosong"),
   });
 
   const resolver = useYupValidationResolver(yupSchema);
@@ -154,7 +154,7 @@ function TeacherModal({ isOpen, onClose, editData }: TeacherModalProps) {
               <Input type="text" name="name" label="Nama Lengkap" placeholder="Masukkan nama lengkap" required />
               <Input type="text" name="email" label="Email" placeholder="Masukkan Email" required />
               <Input type="text" name="address" label="Alamat" placeholder="Masukkan Alamat" required />
-              <Input type="text" name="nuptk" label="NUPTK" placeholder="Masukkan NUPTK" />
+              <Input type="text" name="nuptk" label="NUPTK" placeholder="Masukkan NUPTK" required />
             </div>
             <div className="flex flex-col gap-4 w-full">
               <Input type="number" name="phone" label="No Telepon" placeholder="Masukkan No Telepon" required />
@@ -168,6 +168,7 @@ function TeacherModal({ isOpen, onClose, editData }: TeacherModalProps) {
                   value: grade?.id?.toString() || "",
                   label: grade.name,
                 }))}
+                required
               />
               <Input 
                 type="select" 
@@ -178,6 +179,7 @@ function TeacherModal({ isOpen, onClose, editData }: TeacherModalProps) {
                   value: sched?.id?.toString() || "",
                   label: sched.name,
                 }))}
+                required
               />
             </div>
           </div>

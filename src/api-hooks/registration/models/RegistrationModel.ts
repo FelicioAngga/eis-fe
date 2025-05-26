@@ -1,3 +1,4 @@
+import { DocumentModel } from "../../documents/models/DocumentModel";
 import { PaginationParams } from "../../method";
 
 export type RegistrationModel = {
@@ -21,6 +22,7 @@ export type RegistrationModel = {
 	state: string;
   created_at?: string;
   guardians: GuardianModel[];
+	documents: DocumentModel[];
 }
 
 export type GuardianModel = {

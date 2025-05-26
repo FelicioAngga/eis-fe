@@ -55,7 +55,7 @@ function RegistrationModal({ selectedData, isOpen, onClose }: RegistrationModalP
       {selectedTab === "student-information" && <StudentInformation selectedData={selectedData} />}
       {selectedTab === "parents" && <Parents selectedData={selectedData} />}
       {selectedTab === "guardian" && <Guardian selectedData={selectedData} />}
-      {selectedTab === "documents" && <Documents />}
+      {selectedTab === "documents" && <Documents selectedData={selectedData} />}
     </Modal>
   )
 }
