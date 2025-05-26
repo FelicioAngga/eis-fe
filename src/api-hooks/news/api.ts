@@ -22,6 +22,21 @@ export const useNewsQuery = (params: NewsParams) => {
   });
 }
 
+export const useNewsDetailQuery = (id: string) => {
+  const apiCall = useApiCall<{data: NewsModel}>({
+    method: "GET",
+    url: `${BASE_URL}/blogs/${id}`,
+  });
+
+  return useQuery({
+    queryKey: ["blogs", id],
+    queryFn: async () => {
+      return await apiCall();
+    },
+    enabled: !!id,
+  });
+}
+
 export const useCreateNews = () => {
   const apiCall = useApiCall<ResponseModel<any>>({
     method: "POST",
@@ -32,6 +47,37 @@ export const useCreateNews = () => {
     mutationFn: async (data: NewsModel) => {
       return await apiCall({ 
         body: data
+      });
+    },
+  });
+}
+
+export const useUpdateNews = () => {
+  const apiCall = useApiCall<ResponseModel<any>>({
+    method: "PUT",
+    url: `${BASE_URL}/blogs`,
+  });
+
+  return useMutation({
+    mutationFn: async (data: NewsModel) => {
+      return await apiCall({
+        url: `${BASE_URL}/blogs/${data.id}`, 
+        body: data,
+      });
+    },
+  });
+}
+
+export const useDeleteNews = () => {
+  const apiCall = useApiCall<ResponseModel<any>>({
+    method: "DELETE",
+    url: `${BASE_URL}/blogs`,
+  });
+
+  return useMutation({
+    mutationFn: async (id: number) => {
+      return await apiCall({
+        url: `${BASE_URL}/blogs/${id}`, 
       });
     },
   });

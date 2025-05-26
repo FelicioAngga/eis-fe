@@ -21,11 +21,11 @@ const MainUploadIcon: React.FC = () => (
 interface FileUploaderProps {
   selectedFile: File | null;
   setSelectedFile: React.Dispatch<React.SetStateAction<File | null>>;
+  previewUrl: string | null;
+  setPreviewUrl: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
-export const FileUploader = ({ selectedFile, setSelectedFile }: FileUploaderProps) => {
-
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+export const FileUploader = ({ selectedFile, setSelectedFile, previewUrl, setPreviewUrl }: FileUploaderProps) => {
 
   const [error, setError] = useState<string | null>(null);
 

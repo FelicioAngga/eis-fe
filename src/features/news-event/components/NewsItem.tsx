@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import parse from "html-react-parser";
+import parse, { domToReact } from "html-react-parser";
 
 function NewsItem({
   id,
@@ -13,11 +13,22 @@ function NewsItem({
   thumbnail: string;
 }) {
   const navigate = useNavigate();
-  const parsedContent = parse(content);
+
+  const options = {
+    replace: (domNode: any) => {
+      if (domNode.type === 'tag') {
+        const newProps = {
+          ...domNode.attribs,
+          className: 'inline',
+        };
+        return <span {...newProps}>{domToReact(domNode.children, options)}</span>;
+      }
+    },
+  };
 
   return (
     <div className="mt-6 flex flex-col gap-2 w-full md:w-1/3 xl:w-1/4">
-      <div className="cursor-pointer" onClick={() => navigate(`/news/${id}`)}>
+      <div className="cursor-pointer" onClick={() => navigate(`/news-event/${id}`)}>
         <img
           src={thumbnail}
           alt=""
@@ -25,8 +36,8 @@ function NewsItem({
           loading="lazy"
         />
         <p className="text-lg md:text-xl font-bold">{title}</p>
-        <div className="text-xs text-[#878787] w-56 overflow-hidden text-justify">
-          {parsedContent}
+        <div className="text-xs text-[#878787] w-56 truncate">
+          {parse(content, options)}
         </div>
       </div>
     </div>

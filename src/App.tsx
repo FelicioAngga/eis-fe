@@ -70,6 +70,7 @@ function App() {
                   <Route path="/config/working-schedule" element={<WorkingSchedule />} />
                   <Route path="/news-event" element={<NewsEvent />} />
                   <Route path="/news-event/create" element={<NewsForm />} />
+                  <Route path="/news-event/:id" element={<NewsForm />} />
                   <Route path="/users" element={<Users />} />
                   <Route path="/access-rights" element={<AccessRights />} />
                 </Route>
