@@ -23,3 +23,8 @@ export type DocumentCreateModel = {
   description: string;
   uploaded_file: File | string;
 }
+
+export type DocsTypeResponse = {
+  id: number;
+  name: string;
+}

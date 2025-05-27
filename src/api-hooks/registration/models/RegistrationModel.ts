@@ -26,6 +26,8 @@ export type RegistrationModel = {
 }
 
 export type GuardianModel = {
+	id?: number;
+	student_id?: number;
   name: string;
   place_of_birth: string;
 	date_of_birth: string;

@@ -36,6 +36,7 @@ import NewsEvent from "./features/news-event";
 import AccessRights from "./features/access-rights";
 import { AlertProvider } from "./contexts/AlertContext";
 import NewsForm from "./features/news-form";
+import StudentDetail from "./features/student-detail";
 
 function App() {
   const queryClient = new QueryClient();
@@ -53,6 +54,8 @@ function App() {
                   <Route path="/" element={<Dashboard />} />
                   <Route path="/registration" element={<Registration />} />
                   <Route path="/student-data" element={<StudentData />} />
+                  <Route path="/student-data/add" element={<StudentDetail />} />
+                  <Route path="/student-data/detail/:id" element={<StudentDetail />} />
                   <Route path="/class" element={<Classes />} />
                   <Route path="/absence" element={<Absence />} />
                   <Route path="/subject" element={<Subject />} />
@@ -91,7 +94,7 @@ const PrivateRoute = () => {
   return isAuthenticated ? (
     <>
       <NavBar />
-      <div className="flex h-[92.5vh]">
+      <div className="flex h-[91.5vh]">
         <Sidebar />
         <div className="flex-1 overflow-auto p-6">
           <Outlet />

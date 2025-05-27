@@ -41,7 +41,7 @@ export function InputDate({ error, label, ...props }: InputDateProps) {
             <CalendarIcon color="#8C8C8C" size={20} />
           </div>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="start">
+        <PopoverContent className="w-auto p-0 bg-white" align="start">
           <Calendar
             mode="single"
             selected={field.value}
