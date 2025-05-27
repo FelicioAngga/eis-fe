@@ -115,11 +115,15 @@ function TeacherModal({ isOpen, onClose, editData }: TeacherModalProps) {
   }
 
   useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
     if (defaultValues) {
-      methods.reset(defaultValues);
+      timeoutId = setTimeout(() => {
+        methods.reset(defaultValues);
+      })
       setPreview(defaultValues.profile_pic || "");
     }
-  }, [defaultValues])
+    return () => clearTimeout(timeoutId)
+  }, [defaultValues, workSchedData])
 
   return (
     <Modal

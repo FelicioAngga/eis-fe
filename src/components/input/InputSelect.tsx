@@ -34,7 +34,7 @@ export function InputSelect({ label, onValueChange, ...props }: InputSelectProps
           )}
         </label>
       )}
-      <Select onValueChange={handleChange} value={field.value} defaultValue={field.value}>
+      <Select onValueChange={handleChange} value={field.value}>
         <SelectTrigger error={error?.message} className={`w-full ${props.className}`}>
           <SelectValue defaultValue={field.value} placeholder={props.placeholder} />
         </SelectTrigger>

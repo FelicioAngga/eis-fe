@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import Table, { PaginationModelProps } from '../../../components/Table';
-import { FiEdit, FiTrash2 } from 'react-icons/fi';
+import { FiEdit } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAlert } from '../../../contexts/AlertContext';
