@@ -21,3 +21,7 @@ export const useUserQuery = (params: UserParams) => {
     },
   });
 }
+
+export const useCreateUser = () => {
+
+}

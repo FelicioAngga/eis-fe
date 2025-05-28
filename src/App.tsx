@@ -37,6 +37,8 @@ import AccessRights from "./features/access-rights";
 import { AlertProvider } from "./contexts/AlertContext";
 import NewsForm from "./features/news-form";
 import StudentDetail from "./features/student-detail";
+import ClassAcademicDetail from "./features/class-academic-detail";
+import ConfigClassScheduleDetail from "./features/config-class-schedule-detail";
 
 function App() {
   const queryClient = new QueryClient();
@@ -57,6 +59,7 @@ function App() {
                   <Route path="/student-data/add" element={<StudentDetail />} />
                   <Route path="/student-data/detail/:id" element={<StudentDetail />} />
                   <Route path="/class" element={<Classes />} />
+                  <Route path="/class/detail/:id" element={<ClassAcademicDetail />} />
                   <Route path="/absence" element={<Absence />} />
                   <Route path="/subject" element={<Subject />} />
                   <Route path="/class-schedule" element={<ClassSchedule />} />
@@ -65,6 +68,7 @@ function App() {
                   <Route path="/grade" element={<Grade />} />
                   <Route path="/config/class" element={<ConfigClass />} />
                   <Route path="/config/class-schedule" element={<ConfigClassSchedule />} />
+                  <Route path="/config/class-schedule/detail/:id" element={<ConfigClassScheduleDetail />} />
                   <Route path="/document" element={<Document />} />
                   <Route path="/config/document-type" element={<DocumentType />} />
                   <Route path="/teacher" element={<Teacher />} />
