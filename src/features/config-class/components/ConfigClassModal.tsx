@@ -42,7 +42,7 @@ function ConfigClassModal({ isOpen, onClose, editData }: ConfigClassModalProps) 
       grade: editData?.grade || "",
       name: editData?.name || "",
     };
-  }, [editData]);
+  }, [editData, isOpen]);
 
   const methods = useForm({
     mode: "onSubmit",
