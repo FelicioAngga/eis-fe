@@ -8,3 +8,28 @@ export type ConfigClassSchedModel = {
   start_hour: string;
   end_hour: string;
 }
+
+export type CreateConfigClassSchedModel = {
+  academic_id: number;
+  schedules: {
+    day: string;
+    entries: {
+      subject_id: number;
+      teacher_id: number;
+      start_hour: string;
+      end_hour: string;
+    }[];
+  }[];
+}
+
+export type UpdateConfigClassSchedModel = {
+  academic_id: number;
+  entries: {
+    id: number;
+    subject_id: number;
+    teacher_id: number;
+    day: string;
+    start_hour: string;
+    end_hour: string;
+  }[];
+}

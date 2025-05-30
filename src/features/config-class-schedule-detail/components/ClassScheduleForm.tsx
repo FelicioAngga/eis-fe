@@ -5,7 +5,7 @@ import { useSubjectsQuery } from '../../../api-hooks/subjects/api';
 import { useTeacherQuery } from '../../../api-hooks/teacher/api';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../store';
-import { addLessonByDay, updateEndHourByIndex, updateStartHourByIndex, updateSubjectIdByIndex, updateTeacherIdByIndex } from '../configClassScheduleSlice';
+import { addLessonByDay, deleteLessonByIndex, updateEndHourByIndex, updateStartHourByIndex, updateSubjectIdByIndex, updateTeacherIdByIndex } from '../configClassScheduleSlice';
 
 function ClassScheduleForm() {
   const dispatch = useDispatch();
@@ -35,18 +35,18 @@ function ClassScheduleForm() {
       {selectedDay?.entries.map((entry, idx) => (
         <div key={idx} className="flex items-center py-3 space-x-2 text-sm">
           <div className="w-1/12 text-danger text-xl">
-            <button className="cursor-pointer"><MdClose /></button>
+            <button onClick={() => dispatch(deleteLessonByIndex({ id: entry.id, index: entry.index }))} className="cursor-pointer"><MdClose /></button>
           </div>
           <div className="w-2/12 pr-3">
-            <CustomTimeInput onChange={(e) => dispatch(updateStartHourByIndex({ index: idx, start_hour: e.target.value }))} value={entry.start_hour} />
+            <CustomTimeInput onChange={(e) => dispatch(updateStartHourByIndex({ index: entry.index, id: entry.id, start_hour: e.target.value }))} value={entry.start_hour} />
           </div>
           <div className="w-2/12 pr-3">
-            <CustomTimeInput onChange={(e) => dispatch(updateEndHourByIndex({ index: idx, end_hour: e.target.value }))} value={entry.end_hour} />
+            <CustomTimeInput onChange={(e) => dispatch(updateEndHourByIndex({ index: entry.index, id: entry.id, end_hour: e.target.value }))} value={entry.end_hour} />
           </div>
           <div className="w-4/12 relative pr-3">
             <select
               value={entry.subject_id}
-              onChange={(e) => dispatch(updateSubjectIdByIndex({ index: idx, subject_id: Number(e.target.value) }))}
+              onChange={(e) => dispatch(updateSubjectIdByIndex({ index: entry.index, id: entry.id, subject_id: Number(e.target.value) }))}
               className="w-full border border-gray-300 appearance-none rounded-md px-3 py-2.5 cursor-pointer"
             >
               <option value="">Pilih Mata Pelajaran</option>
@@ -61,7 +61,7 @@ function ClassScheduleForm() {
           <div className="w-4/12 relative pr-3">
             <select 
               value={entry.teacher_id} 
-              onChange={(e) => dispatch(updateTeacherIdByIndex({ index: idx, teacher_id: Number(e.target.value) }))} 
+              onChange={(e) => dispatch(updateTeacherIdByIndex({ index: entry.index, id: entry.id, teacher_id: Number(e.target.value) }))} 
               className="w-full border border-gray-300 appearance-none rounded-md px-3 py-2.5 cursor-pointer"
             >
               <option value="">Pilih Guru</option>

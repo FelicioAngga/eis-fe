@@ -3,6 +3,7 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 
 export interface ClassScheduleEntry {
   index?: number;
+  id?: number;
   subject_id: number;
   teacher_id: number;
   start_hour: string;
@@ -14,7 +15,7 @@ export interface DailyClassSchedule {
   entries: ClassScheduleEntry[];
 }
 
-type DaysType = "senin" | "selasa" | "rabu" | "kamis" | "jumat" | "sabtu";
+type DaysType = "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday";
 
 export interface ClassScheduleState {
   class_schedule_list: DailyClassSchedule[];
@@ -23,13 +24,17 @@ export interface ClassScheduleState {
   
 const initialState: ClassScheduleState = {
   class_schedule_list: [],
-  selected_day: 'senin',
+  selected_day: 'Monday',
 }
 
 export const configClassSchedSlice = createSlice({
 	name: 'configClassSched',
 	initialState,
 	reducers: {
+    resetClassSchedule: (state, action: PayloadAction<ClassScheduleState>) => {
+      state.selected_day = 'Monday';
+      state.class_schedule_list = action.payload.class_schedule_list || [];
+    },
 		changeClassSchedByDay: (state, action: PayloadAction<DailyClassSchedule>) => {
 			const classSchedule = state.class_schedule_list.find((item) => item.day === action.payload.day);
       if (classSchedule) classSchedule.entries = action.payload.entries;
@@ -60,34 +65,49 @@ export const configClassSchedSlice = createSlice({
     changeSelectedDay: (state, action: PayloadAction<DaysType>) => {
       state.selected_day = action.payload;
     },
-    updateStartHourByIndex: (state, action: PayloadAction<{ index: number, start_hour: string }>) => {
+    updateStartHourByIndex: (state, action: PayloadAction<{ index?: number, id?: number, start_hour: string }>) => {
       const selectedDaySchedule = state.class_schedule_list.find(item => item.day === state.selected_day);
-      selectedDaySchedule?.entries?.forEach((entry, idx) => {
-        entry.start_hour = idx === action.payload.index ? action.payload.start_hour : entry.start_hour;
+      selectedDaySchedule?.entries?.forEach(entry => {
+        if (action.payload.index || action.payload.index === 0) entry.start_hour = entry.index === action.payload.index ? action.payload.start_hour : entry.start_hour;
+        else if (action.payload.id) entry.start_hour = entry.id === action.payload.id ? action.payload.start_hour : entry.start_hour;
       });
     },
-    updateEndHourByIndex: (state, action: PayloadAction<{ index: number, end_hour: string }>) => {
+    updateEndHourByIndex: (state, action: PayloadAction<{ index?: number, id?: number, end_hour: string }>) => {
       const selectedDaySchedule = state.class_schedule_list.find(item => item.day === state.selected_day);
-      selectedDaySchedule?.entries?.forEach((entry, idx) => {
-        entry.end_hour = idx === action.payload.index ? action.payload.end_hour : entry.end_hour;
+      selectedDaySchedule?.entries?.forEach(entry => {
+        if (action.payload.index || action.payload.index === 0) entry.end_hour = entry.index === action.payload.index ? action.payload.end_hour : entry.end_hour;
+        else if (action.payload.id) entry.end_hour = entry.id === action.payload.id ? action.payload.end_hour : entry.end_hour;
       });
     },
-    updateSubjectIdByIndex: (state, action: PayloadAction<{ index: number, subject_id: number }>) => {
+    updateSubjectIdByIndex: (state, action: PayloadAction<{ index?: number, id?: number, subject_id: number }>) => {
       const selectedDaySchedule = state.class_schedule_list.find(item => item.day === state.selected_day);
-      selectedDaySchedule?.entries?.forEach((entry, idx) => {
-        entry.subject_id = idx === action.payload.index ? action.payload.subject_id : entry.subject_id;
+      selectedDaySchedule?.entries?.forEach(entry => {
+        if (action.payload.index || action.payload.index === 0) entry.subject_id = entry.index === action.payload.index ? action.payload.subject_id : entry.subject_id;
+        else if (action.payload.id) entry.subject_id = entry.id === action.payload.id ? action.payload.subject_id : entry.subject_id;
       });
     },
-    updateTeacherIdByIndex: (state, action: PayloadAction<{ index: number, teacher_id: number }>) => {
+    updateTeacherIdByIndex: (state, action: PayloadAction<{ index?: number, id?: number, teacher_id: number }>) => {
       const selectedDaySchedule = state.class_schedule_list.find(item => item.day === state.selected_day);
-      selectedDaySchedule?.entries?.forEach((entry, idx) => {
-        entry.teacher_id = idx === action.payload.index ? action.payload.teacher_id : entry.teacher_id;
+      selectedDaySchedule?.entries?.forEach(entry => {
+        if (action.payload.index || action.payload.index === 0) entry.teacher_id = entry.index === action.payload.index ? action.payload.teacher_id : entry.teacher_id;
+        else if (action.payload.id) entry.teacher_id = entry.id === action.payload.id ? action.payload.teacher_id : entry.teacher_id;
       });
     },
+    deleteLessonByIndex: (state, action: PayloadAction<{ index?: number, id?: number }>) => {
+      const selectedDaySchedule = state.class_schedule_list.find(item => item.day === state.selected_day);
+      if (selectedDaySchedule) {
+        selectedDaySchedule.entries = selectedDaySchedule.entries.filter(entry => {
+          if (action.payload.index || action.payload.index === 0) return entry.index !== action.payload.index;
+          else if (action.payload.id) return entry.id !== action.payload.id;
+          return true;
+        });
+      }
+    }
 	},
 });
 
 export const { 
+  resetClassSchedule,
   changeClassSchedByDay,
   addLessonByDay,
   changeSelectedDay,
@@ -95,5 +115,6 @@ export const {
   updateEndHourByIndex,
   updateSubjectIdByIndex,
   updateTeacherIdByIndex,
+  deleteLessonByIndex,
 } = configClassSchedSlice.actions
 export default configClassSchedSlice.reducer
