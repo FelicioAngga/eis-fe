@@ -56,7 +56,7 @@ function TeacherAbsenceImportModal({
       </div>
 
       <div className="flex gap-5 mt-8">
-        <Button className="w-full" variant="outline">Batal</Button>
+        <Button onClick={onClose} className="w-full" variant="outline">Batal</Button>
         <Button className="w-full">Simpan</Button>
       </div>
     </Modal>
