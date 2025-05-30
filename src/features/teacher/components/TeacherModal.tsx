@@ -42,6 +42,7 @@ function TeacherModal({ isOpen, onClose, editData }: TeacherModalProps) {
     nuptk: Yup.string().required("NUPTK tidak boleh kosong"),
     level_id: Yup.string().required("Jenjang tidak boleh kosong"),
     work_sched_id: Yup.string().required("Jadwal Kerja tidak boleh kosong"),
+    machine_id: Yup.number().required("Id Mesin Absensi tidak boleh kosong").typeError("Id Mesin Absensi harus berupa angka"),
   });
 
   const resolver = useYupValidationResolver(yupSchema);
@@ -58,6 +59,7 @@ function TeacherModal({ isOpen, onClose, editData }: TeacherModalProps) {
       nuptk: editData?.nuptk || "",
       level_id: editData?.level_id?.toString() || "",
       work_sched_id: editData?.work_sched_id || "",
+      machine_id: editData?.machine_id || "",
     };
   }, [editData])
 
@@ -185,6 +187,7 @@ function TeacherModal({ isOpen, onClose, editData }: TeacherModalProps) {
                 }))}
                 required
               />
+              <Input type="number" name="machine_id" label="Id Mesin Absensi" placeholder="Masukkan Id Mesin Absensi" required />
             </div>
           </div>
 

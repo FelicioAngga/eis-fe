@@ -23,7 +23,7 @@ export default function() {
 
   return (
     <div className="flex flex-col gap-5">
-      <DocumentModal editData={editData} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      <DocumentModal editData={editData} isOpen={isModalOpen} onClose={() => {setIsModalOpen(false); setEditData(null)}} />
       <SearchTableLayout 
         onSearch={handleSubmit}
         buttonText="Tambah Dokumen"

@@ -245,7 +245,7 @@ function WorkingScheduleModal({
                   <CustomTimeInput
                     value={row.masuk}
                     onChange={(e) =>
-                      handleScheduleChange(index, "masuk", e.target.value)
+                      handleScheduleChange(index, "masuk", e.currentTarget.value)
                     }
                   />
                 </div>
@@ -253,7 +253,7 @@ function WorkingScheduleModal({
                   <CustomTimeInput
                     value={row.keluar}
                     onChange={(e) =>
-                      handleScheduleChange(index, "keluar", e.target.value)
+                      handleScheduleChange(index, "keluar", e.currentTarget.value)
                     }
                   />
                 </div>

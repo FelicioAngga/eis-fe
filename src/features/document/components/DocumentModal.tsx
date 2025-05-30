@@ -85,10 +85,14 @@ function AddDocumentModal({ isOpen, onClose, editData }: DocModalProps) {
   }
 
   useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
     if (defaultValues && docTypeData) {
-      methods.reset(defaultValues);
-      if (fileInputRef.current) fileInputRef.current.setFile(defaultValues.uploaded_file);
+      timeoutId = setTimeout(() => {
+        methods.reset(defaultValues);
+        if (fileInputRef.current) fileInputRef.current.setFile(defaultValues.uploaded_file);
+      });
     }
+    return () => clearTimeout(timeoutId);
   }, [defaultValues, docTypeData]);
 
   return (

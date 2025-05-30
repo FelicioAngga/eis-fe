@@ -13,6 +13,7 @@ export type TeacherModel = {
 	level_id?: number;
 	work_sched_id?: number;
 	deleted_at?: string | null;
+	machine_id?: number;
 }
 
 export type TeacherParams = {
