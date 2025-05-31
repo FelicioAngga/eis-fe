@@ -37,8 +37,10 @@ export default function ClassAcademicDetail() {
       return;
     }
 
+    const studentIdArray = classDetail?.data.students?.map(student => student.id);
     const response = await mutateAsync({
       ...classDetail?.data,
+      students: studentIdArray as any,
       major: major,
       homeroom_teacher_id: homeRoomTeacherId,
     });
@@ -126,7 +128,7 @@ export default function ClassAcademicDetail() {
                 <td className="pr-8 pb-3">
                   <div className="relative pr-3">
                     <select
-                      value={(classDetail?.data.homeroom_teacher_id || homeRoomTeacherId) || ""}
+                      value={(homeRoomTeacherId || classDetail?.data.homeroom_teacher_id) || ""}
                       onChange={(e) => e.target.value ? setHomeRoomTeacherId(e.target.value ? parseInt(e.target.value): null) : null}
                       className="w-full min-w-[240px] border border-gray-300 appearance-none rounded-md px-3 py-2.5 cursor-pointer"
                     >
