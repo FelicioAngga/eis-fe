@@ -13,7 +13,7 @@ import ClassNotes from "./components/ClassNotes";
 import { changeActiveMenu, changeClassDetail } from "./classAcademicSlice";
 import { BiChevronLeft } from "react-icons/bi";
 
-export default function () {
+export default function ClassAcademicDetail() {
   const { id } = useParams();
   const { showAlert } = useAlert();
   const navigate = useNavigate();
@@ -24,6 +24,7 @@ export default function () {
   const { data: classDetail } = useClassDetail(id ? parseInt(id) : 0);
   const { data: teacherData } = useTeacherQuery({ pagination: { limit: 99999 }, search: "" });
   const [homeRoomTeacherId, setHomeRoomTeacherId] = useState<number | null>(null);
+  const [major, setMajor] = useState<string>("General");
 
   const { mutateAsync, isPending } = useUpdateAcademic();
   async function saveHomeRoomTeacher() {
@@ -38,20 +39,21 @@ export default function () {
 
     const response = await mutateAsync({
       ...classDetail?.data,
+      major: major,
       homeroom_teacher_id: homeRoomTeacherId,
     });
     if (response.status === 200) {
       showAlert({
         title: "Sukses",
         type: "success",
-        message: "Wali kelas berhasil disimpan",
+        message: "Data berhasil disimpan",
       });
       queryClient.invalidateQueries({ queryKey: ["class"] });
     } else {
       showAlert({
         title: "Error",
         type: "error",
-        message: response.message || "Gagal menyimpan wali kelas",
+        message: response.message || "Gagal menyimpan Data",
       });
     }
   }
@@ -59,6 +61,8 @@ export default function () {
   useEffect(() => {
     if (!classDetail?.data) return;
     dispatch(changeClassDetail(classDetail.data))
+    setMajor(classDetail.data.major || "General");
+    setHomeRoomTeacherId(classDetail.data.homeroom_teacher_id || null);
   }, [classDetail]);
 
   useEffect(() => {
@@ -98,7 +102,23 @@ export default function () {
               <tr>
                 <td className="pr-8 pb-3">Jurusan</td>
                 <td className="pr-8 pb-3">:</td>
-                <td className="pr-8 pb-3">{classDetail?.data.major}</td>
+                <td className="pr-8 pb-3">
+                  <div className="relative pr-3">
+                    <select
+                      value={major || ""}
+                      onChange={(e) => e.target.value ? setMajor(e.target.value) : null}
+                      className="w-full min-w-[240px] border border-gray-300 appearance-none rounded-md px-3 py-2.5 cursor-pointer"
+                    >
+                      <option value="">Pilih Jurusan</option>
+                      <option value="General">General</option>
+                      <option value="IPA">IPA</option>
+                      <option value="IPS">IPS</option>
+                    </select>
+                    <div className="absolute inset-y-0 right-5 flex items-center px-2 pointer-events-none">
+                      <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </div>
+                  </div>
+                </td>
               </tr>
               <tr>
                 <td className="pr-8 pb-3">Wali Kelas</td>
@@ -108,7 +128,7 @@ export default function () {
                     <select
                       value={(classDetail?.data.homeroom_teacher_id || homeRoomTeacherId) || ""}
                       onChange={(e) => e.target.value ? setHomeRoomTeacherId(e.target.value ? parseInt(e.target.value): null) : null}
-                      className="w-full min-w-[200px] border border-gray-300 appearance-none rounded-md px-3 py-2.5 cursor-pointer"
+                      className="w-full min-w-[240px] border border-gray-300 appearance-none rounded-md px-3 py-2.5 cursor-pointer"
                     >
                       <option value="">Pilih Wali Kelas</option>
                       {teacherData?.data.map(teacher => (

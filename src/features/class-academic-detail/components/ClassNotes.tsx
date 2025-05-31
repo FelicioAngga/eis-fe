@@ -1,18 +1,17 @@
 import { BiChevronLeft } from "react-icons/bi";
-import { useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 import { RootState } from "../../../store";
 import { FiEdit } from "react-icons/fi";
 import { useEffect, useState } from "react";
 import { getDayOfWeek } from "../../../utils/formatDate";
 import { ConfigClassSchedModel } from "../../../api-hooks/config-class-schedule/models/ConfigClassScheduleModel";
-import { usePaginationModel } from "../../../hooks/use-pagination-model";
 import ClassNoteModal from "./ClassNoteModal";
+import { changeActiveMenu } from "../classAcademicSlice";
 
 function ClassNotes() {
   const { id } = useParams();
-  const navigate = useNavigate();
-  const paginationModel = usePaginationModel({});
+  const dispatch = useDispatch();
   const { classDetail } = useSelector(
     (state: RootState) => state.classAcademic
   );
@@ -29,25 +28,24 @@ function ClassNotes() {
     const lessonList = classDetail?.subject_schedules.find(
       (schedule) => schedule.day === getDayOfWeek(selectedDate)
     );
-    classDetail?.class_notes?.find(note => {
-      
-      note.details?.forEach(detail => {
-        lessonList?.entries.forEach(entry => {
-          if (entry.id === detail.subject_schedule_id) {
-            console.log("Found matching lesson entry", entry);
-            entry.materials = detail.materials || "";
-          }
-        });
-      })
-    });
-    console.log("Lesson List", lessonList?.entries);
-    setClassLesson(lessonList?.entries || []);
-  }, [selectedDate]);
+    const allNoteEntries = classDetail?.class_notes?.flatMap(note => note.entries || []) || [];
+    const enrichedEntries = lessonList?.entries?.map(entry => {
+      const matchedNote = allNoteEntries.find(
+        noteEntry => noteEntry.subject_schedule_id === entry.id
+      );
+      return {
+        ...entry,
+        class_note_id: matchedNote?.id || 0,
+        materials: matchedNote?.materials || "",
+      };
+    }) || [];
+    setClassLesson(enrichedEntries || []);
+  }, [selectedDate, classDetail]);
 
   return (
     <div>
       <div
-        onClick={() => navigate("/class")}
+        onClick={() => dispatch(changeActiveMenu(""))}
         className="mb-4 transition-all duration-[400ms] flex items-center gap-1 hover:gap-3 text-primary cursor-pointer"
       >
         <BiChevronLeft className="text-2xl" />

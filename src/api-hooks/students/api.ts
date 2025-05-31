@@ -2,7 +2,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useApiCall } from "../../hooks/useApiCall";
 import { BASE_URL } from "../../utils/base-url";
 import { ResponseModel, ResponsePaginationModel } from "../method";
-import { StudentModel, StudentParams } from "./models/StudentModel";
+import { StudentModel, StudentParams, UpdateStudentAcademicIdModel } from "./models/StudentModel";
 import { GuardianModel } from "../registration/models/RegistrationModel";
 
 export const useStudentsQuery = (params?: StudentParams) => {
@@ -48,6 +48,22 @@ export const useUpdateStudent = () => {
     mutationFn: async (data: StudentModel) => {
       return await apiCall({ 
         url: `${BASE_URL}/students/${data.id}`,
+        body: data
+      });
+    },
+  });
+}
+
+export const useUpdateAcademicIdByStudentIds = () => {
+  const apiCall = useApiCall<ResponseModel<any>>({
+    method: "PUT",
+    url: `${BASE_URL}/students/update-current-academic/`,
+  });
+
+  return useMutation({
+    mutationFn: async (data: UpdateStudentAcademicIdModel) => {
+      return await apiCall({ 
+        url: `${BASE_URL}/students/update-current-academic/${data.academic_id}`,
         body: data
       });
     },

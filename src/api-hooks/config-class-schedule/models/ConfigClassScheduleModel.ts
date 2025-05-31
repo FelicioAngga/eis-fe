@@ -9,6 +9,7 @@ export type ConfigClassSchedModel = {
   day: string;
   start_hour: string;
   end_hour: string;
+  class_note_id?: number;
   materials?: string;
 }
 

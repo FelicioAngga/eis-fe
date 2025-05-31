@@ -7,10 +7,11 @@ import { Input } from "../../../components/input/Input";
 import { ConfigClassSchedModel } from "../../../api-hooks/config-class-schedule/models/ConfigClassScheduleModel";
 import { formatDate } from "../../../utils/formatDate";
 import Button from "../../../components/Button";
-import { useCreateClassNote } from "../../../api-hooks/class/api";
+import { useCreateClassNote, useUpdateClassNote } from "../../../api-hooks/class/api";
 import { useAlert } from "../../../contexts/AlertContext";
 import { useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
+import { useEffect } from "react";
 
 interface ClassNoteModalProps {
   isOpen: boolean;
@@ -36,18 +37,29 @@ function ClassNoteModal({ isOpen, onClose, editData, selectedDate }: ClassNoteMo
     }
   }); 
   
-  const { mutateAsync } = useCreateClassNote();
+  const { mutateAsync: mutateCreate } = useCreateClassNote();
+  const { mutateAsync: mutateUpdate } = useUpdateClassNote();
   async function handleSubmit(data: { materials: string }) {
-    const response = await mutateAsync({
-      academic_id: editData?.academic_id || 0,
-      date: dayjs(selectedDate).format("YYYY-MM-DD"),
-      details: [{
-        ...editData,
-        subj_sched_id: editData?.id || 0,
-        teacher_id: editData?.teacher_id || 0,
+    let response;
+    if (editData?.materials) {
+      response = await mutateUpdate({
+        id: editData.class_note_id || 0,
+        subj_sched_id: editData.id || 0,
+        teacher_id: editData.teacher_id || 0,
         materials: data.materials,
-      }]
-    });
+      });
+    } else {
+      response = await mutateCreate({
+        academic_id: editData?.academic_id || 0,
+        date: dayjs(selectedDate).format("YYYY-MM-DD"),
+        details: [{
+          ...editData,
+          subj_sched_id: editData?.id || 0,
+          teacher_id: editData?.teacher_id || 0,
+          materials: data.materials,
+        }]
+      });
+    }
     if (response.status === 200) {
       showAlert({
         title: "Berhasil menyimpan catatan kelas",
@@ -55,7 +67,7 @@ function ClassNoteModal({ isOpen, onClose, editData, selectedDate }: ClassNoteMo
         type: "success",
       });
       queryClient.invalidateQueries({
-        queryKey: ["classNotes", editData?.academic_id],
+        queryKey: ["class", editData?.academic_id],
       })
       handleClose();
     } else {
@@ -71,6 +83,11 @@ function ClassNoteModal({ isOpen, onClose, editData, selectedDate }: ClassNoteMo
     onClose();
     methods.reset();
   }
+
+  useEffect(() => {
+    if (!editData) return;
+    methods.reset({ materials: editData.materials || "" });
+  }, [editData])
 
   return (
     <Modal

@@ -1,5 +1,6 @@
 import { ConfigClassSchedModel } from "../../config-class-schedule/models/ConfigClassScheduleModel";
 import { PaginationParams } from "../../method";
+import { StudentModel } from "../../students/models/StudentModel";
 
 export type ClassModel = {
   id?: number;
@@ -17,12 +18,13 @@ export type ClassModel = {
     entries: ConfigClassSchedModel[]
   }[];
   class_notes?: ClassNoteModel[];
+  students?: StudentModel[];
 }
 
 export type ClassNoteModel = {
   academic_id: number;
   date: string;
-  details: {
+  entries: {
     id?: number;
     subject_schedule_id: number;
     teacher_id: number;
@@ -45,6 +47,14 @@ export type CreateClassNoteModel = {
   }[];
 }
 
+export type UpdateClassNoteModel = {
+  id: number;
+  subj_sched_id: number;
+  teacher_id: number;
+  materials?: string;
+  notes?: string;
+}
+
 export type ClassParams = {
   search: string;
   pagination: PaginationParams;
@@ -53,4 +63,13 @@ export type ClassParams = {
 export type AcademicBatchModel = {
   start_year: string;
   end_year: string;
+}
+
+export type CreateAcademicModel = {
+  start_year: string;
+  end_year: string;
+  display_name: string;
+  classroom_id: number;
+  homeroom_teacher_id: number;
+  major?: string;
 }

@@ -31,3 +31,8 @@ export type StudentParams = {
   search: string;
   pagination: PaginationParams;
 };
+
+export type UpdateStudentAcademicIdModel = {
+  student_ids: number[];
+  academic_id: number;
+}
