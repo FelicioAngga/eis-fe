@@ -1,0 +1,156 @@
+import { BiChevronLeft } from "react-icons/bi";
+import { useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
+import { RootState } from "../../../store";
+import { FiEdit } from "react-icons/fi";
+import { useEffect, useState } from "react";
+import { getDayOfWeek } from "../../../utils/formatDate";
+import { ConfigClassSchedModel } from "../../../api-hooks/config-class-schedule/models/ConfigClassScheduleModel";
+import { usePaginationModel } from "../../../hooks/use-pagination-model";
+import ClassNoteModal from "./ClassNoteModal";
+
+function ClassNotes() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const paginationModel = usePaginationModel({});
+  const { classDetail } = useSelector(
+    (state: RootState) => state.classAcademic
+  );
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editData, setEditData] = useState<ConfigClassSchedModel | null>(null);
+  const [selectedDate, setSelectedDate] = useState(
+    new Date().toISOString().split("T")[0] || ""
+  );
+  const [classLesson, setClassLesson] = useState<ConfigClassSchedModel[]>([]);
+
+  useEffect(() => {
+    if (!selectedDate) return;
+    const lessonList = classDetail?.subject_schedules.find(
+      (schedule) => schedule.day === getDayOfWeek(selectedDate)
+    );
+    classDetail?.class_notes?.find(note => {
+      
+      note.details?.forEach(detail => {
+        lessonList?.entries.forEach(entry => {
+          if (entry.id === detail.subject_schedule_id) {
+            console.log("Found matching lesson entry", entry);
+            entry.materials = detail.materials || "";
+          }
+        });
+      })
+    });
+    console.log("Lesson List", lessonList?.entries);
+    setClassLesson(lessonList?.entries || []);
+  }, [selectedDate]);
+
+  return (
+    <div>
+      <div
+        onClick={() => navigate("/class")}
+        className="mb-4 transition-all duration-[400ms] flex items-center gap-1 hover:gap-3 text-primary cursor-pointer"
+      >
+        <BiChevronLeft className="text-2xl" />
+        <p className="font-semibold text-sm">Kembali</p>
+      </div>
+
+      <ClassNoteModal 
+        isOpen={isModalOpen}
+        onClose={() => {setEditData(null); setIsModalOpen(false);}}
+        editData={editData}
+        selectedDate={selectedDate}
+      />
+      <div>
+        <p className="font-semibold text-2xl">Catatan Kelas</p>
+        <table className="mt-2">
+          <tbody className="font-medium text-sm">
+            <tr>
+              <td className="pr-8 pb-2">Tanggal</td>
+              <td className="pr-8 pb-2">:</td>
+              <td className="pr-8 pb-2">
+                <input
+                  type="date"
+                  className="border border-gray-300 rounded-lg px-3 py-1 w-full"
+                  value={selectedDate || ""}
+                  onChange={(e) => setSelectedDate(e.currentTarget.value || "")}
+                />
+              </td>
+            </tr>
+            <tr>
+              <td className="pr-8 pb-3">Kelas</td>
+              <td className="pr-8 pb-3">:</td>
+              <td className="pr-8 pb-3">{classDetail?.classroom}</td>
+            </tr>
+            <tr>
+              <td className="pr-8 pb-3">Jenjang</td>
+              <td className="pr-8 pb-3">:</td>
+              <td className="pr-8 pb-3">{classDetail?.level_name}</td>
+            </tr>
+            <tr>
+              <td className="pr-8 pb-3">Jurusan</td>
+              <td className="pr-8 pb-3">:</td>
+              <td className="pr-8 pb-3">{classDetail?.major}</td>
+            </tr>
+            <tr>
+              <td className="pr-8 pb-3">Wali Kelas</td>
+              <td className="pr-8 pb-3">:</td>
+              <td className="pr-8 pb-3">
+                {classDetail?.homeroom_teacher || "-"}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div>
+        <div className="mt-5 font-medium text-sm flex py-3 border border-gray-300 bg-gray-100">
+          <div className="w-1/12 text-center">Les</div>
+          <div className="w-2/12">Nama Guru</div>
+          <div className="w-2/12">Mata Pelajaran</div>
+          <div className="w-6/12">Materi yang disajikan</div>
+          <div className="w-1/12">Aksi</div>
+        </div>
+
+        {classLesson.map((lesson, index) => (
+          <div
+            key={index}
+            className="font-medium text-sm flex py-3 border-b border-r border-l border-gray-300"
+          >
+            <div className="w-1/12 text-center">{index + 1}</div>
+            <div className="w-2/12">{lesson.teacher}</div>
+            <div className="w-2/12">{lesson.subject}</div>
+            <div className="w-6/12">-</div>
+            <div className="w-1/12 text-lg">
+              <FiEdit className="cursor-pointer" onClick={() => {
+                setEditData({ ...lesson, academic_id: id ? parseInt(id) : 0 });
+                setIsModalOpen(true);
+              }} />
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-5 w-fit min-w-xs">
+        <p className="font-medium">Siswa Yang Tidak Hadir</p>
+        <p className="text-sm font-medium">Siswa Sakit: 4</p>
+        <p className="text-sm font-medium">Siswa Izin: 4</p>
+        <div className="px-3 mt-5 font-medium text-sm flex py-2 border border-gray-300 bg-gray-100">
+          <div className="w-full">Nama Siswa</div>
+          <div className="w-full">Keterangan</div>
+        </div>
+
+        {Array.from({ length: 5 }).map((_, index) => (
+          <div
+            key={index}
+            className="px-3 font-medium text-sm flex py-2 border-b border-r border-l border-gray-300"
+          >
+            <div className="w-full">Budi</div>
+            <div className="w-full">Sakit</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export default ClassNotes;

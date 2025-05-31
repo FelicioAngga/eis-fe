@@ -1,4 +1,4 @@
-import { DailyClassSchedule } from "../../../features/config-class-schedule-detail/configClassScheduleSlice";
+import { ConfigClassSchedModel } from "../../config-class-schedule/models/ConfigClassScheduleModel";
 import { PaginationParams } from "../../method";
 
 export type ClassModel = {
@@ -8,9 +8,41 @@ export type ClassModel = {
   start_year: string;
   end_year: string;
   display_name: string;
-  homeroom_teacher: any;
+  level_name: string;
+  homeroom_teacher: string;
+  homeroom_teacher_id: number;
   classroom: any;
-  subject_schedules: DailyClassSchedule[];
+  subject_schedules: {
+    day: string;
+    entries: ConfigClassSchedModel[]
+  }[];
+  class_notes?: ClassNoteModel[];
+}
+
+export type ClassNoteModel = {
+  academic_id: number;
+  date: string;
+  details: {
+    id?: number;
+    subject_schedule_id: number;
+    teacher_id: number;
+    materials?: string;
+    notes?: string;
+    teacher: string;
+  }[];
+}
+
+export type CreateClassNoteModel = {
+  id?: number;
+  academic_id: number;
+  date: string;
+  details: {
+    id?: number;
+    subj_sched_id: number;
+    teacher_id: number;
+    materials?: string;
+    notes?: string;
+  }[];
 }
 
 export type ClassParams = {

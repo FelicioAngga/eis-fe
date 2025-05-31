@@ -20,9 +20,9 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
           {...props}
         />
         <div className="w-5 h-5 mr-2 rounded border group-hover:border-primary border-gray-300 
-        peer-checked:border-transparent peer-checked:bg-primary transition-all duration-200 ease-in-out flex items-center justify-center">
+        peer-checked:border-transparent peer-checked:text-white text-transparent peer-checked:bg-primary transition-all duration-200 ease-in-out flex items-center justify-center">
           <svg
-            className="w-4 h-4 text-white pointer-events-none"
+            className="w-4 h-4 pointer-events-none"
             viewBox="0 0 20 20"
             fill="currentColor"
           >

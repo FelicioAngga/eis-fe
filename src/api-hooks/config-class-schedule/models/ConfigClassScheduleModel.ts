@@ -3,10 +3,13 @@ export type ConfigClassSchedModel = {
   display_name?: string;
   academic_id: number;
   subject_id: number;
+  subject: string;
   teacher_id: number;
+  teacher: string;
   day: string;
   start_hour: string;
   end_hour: string;
+  materials?: string;
 }
 
 export type CreateConfigClassSchedModel = {

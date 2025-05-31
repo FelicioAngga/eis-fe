@@ -36,9 +36,9 @@ function ClassTable({ paginationModel, search }: ClassTableProps) {
         header: () => "Name Kelas",
       },
       {
-        accessorKey: "name",
+        accessorKey: "level_name",
         header: () => "Jenjang",
-        cell: ({ row }) => row.original?.classroom?.level?.name || "-",
+        cell: ({ row }) => row.original?.level_name || "-",
       },
       {
         accessorKey: "major",
@@ -47,7 +47,7 @@ function ClassTable({ paginationModel, search }: ClassTableProps) {
       {
         accessorKey: "homeroom_teacher",
         header: () => "Wali Kelas",
-        cell: ({ row }) => row.original?.homeroom_teacher?.name || "-",
+        cell: ({ row }) => row.original?.homeroom_teacher || "-",
       },
       {
         accessorKey: "action",
