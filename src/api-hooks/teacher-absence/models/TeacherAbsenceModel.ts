@@ -18,8 +18,8 @@ export type TeacherAbsenceCreateModel = {
   id?: number;
   teacher_id: number;
   date: string;
-  log_in_time: string;
-  log_out_time: string;
+  log_in_time?: string;
+  log_out_time?: string;
   remark?: string;
-  working_schedule_id: number;
+  working_schedule_id?: number;
 }

@@ -38,6 +38,23 @@ export const useCreateTeacherAbsence = () => {
   });
 }
 
+export const useCreateTeacherAbsenceBatch = () => {
+  const apiCall = useApiCall<ResponseModel<any>>({
+    method: "POST",
+    url: `${BASE_URL}/teachers/attendances/batch`,
+  });
+
+  return useMutation({
+    mutationFn: async (data: TeacherAbsenceCreateModel[]) => {
+      return await apiCall({ 
+        body: {
+          entries: data
+        }
+      });
+    },
+  });
+}
+
 export const useUpdateTeacherAbsence = () => {
   const apiCall = useApiCall<ResponseModel<any>>({
     method: "PUT",
