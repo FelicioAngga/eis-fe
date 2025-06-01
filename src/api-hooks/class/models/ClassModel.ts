@@ -73,3 +73,15 @@ export type CreateAcademicModel = {
   homeroom_teacher_id: number;
   major?: string;
 }
+
+export type ClassNoteDetailModel = {
+  date: string;
+  absence_count: {
+    status: string;
+    total: number;
+  }[];
+  absence_details: {
+    full_name: string;
+    status: string;
+  }[];
+}

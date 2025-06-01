@@ -8,6 +8,8 @@ import { getDayOfWeek } from "../../../utils/formatDate";
 import { ConfigClassSchedModel } from "../../../api-hooks/config-class-schedule/models/ConfigClassScheduleModel";
 import ClassNoteModal from "./ClassNoteModal";
 import { changeActiveMenu } from "../classAcademicSlice";
+import { useDetailClassNote } from "../../../api-hooks/class/api";
+import { ClassNoteDetailModel } from "../../../api-hooks/class/models/ClassModel";
 
 function ClassNotes() {
   const { id } = useParams();
@@ -16,7 +18,10 @@ function ClassNotes() {
     (state: RootState) => state.classAcademic
   );
 
+  const { data: classNoteDetail } = useDetailClassNote(id ? parseInt(id) : 0);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentClassNoteDetail, setCurrentClassNoteDetail] = useState<ClassNoteDetailModel | null>(null);
   const [editData, setEditData] = useState<ConfigClassSchedModel | null>(null);
   const [selectedDate, setSelectedDate] = useState(
     new Date().toISOString().split("T")[0] || ""
@@ -45,8 +50,9 @@ function ClassNotes() {
         materials: matchedNote?.materials || "",
       };
     }) || [];
+    setCurrentClassNoteDetail(classNoteDetail?.data.find(note => note?.date.split("T")[0] === selectedDate) || null);
     setClassLesson(enrichedEntries || []);
-  }, [selectedDate, classDetail]);
+  }, [selectedDate, classDetail, classNoteDetail]);
 
   return (
     <div>
@@ -123,7 +129,7 @@ function ClassNotes() {
             <div className="w-1/12 text-center">{index + 1}</div>
             <div className="w-2/12">{lesson.teacher}</div>
             <div className="w-2/12">{lesson.subject}</div>
-            <div className="w-6/12">-</div>
+            <div className="w-6/12">{lesson.materials || "-"}</div>
             <div className="w-1/12 text-lg">
               <FiEdit className="cursor-pointer" onClick={() => {
                 setEditData({ ...lesson, academic_id: id ? parseInt(id) : 0 });
@@ -134,25 +140,27 @@ function ClassNotes() {
         ))}
       </div>
 
-      <div className="mt-5 w-fit min-w-xs">
-        <p className="font-medium">Siswa Yang Tidak Hadir</p>
-        <p className="text-sm font-medium">Siswa Sakit: 4</p>
-        <p className="text-sm font-medium">Siswa Izin: 4</p>
-        <div className="px-3 mt-5 font-medium text-sm flex py-2 border border-gray-300 bg-gray-100">
-          <div className="w-full">Nama Siswa</div>
-          <div className="w-full">Keterangan</div>
-        </div>
-
-        {Array.from({ length: 5 }).map((_, index) => (
-          <div
-            key={index}
-            className="px-3 font-medium text-sm flex py-2 border-b border-r border-l border-gray-300"
-          >
-            <div className="w-full">Budi</div>
-            <div className="w-full">Sakit</div>
+      {classNoteDetail?.data && (
+        <div className="mt-5 w-fit min-w-xs">
+          <p className="font-medium">Siswa Yang Tidak Hadir</p>
+          <p className="text-sm font-medium">Siswa Sakit: {currentClassNoteDetail?.absence_count?.find(x => x.status === "Sick")?.total || 0}</p>
+          <p className="text-sm font-medium">Siswa Izin: {currentClassNoteDetail?.absence_count?.find(x => x.status === "Permission")?.total || 0}</p>
+          <div className="px-3 mt-5 font-medium text-sm flex py-2 border border-gray-300 bg-gray-100">
+            <div className="w-full">Nama Siswa</div>
+            <div className="w-full">Keterangan</div>
           </div>
-        ))}
-      </div>
+
+          {currentClassNoteDetail?.absence_details?.map((student, index) => (
+            <div
+              key={index}
+              className="px-3 font-medium text-sm flex py-2 border-b border-r border-l border-gray-300"
+            >
+              <div className="w-full">{student.full_name}</div>
+              <div className="w-full">{student.status === "Sick" ? "Sakit" : "Izin"}</div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

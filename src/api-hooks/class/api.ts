@@ -2,7 +2,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useApiCall } from "../../hooks/useApiCall";
 import { BASE_URL } from "../../utils/base-url";
 import { ResponseModel, ResponsePaginationModel } from "../method";
-import { AcademicBatchModel, ClassModel, ClassParams, CreateAcademicModel, CreateClassNoteModel, UpdateClassNoteModel } from "./models/ClassModel";
+import { AcademicBatchModel, ClassModel, ClassNoteDetailModel, ClassParams, CreateAcademicModel, CreateClassNoteModel, UpdateClassNoteModel } from "./models/ClassModel";
 
 export const useClassQuery = (params: ClassParams) => {
   const apiCall = useApiCall<ResponsePaginationModel<ClassModel>>({
@@ -109,6 +109,20 @@ export const useUpdateClassNote = () => {
         url: `${BASE_URL}/academics/classnotes/detail/${data.id}`,
         body: data
       });
+    },
+  });
+}
+
+export const useDetailClassNote = (academic_id: number) => {
+  const apiCall = useApiCall<{ data: ClassNoteDetailModel[] }>({
+    method: "GET",
+    url: `${BASE_URL}/academics/${academic_id}/classnotes?limit=99999`,
+  });
+
+  return useQuery({
+    queryKey: ["classNote", academic_id],
+    queryFn: async () => {
+      return await apiCall();
     },
   });
 }
