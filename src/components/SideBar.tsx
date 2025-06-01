@@ -27,7 +27,7 @@ export const Sidebar: React.FC = () => {
   }, []);
 
   return (
-    <aside className="h-full overflow-y-auto bg-white border-r border-gray-300 px-4 py-6 space-y-4 shadow-sm">
+    <aside className="h-full overflow-y-auto bg-white border-r border-gray-300 px-4 py-6 space-y-4 shadow-sm print:hidden">
       <nav className="space-y-5">
         {sideBarCategoryMenu.map((categoryItem) => (
           <div key={categoryItem.category}>

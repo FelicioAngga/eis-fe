@@ -62,7 +62,7 @@ function TransferClassModal({ isOpen, onClose }: TransferClassModalProps) {
           />
         </div>
         <div className="flex gap-5 mt-5">
-          <Button className="w-full" type="button" variant="outline">Batal</Button>
+          <Button onClick={handleClose} className="w-full" type="button" variant="outline">Batal</Button>
           <Button className="w-full">Simpan</Button>
         </div>
       </Form>

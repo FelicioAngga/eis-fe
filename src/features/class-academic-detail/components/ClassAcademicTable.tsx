@@ -14,6 +14,10 @@ function ClassAcademicTable() {
   const [isAddStudentModalOpen, setIsAddStudentModalOpen] = useState(false);
   const { data: classDetail } = useClassDetail(id ? parseInt(id) : 0);
 
+  function handlePrint(studentId: number) {
+    window.open(`/class/student-report/${studentId}`, "_blank");
+  }
+
   return (
     <div className="border p-3 rounded-lg border-gray-300">
       <TransferClassModal 
@@ -52,7 +56,9 @@ function ClassAcademicTable() {
           <div className="w-5/12">{student.full_name}</div>
           <div className="w-2/12">{student.nisn || '-'}</div>
           <div className="w-2/12">{student.nis || '-'}</div>
-          <div className="w-2/12 text-lg"><FiPrinter className="cursor-pointer" /></div>
+          <div className="w-2/12 text-lg">
+            <FiPrinter onClick={() => handlePrint(student.id || 0)} className="cursor-pointer" />
+          </div>
         </div>
       ))}
     </div>

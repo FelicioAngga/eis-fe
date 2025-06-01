@@ -40,6 +40,7 @@ import StudentDetail from "./features/student-detail";
 import ClassAcademicDetail from "./features/class-academic-detail";
 import ConfigClassScheduleDetail from "./features/config-class-schedule-detail";
 import AbsenceDetail from "./features/absence/components/AbsenceDetail";
+import PrintStudentReport from "./features/class-academic-detail/components/PrintStudentReport";
 
 function App() {
   const queryClient = new QueryClient();
@@ -61,6 +62,7 @@ function App() {
                   <Route path="/student-data/detail/:id" element={<StudentDetail />} />
                   <Route path="/class" element={<Classes />} />
                   <Route path="/class/detail/:id" element={<ClassAcademicDetail />} />
+                  <Route path="/class/student-report/:id" element={<PrintStudentReport />} />
                   <Route path="/absence" element={<Absence />} />
                   <Route path="/absence/detail/:id" element={<AbsenceDetail />} />
                   <Route path="/subject" element={<Subject />} />
