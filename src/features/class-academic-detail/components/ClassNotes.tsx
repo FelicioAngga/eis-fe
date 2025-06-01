@@ -28,10 +28,16 @@ function ClassNotes() {
     const lessonList = classDetail?.subject_schedules.find(
       (schedule) => schedule.day === getDayOfWeek(selectedDate)
     );
-    const allNoteEntries = classDetail?.class_notes?.flatMap(note => note.entries || []) || [];
+    const allNoteEntries = classDetail?.class_notes?.flatMap(note =>
+      (note.entries || []).map(entry => ({
+        ...entry,
+        date: note.date,
+      }))
+    ) || [];
+
     const enrichedEntries = lessonList?.entries?.map(entry => {
       const matchedNote = allNoteEntries.find(
-        noteEntry => noteEntry.subject_schedule_id === entry.id
+        noteEntry => noteEntry.subject_schedule_id === entry.id && noteEntry.date?.split("T")[0] === selectedDate
       );
       return {
         ...entry,
