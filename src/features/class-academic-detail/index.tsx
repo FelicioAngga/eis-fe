@@ -12,6 +12,7 @@ import { RootState } from "../../store";
 import ClassNotes from "./components/ClassNotes";
 import { changeActiveMenu, changeClassDetail } from "./classAcademicSlice";
 import { BiChevronLeft } from "react-icons/bi";
+import ClassMarks from "./components/ClassMarks";
 
 export default function ClassAcademicDetail() {
   const { id } = useParams();
@@ -75,6 +76,7 @@ export default function ClassAcademicDetail() {
   }, []);
 
   if (activeMenu === "class-note") return <ClassNotes />
+  if (activeMenu === "class-marks") return <ClassMarks />
   
   if (!activeMenu) return (
     <div>

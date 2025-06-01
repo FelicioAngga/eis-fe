@@ -27,16 +27,16 @@ function PrintStudentReport() {
         <BiChevronLeft className="text-2xl" />
         <p className="font-semibold text-sm">Kembali</p>
       </div>
-      <div className="flex justify-between items-center mb-5">
+      <div className="flex justify-between items-center mb-5 print:hidden">
         <p className="font-semibold text-lg">Rapor Print Preview</p>
-        <Button className="w-40 print:hidden" onClick={() => window.print()}>Cetak</Button>
+        <Button className="w-24" onClick={() => window.print()}>Cetak</Button>
       </div>
 
       <p className="text-2xl font-medium mb-4 text-center">Laporan Hasil Belajar</p>
       <div className="flex justify-between">
         <div className="flex gap-5">
           <img src={letjenLogo} className="object-cover size-32" />
-          <table className="h-fit font-medium text-lg">
+          <table className="h-fit font-medium">
             <tbody>
               <tr>
                 <td className="pr-5">Nama</td>
