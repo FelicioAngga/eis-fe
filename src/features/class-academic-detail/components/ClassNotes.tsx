@@ -50,7 +50,7 @@ function ClassNotes() {
         materials: matchedNote?.materials || "",
       };
     }) || [];
-    setCurrentClassNoteDetail(classNoteDetail?.data.find(note => note?.date.split("T")[0] === selectedDate) || null);
+    setCurrentClassNoteDetail(classNoteDetail?.data?.find(note => note?.date.split("T")[0] === selectedDate) || null);
     setClassLesson(enrichedEntries || []);
   }, [selectedDate, classDetail, classNoteDetail]);
 
