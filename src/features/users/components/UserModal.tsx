@@ -9,6 +9,10 @@ import useYupValidationResolver from '../../../hooks/useYupValidationResolver';
 import * as Yup from 'yup';
 import { Input } from '../../../components/input/Input';
 import Button from '../../../components/Button';
+import { useCreateUser, useUpdateUser } from '../../../api-hooks/users/api';
+import { fileToBase64 } from '../../../utils/base64';
+import { useAlert } from '../../../contexts/AlertContext';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface UserModalProps {
   isOpen: boolean;
@@ -18,6 +22,8 @@ interface UserModalProps {
 }
 
 function UserModal({ isOpen, onClose, setEditData, editData }: UserModalProps) {
+  const { showAlert } = useAlert();
+  const queryClient = useQueryClient();
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(editData?.profile_pic || null);
   const inputFileRef = useRef<any>(null);
@@ -25,7 +31,7 @@ function UserModal({ isOpen, onClose, setEditData, editData }: UserModalProps) {
   const yupSchema = Yup.object().shape({
     email: Yup.string().email('Email tidak valid').required('Email tidak boleh kosong'),
     name: Yup.string().required('Nama tidak boleh kosong'),
-    password: Yup.string().required('Password tidak boleh kosong'),
+    password: Yup.string(),
     role_id: Yup.string().required('Role tidak boleh kosong'),
   });
 
@@ -59,8 +65,33 @@ function UserModal({ isOpen, onClose, setEditData, editData }: UserModalProps) {
     return () => URL.revokeObjectURL(objectUrl);
   }
 
-  function handleSubmit() {
-
+  const { mutateAsync: mutateCreate } = useCreateUser();
+  const { mutateAsync: mutateUpdate } = useUpdateUser();
+  
+  async function handleSubmit(data: UserModel) {
+    const file64 = file ? await fileToBase64(file) : "";
+    const mutateAsync = editData ? mutateUpdate : mutateCreate;
+    const response = await mutateAsync({
+      ...data,
+      id: editData?.id || 0,
+      profile_pic: file64 || "",
+      role_id: parseInt(data?.role_id?.toString() || "0"),
+    });
+    if (response.status === 200) {
+      queryClient.invalidateQueries({ queryKey: ['users'] });
+      showAlert({
+        title: "Berhasil",
+        type: "success",
+        message: editData ? "User berhasil diperbarui" : "User berhasil ditambahkan",
+      });
+      onClose();
+    } else {
+      showAlert({
+        title: "Gagal",
+        type: "error",
+        message: "Terjadi kesalahan saat menyimpan data user",
+      });
+    }
   }
 
   useEffect(() => {
@@ -123,8 +154,8 @@ function UserModal({ isOpen, onClose, setEditData, editData }: UserModalProps) {
             placeholder="Pilih Role"
             required
             options={[
-              { value: 'admin', label: 'Dummy Admin' },
-              { value: 'user', label: 'Dummy User' },
+              { value: '1', label: 'Dummy Admin' },
+              { value: '2', label: 'Dummy User' },
             ]}  
           />
         </div>

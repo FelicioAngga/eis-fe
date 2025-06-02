@@ -60,7 +60,7 @@ export const sideBarCategoryMenu: MenuCategory[] = [
     ],
   },
   {
-    category: "Archieve",
+    category: "Archive",
     children: [
       {
         title: "Document",

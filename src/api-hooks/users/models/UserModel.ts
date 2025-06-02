@@ -1,7 +1,7 @@
 import { PaginationParams } from "../../method";
 
 export type UserModel = {
-  id: number;
+  id?: number;
 	profile_pic: string;
 	name: string;
 	email: string;

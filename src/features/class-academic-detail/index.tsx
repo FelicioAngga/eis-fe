@@ -200,7 +200,7 @@ export default function ClassAcademicDetail() {
             </tbody>
           </table>
         </div>
-        <Button disabled={isPending} onClick={saveHomeRoomTeacher}>Simpan Wali Kelas</Button>
+        <Button disabled={isPending} onClick={saveHomeRoomTeacher}>Simpan</Button>
       </div>
 
       <div className="my-5 bg-gray-400 h-[1px]"></div>

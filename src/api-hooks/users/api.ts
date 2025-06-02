@@ -1,7 +1,7 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { BASE_URL } from "../../utils/base-url";
 import { useApiCall } from "../../hooks/useApiCall";
-import { ResponsePaginationModel } from "../method";
+import { ResponseModel, ResponsePaginationModel } from "../method";
 import { UserModel, UserParams } from "./models/UserModel";
 
 export const useUserQuery = (params: UserParams) => {
@@ -23,5 +23,32 @@ export const useUserQuery = (params: UserParams) => {
 }
 
 export const useCreateUser = () => {
+  const apiCall = useApiCall<ResponseModel<any>>({
+    method: "POST",
+    url: `${BASE_URL}/register`,
+  });
 
+  return useMutation({
+    mutationFn: async (data: UserModel) => {
+      return await apiCall({ 
+        body: data
+      });
+    },
+  }); 
+}
+
+export const useUpdateUser = () => {
+  const apiCall = useApiCall<ResponseModel<any>>({
+    method: "PUT",
+    url: `${BASE_URL}/users`,
+  });
+
+  return useMutation({
+    mutationFn: async (data: UserModel) => {
+      return await apiCall({ 
+        url: `${BASE_URL}/users/${data.id}`,
+        body: data
+      });
+    },
+  });
 }
