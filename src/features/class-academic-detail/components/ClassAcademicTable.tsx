@@ -6,6 +6,7 @@ import { useState } from "react";
 import AddStudentToAcademicModal from "./AddStudentToAcademicModal";
 import { useClassDetail } from "../../../api-hooks/class/api";
 import { useParams } from "react-router-dom";
+import { StudentModel } from "../../../api-hooks/students/models/StudentModel";
 
 
 function ClassAcademicTable() {
@@ -13,6 +14,7 @@ function ClassAcademicTable() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAddStudentModalOpen, setIsAddStudentModalOpen] = useState(false);
   const { data: classDetail } = useClassDetail(id ? parseInt(id) : 0);
+  const [checkedStudents, setCheckedStudents] = useState<StudentModel[]>([]);
 
   function handlePrint(studentId: number) {
     window.open(`/class/student-report/${studentId}/${id}`, "_blank");
@@ -23,6 +25,7 @@ function ClassAcademicTable() {
       <TransferClassModal 
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
+        studentToTransfer={checkedStudents}
       />
       <AddStudentToAcademicModal 
         isOpen={isAddStudentModalOpen}
@@ -38,7 +41,13 @@ function ClassAcademicTable() {
 
       <div className="mt-5 font-medium text-sm flex py-3 border border-gray-300 bg-gray-100">
         <div className="w-1/12 flex justify-center">
-          <Checkbox />
+          <Checkbox
+            checked={checkedStudents.length === classDetail?.data.students?.length}
+            onChange={(e) => {
+              const isChecked = e.target.checked;
+              setCheckedStudents(isChecked ? classDetail?.data.students || [] : []);
+            }} 
+          />
         </div>
         <div className="w-1/12">No</div>
         <div className="w-5/12">Nama Lengkap</div>
@@ -50,7 +59,15 @@ function ClassAcademicTable() {
       {classDetail?.data.students?.map((student, idx) => (
         <div key={idx} className="font-medium text-sm flex py-3 border-b border-r border-l border-gray-300">
           <div className="w-1/12 flex justify-center">
-            <Checkbox />
+            <Checkbox
+              checked={checkedStudents.some(s => s.id === student.id)}
+              onChange={(e) => {
+                const isChecked = e.target.checked;
+                setCheckedStudents(prev => 
+                  isChecked ? [...prev, student] : prev.filter(s => s.id !== student.id)
+                );
+              }} 
+            />
           </div>
           <div className="w-1/12">{idx + 1}</div>
           <div className="w-5/12">{student.full_name}</div>

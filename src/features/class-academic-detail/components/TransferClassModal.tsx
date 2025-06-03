@@ -6,19 +6,25 @@ import * as Yup from 'yup';
 import { Input } from '../../../components/input/Input';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../store';
-import { useClassQuery } from '../../../api-hooks/class/api';
+import { useClassQuery, useUpdateAcademic } from '../../../api-hooks/class/api';
 import Button from '../../../components/Button';
+import { StudentModel } from '../../../api-hooks/students/models/StudentModel';
+import { useAlert } from '../../../contexts/AlertContext';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface TransferClassModalProps {
   isOpen: boolean;
   onClose: () => void;
+  studentToTransfer?: StudentModel[];
 }
 
-function TransferClassModal({ isOpen, onClose }: TransferClassModalProps) {
+function TransferClassModal({ isOpen, onClose, studentToTransfer }: TransferClassModalProps) {
+  const { showAlert } = useAlert();
+  const queryClient = useQueryClient();
   const { classDetail } = useSelector((state: RootState) => state.classAcademic);
   const { data: classList } = useClassQuery({ pagination: { limit: 99999 }, search: "" });
   const yupSchema = Yup.object().shape({
-    materials: Yup.string().required("Materi tidak boleh kosong"),
+    academic_id: Yup.string().required("Kelas harus dipilih"),
   });
 
   const resolver = useYupValidationResolver(yupSchema)
@@ -26,11 +32,43 @@ function TransferClassModal({ isOpen, onClose }: TransferClassModalProps) {
     mode: 'onSubmit',
     resolver,
     defaultValues: {
+      academic_id: classDetail?.id?.toString() || '',
     }
   })
 
-  const handleSubmit = async (data: any) => {
-
+  const { mutateAsync } = useUpdateAcademic();
+  const handleSubmit = async (data: { academic_id: string }) => {
+    const selectedClass = classList?.data.find(classItem => classItem.id?.toString() === data.academic_id);
+    if (!selectedClass || !classDetail) {
+      showAlert({
+        title: 'Error',
+        type: 'error',
+        message: 'Kelas yang dipilih tidak valid.',
+      });
+      return;
+    }
+    const studentIds = studentToTransfer?.map(student => student.id);
+    const response = await mutateAsync({
+      ...selectedClass,
+      students: studentIds as any || [],
+    });
+    if (response.status === 200) {
+      const lastResponse = await mutateAsync({
+        ...classDetail,
+        students: [],
+      });
+      if (lastResponse.status === 200) {
+        showAlert({
+          title: 'Sukses',
+          type: 'success',
+          message: `Berhasil memindahkan siswa ke kelas ${selectedClass.display_name}`,
+        });
+        queryClient.invalidateQueries({
+          queryKey: ['class', classDetail.id],
+        });
+        onClose();
+      }
+    }
   }
 
   const handleClose = () => {
@@ -55,7 +93,7 @@ function TransferClassModal({ isOpen, onClose }: TransferClassModalProps) {
             name="academic_id"
             label="Kelas"
             placeholder="Pilih Kelas" 
-            options={classList?.data.map(item => ({
+            options={classList?.data.filter(classItem => classItem.id !== classDetail?.id).map(item => ({
               label: item.display_name,
               value: item.id?.toString() || '',
             }))}
@@ -63,7 +101,7 @@ function TransferClassModal({ isOpen, onClose }: TransferClassModalProps) {
         </div>
         <div className="flex gap-5 mt-5">
           <Button onClick={handleClose} className="w-full" type="button" variant="outline">Batal</Button>
-          <Button className="w-full">Simpan</Button>
+          <Button type="submit" className="w-full">Simpan</Button>
         </div>
       </Form>
     </Modal>
