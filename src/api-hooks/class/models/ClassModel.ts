@@ -85,3 +85,8 @@ export type ClassNoteDetailModel = {
     status: string;
   }[];
 }
+
+export type UniqueSubject = {
+  subject_id: number;
+  subject: string;
+}
