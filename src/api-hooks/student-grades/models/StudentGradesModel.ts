@@ -5,12 +5,15 @@ export type StudentGradesModel = {
 
 export type StudentGradesDetailModel = {
   subject_id: number;
+  subject_name?: string;
   students: StudentGradesEntryModel[];
 }
 
 export type StudentGradesEntryModel = {
   id?: number;
   student_id?: number;
+  student_name?: string;
+  nis?: string;
   quiz?: number;
   first_month?: number;
   second_month?: number;

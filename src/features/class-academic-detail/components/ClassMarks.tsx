@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Button from "../../../components/Button";
 import { changeActiveMenu } from "../classAcademicSlice";
 import { FiEdit } from "react-icons/fi";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import ClassMarksModal, { ClassMarksModalEditData } from "./ClassMarksModal";
 import { RootState } from "../../../store";
 import { getUniqueSubjects, markTypes } from "../helpers/unique-subject";
@@ -13,17 +13,19 @@ import { useCreateStudentGrades, useGetStudentGrades, useUpdateStudentGrades } f
 import { useParams } from "react-router-dom";
 import { useAlert } from "../../../contexts/AlertContext";
 import { useQueryClient } from "@tanstack/react-query";
+import { downloadStudentMarksExcel, handleImportStudentMarks } from "../helpers/student-marks.excel";
 
 function ClassMarks() {
   const { id } = useParams();
   const queryClient = useQueryClient();
   const dispatch = useDispatch();
   const { showAlert } = useAlert();
+  const { data: studentGradesData } = useGetStudentGrades(parseInt(id || "0"));
+    const inputFileRef = useRef<HTMLInputElement>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { classDetail } = useSelector((state: RootState) => state.classAcademic);
   const [editData, setEditData] = useState<ClassMarksModalEditData | null>(null);
   const [studentMarks, setStudentMarks] = useState<StudentGradesDetailModel[]>([]);
-  const { data: studentGradesData } = useGetStudentGrades(parseInt(id || "0"))
 
   const uniqueSubjectList = useMemo(() => {
     return getUniqueSubjects(classDetail?.subject_schedules || []);
@@ -63,6 +65,33 @@ function ClassMarks() {
         } : detail
       ));
     }
+  }
+
+  const handleDownload = () => {
+    const data: StudentGradesDetailModel[] = uniqueSubjectList?.map(subject => ({
+      ...subject,
+      subject_name: subject.subject,
+      students: classDetail?.students?.map(student => {
+        const studentMark = getStudentMark(subject.subject_id || 0, student.id || 0);
+        return {
+          student_id: student.id,
+          nis: student.nis || "",
+          student_name: student.full_name,
+          quiz: studentMark?.quiz || "",
+          first_month: studentMark?.first_month || "",
+          second_month: studentMark?.second_month || "",
+          finals: studentMark?.finals || "",
+          remarks: studentMark?.remarks || "",
+        }
+      }) as StudentGradesEntryModel[],
+    }));
+    downloadStudentMarksExcel(data);
+  }
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = event.target.files?.[0];
+    if (!selectedFile) return;
+    handleImportStudentMarks(selectedFile)
   }
 
   const getStudentMark = (subjectId: number, studentId: number) => {
@@ -144,10 +173,21 @@ function ClassMarks() {
           </table>
         </div>
         <div className="flex gap-5">
-          <Button>Import</Button>
           <Button onClick={handleSubmit}>Simpan</Button>
           <Button variant="outline" onClick={handleBack}>Batal</Button>
         </div>
+      </div>
+      <div className="flex gap-4 justify-end">
+        <Button onClick={handleDownload}>Download</Button>
+        <Button onClick={() => inputFileRef.current?.click()}>Import</Button>
+        <input
+          multiple={false}
+          type="file"
+          accept=".xlsx, .xls"
+          hidden
+          ref={inputFileRef}
+          onChange={handleFileChange}
+        />
       </div>
 
       <div className="overflow-x-auto w-full">
