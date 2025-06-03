@@ -1,14 +1,15 @@
-export type CreateStudentGradesModel = {
+export type StudentGradesModel = {
   academic_id: number;
-  details: CreateStudentGradesDetailModel[];
+  details: StudentGradesDetailModel[];
 }
 
-export type CreateStudentGradesDetailModel = {
+export type StudentGradesDetailModel = {
   subject_id: number;
   students: StudentGradesEntryModel[];
 }
 
 export type StudentGradesEntryModel = {
+  id?: number;
   student_id?: number;
   quiz?: number;
   first_month?: number;

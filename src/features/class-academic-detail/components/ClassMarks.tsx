@@ -5,23 +5,31 @@ import { FiEdit } from "react-icons/fi";
 import React, { useEffect, useMemo, useState } from "react";
 import ClassMarksModal, { ClassMarksModalEditData } from "./ClassMarksModal";
 import { RootState } from "../../../store";
-import { getUniqueSubjects } from "../helpers/unique-subject";
+import { getUniqueSubjects, markTypes } from "../helpers/unique-subject";
 import { UniqueSubject } from "../../../api-hooks/class/models/ClassModel";
 import { StudentModel } from "../../../api-hooks/students/models/StudentModel";
-import { CreateStudentGradesDetailModel, StudentGradesEntryModel } from "../../../api-hooks/student-grades/models/StudentGradesModel";
+import { StudentGradesDetailModel, StudentGradesEntryModel } from "../../../api-hooks/student-grades/models/StudentGradesModel";
+import { useCreateStudentGrades, useGetStudentGrades, useUpdateStudentGrades } from "../../../api-hooks/student-grades/api";
+import { useParams } from "react-router-dom";
+import { useAlert } from "../../../contexts/AlertContext";
+import { useQueryClient } from "@tanstack/react-query";
 
 function ClassMarks() {
+  const { id } = useParams();
+  const queryClient = useQueryClient();
   const dispatch = useDispatch();
+  const { showAlert } = useAlert();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { classDetail } = useSelector((state: RootState) => state.classAcademic);
   const [editData, setEditData] = useState<ClassMarksModalEditData | null>(null);
-  const [studentMarks, setStudentMarks] = useState<CreateStudentGradesDetailModel[]>([]);
+  const [studentMarks, setStudentMarks] = useState<StudentGradesDetailModel[]>([]);
+  const { data: studentGradesData } = useGetStudentGrades(parseInt(id || "0"))
 
   const uniqueSubjectList = useMemo(() => {
     return getUniqueSubjects(classDetail?.subject_schedules || []);
   }, [classDetail?.subject_schedules])
 
-  const openModal = (subject: UniqueSubject, student: StudentModel, studentMark: StudentGradesEntryModel | null) => {
+  const openModal = (subject: UniqueSubject, student: StudentModel, studentMark?: StudentGradesEntryModel | null) => {
     setEditData({
       ...studentMark,
       student_id: student.id,
@@ -62,13 +70,42 @@ function ClassMarks() {
     return subjectDetail?.students?.find(student => student.student_id === studentId) || null;
   }
 
+  const { mutateAsync: mutateCreate } = useCreateStudentGrades();
+  const { mutateAsync: mutateUpdate } = useUpdateStudentGrades();
+
+  const handleSubmit = async () => {
+    const mutate = studentGradesData?.data.details?.length ? mutateUpdate : mutateCreate;
+    const response = await mutate({
+      academic_id: id ? parseInt(id) : 0,
+      details: studentMarks,
+    });
+    
+    if (response.status === 200) {
+      showAlert({
+        title: "Berhasil",
+        type: "success",
+        message: "Data nilai siswa berhasil disimpan.",
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["student-grades", id],
+      });
+    } else {
+      showAlert({
+        title: "Gagal",
+        type: "error",
+        message: response.error || "Terjadi kesalahan saat menyimpan data nilai siswa.",
+      });
+    }
+  }
+
   const handleBack = () => {
     dispatch(changeActiveMenu(""));
   };
 
   useEffect(() => {
-    console.log("Student Marks Updated:", studentMarks);
-  }, [studentMarks])
+    if (!studentGradesData?.data.details) return;
+    setStudentMarks(studentGradesData.data.details || []);
+  }, [studentGradesData?.data.details]);
 
   return (
     <div>
@@ -108,6 +145,7 @@ function ClassMarks() {
         </div>
         <div className="flex gap-5">
           <Button>Import</Button>
+          <Button onClick={handleSubmit}>Simpan</Button>
           <Button variant="outline" onClick={handleBack}>Batal</Button>
         </div>
       </div>
@@ -128,63 +166,58 @@ function ClassMarks() {
               ))}
             </tr>
             
-            {classDetail?.students?.map((student, studentIdx) => (
-              <React.Fragment key={student.id}>
-                <tr>
-                  <td rowSpan={6} className="border border-gray-400 px-3 py-2">{studentIdx + 1}</td>
-                  <td rowSpan={6} className="border border-gray-400 px-3 py-2">{student.nis || "-"}</td>
-                  <td rowSpan={6} className="border border-gray-400 px-3 py-2">{student.full_name}</td>
-                </tr>
-                <tr>
-                  <td className="border border-gray-400 px-3 py-2">Tugas</td>
-                  {uniqueSubjectList.map((subject) => {
-                    const studentMark = getStudentMark(subject?.subject_id || 0, student?.id || 0);
-                    return (
-                      <React.Fragment key={subject.subject_id}>
-                        <td className="border border-gray-400 px-3 py-2 max-w-[140px] overflow-hidden text-ellipsis">
-                          {studentMark?.quiz}
-                        </td>
-                        <td rowSpan={6} className="border border-gray-400 px-3 py-2">
-                          <FiEdit onClick={() => openModal(subject, student, studentMark)} className="mx-auto cursor-pointer size-5" />
-                        </td>
-                      </React.Fragment>
-                    )
-                  })}
-                </tr>
-                <tr>
-                  <td className="border border-gray-400 px-3 py-2">Ujian Bulanan 1</td>
-                  {uniqueSubjectList.map((subject) => (
-                    <td key={subject.subject_id} className="border border-gray-400 px-3 py-2 max-w-[140px] overflow-hidden text-ellipsis">
-                      {getStudentMark(subject?.subject_id || 0, student?.id || 0)?.first_month}
-                    </td>
+            {classDetail?.students?.map((student, studentIdx) => {
+              const studentMarksBySubject = uniqueSubjectList.reduce<Record<number, StudentGradesEntryModel | null | undefined>>((acc, subject) => {
+                acc[subject.subject_id] = getStudentMark(subject.subject_id || 0, student.id || 0);
+                return acc;
+              }, {});
+
+              return (
+                <React.Fragment key={student.id}>
+                  {markTypes.map((markType, markIdx) => (
+                    <tr key={`${student.id}-${markType.dataKey}`}>
+                      {markIdx === 0 && (
+                        <>
+                          <td rowSpan={markTypes.length} className="border border-gray-400 px-3 py-2 align-top">
+                            {studentIdx + 1}
+                          </td>
+                          <td rowSpan={markTypes.length} className="border border-gray-400 px-3 py-2 align-top">
+                            {student.nis || "-"}
+                          </td>
+                          <td rowSpan={markTypes.length} className="border border-gray-400 px-3 py-2 align-top">
+                            {student.full_name}
+                          </td>
+                        </>
+                      )}
+                      <td className="border border-gray-400 px-3 py-2">{markType.label}</td>
+                      
+                      {uniqueSubjectList.map((subject) => {
+                        const currentStudentMark = studentMarksBySubject[subject.subject_id];
+                        return (
+                          <React.Fragment key={`${student.id}-${subject.subject_id}-${markType.dataKey}-details`}>
+                            <td className="border border-gray-400 px-3 py-2 max-w-[140px] overflow-hidden text-ellipsis">
+                              {currentStudentMark?.[markType.dataKey] || ""}
+                            </td>
+                            {markIdx === 0 && (
+                              <td rowSpan={markTypes.length} className="border border-gray-400 px-3 py-2 align-middle text-center">
+                                <button 
+                                  type="button"
+                                  onClick={() => openModal(subject, student, currentStudentMark)} 
+                                  className="p-1 hover:bg-gray-200 rounded cursor-pointer"
+                                  aria-label={`Edit marks for ${student.full_name} in ${subject.subject}`}
+                                >
+                                  <FiEdit className="size-5" />
+                                </button>
+                              </td>
+                            )}
+                          </React.Fragment>
+                        );
+                      })}
+                    </tr>
                   ))}
-                </tr>
-                <tr>
-                  <td className="border border-gray-400 px-3 py-2">Ujian Bulanan 2</td>
-                  {uniqueSubjectList.map((subject) => (
-                    <td key={subject.subject_id} className="border border-gray-400 px-3 py-2 max-w-[140px] overflow-hidden text-ellipsis">
-                      {getStudentMark(subject?.subject_id || 0, student?.id || 0)?.second_month}
-                    </td>
-                  ))}
-                </tr>
-                <tr>
-                  <td className="border border-gray-400 px-3 py-2">Ujian Akhir</td>
-                  {uniqueSubjectList.map((subject) => (
-                    <td key={subject.subject_id} className="border border-gray-400 px-3 py-2 max-w-[140px] overflow-hidden text-ellipsis">
-                      {getStudentMark(subject?.subject_id || 0, student?.id || 0)?.finals}
-                    </td>
-                  ))}
-                </tr>
-                <tr>
-                  <td className="border border-gray-400 px-3 py-2">Deskripsi</td>
-                  {uniqueSubjectList.map((subject) => (
-                    <td key={subject.subject_id} className="border border-gray-400 px-3 py-2 max-w-[140px] overflow-hidden text-ellipsis">
-                      {getStudentMark(subject?.subject_id || 0, student?.id || 0)?.remarks}
-                    </td>
-                  ))}
-                </tr>
-              </React.Fragment>
-            ))}
+                </React.Fragment>
+              );
+            })}
           </tbody>
         </table>
       </div>

@@ -1,4 +1,5 @@
 import { UniqueSubject } from "../../../api-hooks/class/models/ClassModel";
+import { StudentGradesEntryModel } from "../../../api-hooks/student-grades/models/StudentGradesModel";
 
 interface ScheduleEntry {
   id?: number;
@@ -15,6 +16,18 @@ interface DaySchedule {
   entries: ScheduleEntry[];
 }
 
+interface MarkType {
+  label: string;
+  dataKey: keyof StudentGradesEntryModel;
+}
+
+export const markTypes: MarkType[] = [
+  { label: "Tugas", dataKey: "quiz" },
+  { label: "Ujian Bulanan 1", dataKey: "first_month" },
+  { label: "Ujian Bulanan 2", dataKey: "second_month" },
+  { label: "Ujian Akhir", dataKey: "finals" },
+  { label: "Deskripsi", dataKey: "remarks" },
+];
 
 /**
  * Extracts unique subjects from the schedule data.

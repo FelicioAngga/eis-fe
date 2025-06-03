@@ -5,7 +5,7 @@ import useYupValidationResolver from "../../../hooks/useYupValidationResolver";
 import * as Yup from "yup";
 import { Input } from "../../../components/input/Input";
 import Button from "../../../components/Button";
-import { CreateStudentGradesDetailModel, StudentGradesEntryModel } from "../../../api-hooks/student-grades/models/StudentGradesModel";
+import { StudentGradesEntryModel } from "../../../api-hooks/student-grades/models/StudentGradesModel";
 import { useEffect } from "react";
 
 type StudentGradesPopUpModel = {
