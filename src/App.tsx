@@ -60,13 +60,13 @@ function App() {
                   <Route path="/student-data" element={<StudentData />} />
                   <Route path="/student-data/add" element={<StudentDetail />} />
                   <Route path="/student-data/detail/:id" element={<StudentDetail />} />
-                  <Route path="/class" element={<Classes />} />
+                  <Route path="/academic" element={<Classes />} />
                   <Route path="/class/detail/:id" element={<ClassAcademicDetail />} />
                   <Route path="/class/student-report/:student_id/:academic_id" element={<PrintStudentReport />} />
                   <Route path="/absence" element={<Absence />} />
                   <Route path="/absence/detail/:id" element={<AbsenceDetail />} />
                   <Route path="/subject" element={<Subject />} />
-                  <Route path="/class-schedule" element={<ClassSchedule />} />
+                  <Route path="/class-note" element={<ClassSchedule />} />
                   <Route path="/absence-recap" element={<AbsenceRecap />} />
                   <Route path="/exam-recap" element={<ExamRecap />} />
                   <Route path="/grade" element={<Grade />} />

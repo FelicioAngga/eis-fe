@@ -28,7 +28,6 @@ export const sideBarCategoryMenu: MenuCategory[] = [
         children: [
           { title: "Registration", path: "/registration", iconName: "FaUserPen" },
           { title: "Student Data", path: "/student-data", iconName: "FaRegUser" },
-          { title: "Classes", path: "/class", iconName: "FaChalkboardUser" },
           { title: "Absence", path: "/absence", iconName: "FaCalendarDay" },
         ],
       },
@@ -36,8 +35,9 @@ export const sideBarCategoryMenu: MenuCategory[] = [
         title: "Curriculum",
         iconName: "BsCardText",
         children: [
-          { title: "Subject", path: "/subject", iconName: "MdListAlt" },
-          { title: "Class Schedule", path: "/class-schedule", iconName: "TbCalendarClock" },
+          { title: "Academic", path: "/academic", iconName: "FaChalkboardUser" },
+          { title: "Class Note", path: "/class-note", iconName: "FaRegFileAlt" },
+          { title: "Class Schedule", path: "/config/class-schedule", iconName: "TbCalendarClock" },
         ],
       },
       {
@@ -54,7 +54,7 @@ export const sideBarCategoryMenu: MenuCategory[] = [
         children: [
           { title: "Grade", path: "/grade", iconName: "FaGraduationCap" },
           { title: "Classes", path: "/config/class", iconName: "FaChalkboardUser" },
-          { title: "Class Schedule", path: "/config/class-schedule", iconName: "TbCalendarClock" },
+          { title: "Subject", path: "/subject", iconName: "MdListAlt" },
         ],
       },
     ],
