@@ -136,7 +136,7 @@ export const downloadStudentMarksExcel = (
   });
 };
 
-export const handleImportStudentMarks = async (fileData: any) => {
+export const handleImportStudentMarks = async (fileData: any, studentMarks: StudentGradesDetailModel[]): Promise<StudentGradesDetailModel[]> => {
   const wb = new Workbook();
   await wb.xlsx.load(fileData);
   const workSheet = wb.getWorksheet(1);
@@ -144,7 +144,26 @@ export const handleImportStudentMarks = async (fileData: any) => {
   workSheet?.eachRow((row, rowNumber) => {
     const rowValues: any = row.values;
     if (rowNumber > 1) {
-      console.log(rowValues)
+      const studentNis = rowValues[2]
+      for (let i = 0; i < studentMarks.length; i++) {
+        const studentMark = studentMarks[i].students.find(s => s.nis === studentNis);
+        if (studentMark && (rowNumber - 2) % 5 === 0 && rowNumber >= 2) {
+          studentMark.quiz = rowValues[5 + i] || undefined;
+        }
+        if (studentMark && (rowNumber - 3) % 5 === 0 && rowNumber >= 3) {
+          studentMark.first_month = rowValues[5 + i] || undefined;
+        }
+        if (studentMark && (rowNumber - 4) % 5 === 0 && rowNumber >= 4) {
+          studentMark.second_month = rowValues[5 + i] || undefined;
+        }
+        if (studentMark && (rowNumber - 5) % 5 === 0 && rowNumber >= 5) {
+          studentMark.finals = rowValues[5 + i] || undefined;
+        }
+        if (studentMark && (rowNumber - 6) % 5 === 0 && rowNumber >= 6) {
+          studentMark.remarks = rowValues[5 + i] || undefined;
+        }
+      }
     }
   });
+  return studentMarks;
 }

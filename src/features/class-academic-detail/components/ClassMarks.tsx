@@ -85,13 +85,34 @@ function ClassMarks() {
         }
       }) as StudentGradesEntryModel[],
     }));
+    console.log(data)
+    return;
     downloadStudentMarksExcel(data);
   }
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0];
     if (!selectedFile) return;
-    handleImportStudentMarks(selectedFile)
+    const data: StudentGradesDetailModel[] = uniqueSubjectList?.map(subject => ({
+      ...subject,
+      subject_name: subject.subject,
+      students: classDetail?.students?.map(student => {
+        const studentMark = getStudentMark(subject.subject_id || 0, student.id || 0);
+        return {
+          student_id: student.id,
+          nis: student.nis || "",
+          student_name: student.full_name,
+          quiz: studentMark?.quiz || "",
+          first_month: studentMark?.first_month || "",
+          second_month: studentMark?.second_month || "",
+          finals: studentMark?.finals || "",
+          remarks: studentMark?.remarks || "",
+        }
+      }) as StudentGradesEntryModel[],
+    }));
+    inputFileRef.current!.value = "";
+    const result = await handleImportStudentMarks(selectedFile, data);
+    setStudentMarks(result);
   }
 
   const getStudentMark = (subjectId: number, studentId: number) => {
