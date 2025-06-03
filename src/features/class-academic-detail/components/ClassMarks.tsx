@@ -85,8 +85,6 @@ function ClassMarks() {
         }
       }) as StudentGradesEntryModel[],
     }));
-    console.log(data)
-    return;
     downloadStudentMarksExcel(data);
   }
 
@@ -256,7 +254,7 @@ function ClassMarks() {
                         const currentStudentMark = studentMarksBySubject[subject.subject_id];
                         return (
                           <React.Fragment key={`${student.id}-${subject.subject_id}-${markType.dataKey}-details`}>
-                            <td className="border border-gray-400 px-3 py-2 max-w-[140px] overflow-hidden text-ellipsis">
+                            <td className="border border-gray-400 px-3 py-2 max-w-[140px] overflow-hidden whitespace-nowrap text-ellipsis">
                               {currentStudentMark?.[markType.dataKey] || ""}
                             </td>
                             {markIdx === 0 && (

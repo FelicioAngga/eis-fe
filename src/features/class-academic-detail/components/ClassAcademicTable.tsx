@@ -15,7 +15,7 @@ function ClassAcademicTable() {
   const { data: classDetail } = useClassDetail(id ? parseInt(id) : 0);
 
   function handlePrint(studentId: number) {
-    window.open(`/class/student-report/${studentId}`, "_blank");
+    window.open(`/class/student-report/${studentId}/${id}`, "_blank");
   }
 
   return (

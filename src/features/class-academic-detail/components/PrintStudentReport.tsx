@@ -1,22 +1,50 @@
 import Button from "../../../components/Button";
 import letjenLogo from "../../../assets/images/letjen-logo.png"
 import { BiChevronLeft } from "react-icons/bi";
-import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useMemo } from "react";
+import { useGetStudentGrades } from "../../../api-hooks/student-grades/api";
+import { useClassDetail } from "../../../api-hooks/class/api";
+import { getUniqueSubjects } from "../helpers/unique-subject";
+import { useDetailStudentQuery } from "../../../api-hooks/students/api";
 
 function PrintStudentReport() {
+  const { student_id, academic_id } = useParams();
   const navigate = useNavigate();
+  const { data: studentGrade, isFetched: isStudentGradeFetched } = useGetStudentGrades(academic_id ? parseInt(academic_id) : 0);
+  const { data: classDetail, isFetched: isClassDetailFetched } = useClassDetail(academic_id ? parseInt(academic_id) : 0);
+  const { data: studentData, isFetched: isStudentFetched } = useDetailStudentQuery(parseInt(student_id || "0"));
 
+  const uniqueSubjectList = useMemo(() => {
+    return getUniqueSubjects(classDetail?.data?.subject_schedules || []);
+  }, [classDetail?.data?.subject_schedules])
+  const allFetched = isClassDetailFetched && isStudentGradeFetched && isStudentFetched && uniqueSubjectList.length > 0;
+
+  const getFinalScoreBySubject = (subjectId: number) => {
+    const subject = studentGrade?.data.details.find((s) => s.subject_id === subjectId);
+    const student = subject?.students.find(student => student.student_id === parseInt(student_id || "0"));
+    if (allFetched && subjectId === studentGrade?.data.details[studentGrade?.data.details.length - 1].subject_id) {
+      setTimeout(() => {
+        window.print();
+      }, 100)
+    }
+
+    return {
+      score: student?.finals || 0,
+      remarks: student?.remarks || "-"
+    }
+  }
+  
   useEffect(() => {
+    if (!isClassDetailFetched || !isStudentGradeFetched || !isStudentFetched || uniqueSubjectList.length == 0) return;
     const handleAfterPrint = () => {
       window.close();
     };
     window.addEventListener("afterprint", handleAfterPrint);
-    window.print();
     return () => {
       window.removeEventListener("afterprint", handleAfterPrint);
     };
-  }, [])
+  }, [isClassDetailFetched, isStudentGradeFetched, isStudentFetched, uniqueSubjectList.length]);
 
   return (
     <div>
@@ -41,36 +69,26 @@ function PrintStudentReport() {
               <tr>
                 <td className="pr-5">Nama</td>
                 <td className="pr-5">:</td>
-                <td className="pr-5">John Doe</td>
+                <td className="pr-5">{studentData?.data.full_name}</td>
               </tr>
               <tr>
                 <td className="pr-5">NIS/NISN</td>
                 <td className="pr-5">:</td>
-                <td className="pr-5">0008465/165486</td>
+                <td className="pr-5">{studentData?.data.nis}/{studentData?.data.nisn}</td>
+              </tr>
+              <tr>
+                <td className="pr-5">Kelas</td>
+                <td className="pr-5">:</td>
+                <td className="pr-5">{classDetail?.data.classroom}</td>
+              </tr>
+              <tr>
+                <td className="pr-5">Jurusan</td>
+                <td className="pr-5">:</td>
+                <td className="pr-5">{classDetail?.data.major}</td>
               </tr>
             </tbody>
           </table>
         </div>
-
-        <table className="h-fit font-medium text-lg">
-          <tbody>
-            <tr>
-              <td className="pr-5">Jenjang</td>
-              <td className="pr-5">:</td>
-              <td className="pr-5">SMA</td>
-            </tr>
-            <tr>
-              <td className="pr-5">Tingkat</td>
-              <td className="pr-5">:</td>
-              <td className="pr-5">1</td>
-            </tr>
-            <tr>
-              <td className="pr-5">Kelas</td>
-              <td className="pr-5">:</td>
-              <td className="pr-5">1</td>
-            </tr>
-          </tbody>
-        </table>
       </div>
 
       <table className="mt-5">
@@ -83,12 +101,14 @@ function PrintStudentReport() {
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td className="border border-gray-400 px-3 py-4 text-center font-medium">1</td>
-            <td className="border border-gray-400 px-3 py-4">Matematika</td>
-            <td className="text-center border border-gray-400 px-3 py-4">85</td>
-            <td className="border border-gray-400 px-3 py-4">Sangat baik dalam memahami konsep matematika dasar.</td>
-          </tr>
+          {uniqueSubjectList.map((subject, idx) => (
+            <tr key={idx}>
+              <td className="border border-gray-400 px-3 py-4 text-center font-medium">{idx + 1}</td>
+              <td className="border border-gray-400 px-3 py-4">{subject.subject}</td>
+              <td className="text-center border border-gray-400 px-3 py-4">{getFinalScoreBySubject(subject.subject_id).score}</td>
+              <td className="border border-gray-400 px-3 py-4">{getFinalScoreBySubject(subject.subject_id).remarks}</td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>
