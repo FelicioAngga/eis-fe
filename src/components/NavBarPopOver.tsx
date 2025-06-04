@@ -30,7 +30,7 @@ function NavBarPopOver() {
           <div className="bg-primary-200 h-[1px]"></div>
           <div 
             onClick={() => { logout(); setPopoverOpen(false); }}
-            className="flex items-center gap-2 py-2 px-1 cursor-pointer text-danger hover:bg-danger-400 hover:text-white transition-all duration-200 rounded"
+            className="flex items-center gap-2 py-2 px-1 cursor-pointer text-danger hover:bg-danger hover:text-white transition-all duration-200 rounded"
           >
             <FiLogOut />
             <p className="text-sm font-medium">Logout</p>

@@ -1,17 +1,18 @@
-import { FiEye } from "react-icons/fi";
-import Table, { PaginationModelProps } from "../../../components/Table";
-import { useMemo } from "react";
-import { ColumnDef } from "@tanstack/react-table";
-import { ClassModel } from "../../../api-hooks/class/models/ClassModel";
-import { useClassQuery } from "../../../api-hooks/class/api";
-import { useNavigate } from "react-router-dom";
+import { useMemo } from 'react'
+import Table, { PaginationModelProps } from '../../../components/Table';
+import { useNavigate } from 'react-router-dom';
+import { useClassQuery } from '../../../api-hooks/class/api';
+import { ClassModel } from '../../../api-hooks/class/models/ClassModel';
+import { ColumnDef } from '@tanstack/react-table';
+import { FiEye } from 'react-icons/fi';
 
-interface ClassTableProps {
+interface ClassNoteTableProps {
   search: string;
   paginationModel: PaginationModelProps;
 }
 
-function ClassTable({ paginationModel, search }: ClassTableProps) {
+
+function ClassNoteTable({ paginationModel, search }: ClassNoteTableProps) {
   const navigate = useNavigate();
   const { data } = useClassQuery({
     pagination: {
@@ -36,15 +37,6 @@ function ClassTable({ paginationModel, search }: ClassTableProps) {
         header: () => "Name Kelas",
       },
       {
-        accessorKey: "level_name",
-        header: () => "Jenjang",
-        cell: ({ row }) => row.original?.level_name || "-",
-      },
-      {
-        accessorKey: "major",
-        header: () => "Jurusan",
-      },
-      {
         accessorKey: "homeroom_teacher",
         header: () => "Wali Kelas",
         cell: ({ row }) => row.original?.homeroom_teacher || "-",
@@ -56,7 +48,7 @@ function ClassTable({ paginationModel, search }: ClassTableProps) {
           <div>
             <FiEye
               className="cursor-pointer size-5"
-              onClick={() => navigate(`/academic/detail/${row.original.id}`)}
+              onClick={() => navigate(`/class-note/detail/${row.original.id}`)}
             />
           </div>
         ),
@@ -75,4 +67,4 @@ function ClassTable({ paginationModel, search }: ClassTableProps) {
   );
 }
 
-export default ClassTable;
+export default ClassNoteTable;

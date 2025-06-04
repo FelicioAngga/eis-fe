@@ -12,6 +12,8 @@ import { useAlert } from "../../../contexts/AlertContext";
 import { useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { useEffect } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../store";
 
 interface ClassNoteModalProps {
   isOpen: boolean;
@@ -23,6 +25,10 @@ interface ClassNoteModalProps {
 function ClassNoteModal({ isOpen, onClose, editData, selectedDate }: ClassNoteModalProps) {
   const { showAlert } = useAlert();
   const queryClient = useQueryClient();
+  const { classDetail } = useSelector(
+    (state: RootState) => state.classAcademic
+  );
+  
   const yupSchema = Yup.object().shape({
     materials: Yup.string().required("Materi tidak boleh kosong"),
   });
@@ -40,13 +46,14 @@ function ClassNoteModal({ isOpen, onClose, editData, selectedDate }: ClassNoteMo
   const { mutateAsync: mutateCreate } = useCreateClassNote();
   const { mutateAsync: mutateUpdate } = useUpdateClassNote();
   async function handleSubmit(data: { materials: string }) {
+    const selectedClassNoteDate = classDetail?.class_notes?.find(note => note.date.split("T")[0] === selectedDate)
     let response;
-    if (editData?.materials) {
+    if ((selectedClassNoteDate?.entries?.length || 0) > 0) {
       response = await mutateUpdate({
-        id: editData.class_note_id || 0,
-        subj_sched_id: editData.id || 0,
-        teacher_id: editData.teacher_id || 0,
+        id: editData?.class_note_id || 0,
+        subj_sched_id: editData?.id || 0,
         materials: data.materials,
+        teacher_id: editData?.teacher_id || 0,
       });
     } else {
       response = await mutateCreate({

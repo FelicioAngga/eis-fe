@@ -38,7 +38,7 @@ function ConfigClassScheduleTable({ paginationModel, search }: ConfigClassSchedT
       {
         accessorKey: "homeroom_teacher",
         header: () => "Wali Kelas",
-        cell: ({ row }) => row.original?.homeroom_teacher?.name || "-",
+        cell: ({ row }) => row.original?.homeroom_teacher || "-",
       },
       {
         accessorKey: "action",

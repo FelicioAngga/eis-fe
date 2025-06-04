@@ -22,6 +22,7 @@ export type ClassModel = {
 }
 
 export type ClassNoteModel = {
+  id?: number;
   academic_id: number;
   date: string;
   entries: {
@@ -31,6 +32,7 @@ export type ClassNoteModel = {
     materials?: string;
     notes?: string;
     teacher: string;
+    teacher_act_id?: number;
   }[];
 }
 
@@ -49,8 +51,9 @@ export type CreateClassNoteModel = {
 
 export type UpdateClassNoteModel = {
   id: number;
+  note_id?: number;
   subj_sched_id: number;
-  teacher_id: number;
+  teacher_id?: number;
   materials?: string;
   notes?: string;
 }

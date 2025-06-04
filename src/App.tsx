@@ -19,7 +19,7 @@ import StudentData from "./features/student-data";
 import Classes from "./features/classes";
 import Absence from "./features/absence";
 import Subject from "./features/subject";
-import ClassSchedule from "./features/class-schedule";
+import ClassNote from "./features/class-note";
 import ExamRecap from "./features/exam-recap";
 import AbsenceRecap from "./features/absence-recap";
 import ConfigClass from "./features/config-class";
@@ -41,6 +41,7 @@ import ClassAcademicDetail from "./features/class-academic-detail";
 import ConfigClassScheduleDetail from "./features/config-class-schedule-detail";
 import AbsenceDetail from "./features/absence/components/AbsenceDetail";
 import PrintStudentReport from "./features/class-academic-detail/components/PrintStudentReport";
+import ClassNoteDetail from "./features/class-note-detail";
 
 function App() {
   const queryClient = new QueryClient();
@@ -61,12 +62,13 @@ function App() {
                   <Route path="/student-data/add" element={<StudentDetail />} />
                   <Route path="/student-data/detail/:id" element={<StudentDetail />} />
                   <Route path="/academic" element={<Classes />} />
-                  <Route path="/class/detail/:id" element={<ClassAcademicDetail />} />
+                  <Route path="/academic/detail/:id" element={<ClassAcademicDetail />} />
                   <Route path="/class/student-report/:student_id/:academic_id" element={<PrintStudentReport />} />
                   <Route path="/absence" element={<Absence />} />
                   <Route path="/absence/detail/:id" element={<AbsenceDetail />} />
                   <Route path="/subject" element={<Subject />} />
-                  <Route path="/class-note" element={<ClassSchedule />} />
+                  <Route path="/class-note" element={<ClassNote />} />
+                  <Route path="/class-note/detail/:id" element={<ClassNoteDetail />} />
                   <Route path="/absence-recap" element={<AbsenceRecap />} />
                   <Route path="/exam-recap" element={<ExamRecap />} />
                   <Route path="/grade" element={<Grade />} />
