@@ -81,7 +81,7 @@ export default function ClassAcademicDetail() {
   if (!activeMenu) return (
     <div>
       <div
-        onClick={() => navigate("/class")}
+        onClick={() => navigate("/academic")}
         className="mb-2 transition-all duration-[400ms] flex items-center gap-1 hover:gap-3 text-primary cursor-pointer"
       >
         <BiChevronLeft className="text-2xl" />

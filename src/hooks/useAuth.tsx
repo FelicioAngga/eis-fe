@@ -6,6 +6,7 @@ export interface UserModel {
   email: string,
   token: string,
   role_id: number,
+  role_name: string,
   permissions?: string[],
 }
 

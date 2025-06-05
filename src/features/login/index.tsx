@@ -50,11 +50,11 @@ export default function() {
 			message: "Login Berhasil",
 			type: "success",
 		});
-		navigate("/registration");
+		navigate("/");
 	}
 
 	useEffect(() => {
-		if (isAuthenticated) navigate("/registration");
+		if (isAuthenticated) navigate("/");
 	}, []);
 
 	return (
