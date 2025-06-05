@@ -4,18 +4,28 @@ import { useForm } from 'react-hook-form';
 import { Input } from '../../../components/input/Input';
 import Checkbox from '../../../components/Checkbox';
 import Button from '../../../components/Button';
+import { useAccessRightDetail } from '../../../api-hooks/access-rights/api';
+import { useEffect } from 'react';
 
 interface AccessRightModalProps {
   isOpen: boolean;
   onClose: () => void;
+  editId?: number | null;
 }
-function AccessRightModal({ isOpen, onClose }: AccessRightModalProps) {
+function AccessRightModal({ isOpen, onClose, editId }: AccessRightModalProps) {
+  const { data: accessRightDetail } = useAccessRightDetail(editId || 0);
+
   const methods = useForm({
     mode: 'onSubmit',
     defaultValues: {
-      name: '',
+      name: accessRightDetail?.data.name || '',
     },
   });
+
+  useEffect(() => {
+    if (!accessRightDetail) return;
+    methods.reset({ name: accessRightDetail.data.name });
+  }, [accessRightDetail]);
 
   return (
     <Modal
@@ -215,7 +225,7 @@ function AccessRightModal({ isOpen, onClose }: AccessRightModalProps) {
         </div>
 
         <div className="flex gap-5 mt-5">
-          <Button variant="outline" className="w-full">Batal</Button>
+          <Button onClick={onClose} variant="outline" className="w-full">Batal</Button>
           <Button className="w-full">Simpan</Button>
         </div>
       </Form>

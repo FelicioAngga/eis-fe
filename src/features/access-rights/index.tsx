@@ -6,6 +6,7 @@ import AccessRightTable from "./components/AccessRightTable";
 
 export default function() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editId, setEditId] = useState<number | null>(null);
   const [search, setSearch] = useState("");
   const paginationModel = usePaginationModel({});
 
@@ -14,15 +15,20 @@ export default function() {
     paginationModel.onChangePageValue(1);
   }
 
+  function handleEdit(id: number) {
+    setIsModalOpen(true);
+    setEditId(id);
+  }
+
   return (
     <div className="flex flex-col gap-5">
-      <AccessRightModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      <AccessRightModal editId={editId} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
       <SearchTableLayout 
         onSearch={handleSubmit}
         buttonText="Tambah Role"
         buttonOnClick={() => setIsModalOpen(true)}
       />
-      <AccessRightTable search={search} paginationModel={paginationModel} />
+      <AccessRightTable search={search} paginationModel={paginationModel} handleEdit={handleEdit} />
     </div>
   );
 }

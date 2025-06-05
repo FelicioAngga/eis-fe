@@ -2,15 +2,16 @@ import { ColumnDef } from "@tanstack/react-table";
 import { AccessRightModel } from "../../../api-hooks/access-rights/models/AccessRightModel";
 import Table, { PaginationModelProps } from "../../../components/Table";
 import { useMemo } from "react";
-import { FiTrash2 } from "react-icons/fi";
+import { FiEdit, FiTrash2 } from "react-icons/fi";
 import { useAccessRightQuery } from "../../../api-hooks/access-rights/api";
 
 interface AccessRightTableProps {
   search: string;
   paginationModel: PaginationModelProps;
+  handleEdit?: (id: number) => void;
 }
 
-function AccessRightTable({ paginationModel, search }: AccessRightTableProps) {
+function AccessRightTable({ paginationModel, search, handleEdit }: AccessRightTableProps) {
   const { data } = useAccessRightQuery({
     pagination: {
       limit: paginationModel.pageSize,
@@ -20,6 +21,10 @@ function AccessRightTable({ paginationModel, search }: AccessRightTableProps) {
     },
     search: search || "",
   });
+
+  async function handleDelete(id: number) {
+
+  }
 
   const columns = useMemo<ColumnDef<AccessRightModel>[]>(
     () => [
@@ -37,10 +42,14 @@ function AccessRightTable({ paginationModel, search }: AccessRightTableProps) {
         accessorKey: "action",
         header: () => "Action",
         cell: ({ row }) => (
-          <div>
+          <div className="flex gap-2">
+            <FiEdit 
+              className="size-5 cursor-pointer"
+              onClick={() => handleEdit && handleEdit(row.original.id || 0)}
+            />
             <FiTrash2
               className="text-danger size-5 cursor-pointer"
-              // onClick={() => handleDelete(row.original.id)}
+              onClick={() => handleDelete(row.original.id || 0)}
             />
           </div>
         ),
