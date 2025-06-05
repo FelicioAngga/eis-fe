@@ -52,3 +52,31 @@ export const useUpdateUser = () => {
     },
   });
 }
+
+export const useUnArchiveUser = () => {
+  const apiCall = useApiCall<ResponseModel<any>>({
+    method: "PUT",
+    url: `${BASE_URL}/users/undelete`,
+  });
+  return useMutation({
+    mutationFn: async (id: number) => {
+      return await apiCall({ 
+        url: `${BASE_URL}/users/undelete/${id}`,
+      });
+    },
+  })
+}
+
+export const useDeleteUser = () => {
+  const apiCall = useApiCall<ResponseModel<any>>({
+    method: "DELETE",
+    url: `${BASE_URL}/users`,
+  });
+  return useMutation({
+    mutationFn: async (id: number) => {
+      return await apiCall({ 
+        url: `${BASE_URL}/users/${id}`,
+      });
+    },
+  })
+}

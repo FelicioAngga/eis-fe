@@ -4,7 +4,7 @@ import Table, { PaginationModelProps } from "../../../components/Table";
 import { FiEdit } from "react-icons/fi";
 import { ColumnDef } from "@tanstack/react-table";
 import { useMemo } from "react";
-import { useUserQuery } from "../../../api-hooks/users/api";
+import { useDeleteUser, useUnArchiveUser, useUserQuery } from "../../../api-hooks/users/api";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAlert } from "../../../contexts/AlertContext";
 
@@ -27,35 +27,35 @@ function UserTable({ handleEditUser, paginationModel, search }: UserTableProps) 
     search: search || "",
   });
 
-  // const { mutateAsync: deleteMutate } = useDeleteWorkingSchedule();
-  // const { mutateAsync: unArchiveMutate } = useUnArchiveWorkingSchedule();
+  const { mutateAsync: deleteMutate } = useDeleteUser();
+  const { mutateAsync: unArchiveMutate } = useUnArchiveUser();
 
   const handleDelete = async (id: number) => {
-    // const response = await deleteMutate(id);
-    // if (response.status === 200) {
-    //   queryClient.invalidateQueries({
-    //     queryKey: ["workscheds"],
-    //   });
-    //   showAlert({
-    //     title: "Berhasil",
-    //     message: response.message,
-    //     type: "success",
-    //   });
-    // }
+    const response = await deleteMutate(id);
+    if (response.status === 200) {
+      queryClient.invalidateQueries({
+        queryKey: ["users"],
+      });
+      showAlert({
+        title: "Berhasil",
+        message: response.message,
+        type: "success",
+      });
+    }
   }
 
   const handleUnArchive = async (data: UserModel) => {
-    // const response = await unArchiveMutate(data.id || 0);
-    // if (response.status === 200) {
-    //   queryClient.invalidateQueries({
-    //     queryKey: ["users"],
-    //   });
-    //   showAlert({
-    //     title: "Berhasil",
-    //     message: response.message,
-    //     type: "success",
-    //   });
-    // }
+    const response = await unArchiveMutate(data.id || 0);
+    if (response.status === 200) {
+      queryClient.invalidateQueries({
+        queryKey: ["users"],
+      });
+      showAlert({
+        title: "Berhasil",
+        message: response.message,
+        type: "success",
+      });
+    }
   }
 
   const columns = useMemo<ColumnDef<UserModel>[]>(
@@ -80,6 +80,7 @@ function UserTable({ handleEditUser, paginationModel, search }: UserTableProps) 
       {
         accessorKey: "role",
         header: () => "Role",
+        cell: ({ row }) => <p>{row.original.role?.name || "-"}</p>
       },
       {
         accessorKey: "deleted_at",

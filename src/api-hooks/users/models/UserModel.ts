@@ -6,6 +6,7 @@ export type UserModel = {
 	name: string;
 	email: string;
 	password: string;
+	role?: { name: string }
 	role_id: number;
 	created_at: string;
 	updated_at: string;

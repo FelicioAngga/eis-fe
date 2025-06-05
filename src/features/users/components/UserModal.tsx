@@ -13,6 +13,7 @@ import { useCreateUser, useUpdateUser } from '../../../api-hooks/users/api';
 import { fileToBase64 } from '../../../utils/base64';
 import { useAlert } from '../../../contexts/AlertContext';
 import { useQueryClient } from '@tanstack/react-query';
+import { useAccessRightQuery } from '../../../api-hooks/access-rights/api';
 
 interface UserModalProps {
   isOpen: boolean;
@@ -27,6 +28,7 @@ function UserModal({ isOpen, onClose, setEditData, editData }: UserModalProps) {
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(editData?.profile_pic || null);
   const inputFileRef = useRef<any>(null);
+  const { data: roleData } = useAccessRightQuery({ pagination: { limit: 99999 }, search: "" });
 
   const yupSchema = Yup.object().shape({
     email: Yup.string().email('Email tidak valid').required('Email tidak boleh kosong'),
@@ -69,6 +71,11 @@ function UserModal({ isOpen, onClose, setEditData, editData }: UserModalProps) {
   const { mutateAsync: mutateUpdate } = useUpdateUser();
   
   async function handleSubmit(data: UserModel) {
+    if (!editData && !data.password) {
+      methods.setError("password", { type: "required", message: "Password tidak boleh kosong" });
+      return;
+    }
+
     const file64 = file ? await fileToBase64(file) : "";
     const mutateAsync = editData ? mutateUpdate : mutateCreate;
     const response = await mutateAsync({
@@ -153,10 +160,10 @@ function UserModal({ isOpen, onClose, setEditData, editData }: UserModalProps) {
             label="Role"
             placeholder="Pilih Role"
             required
-            options={[
-              { value: '1', label: 'Dummy Admin' },
-              { value: '2', label: 'Dummy User' },
-            ]}  
+            options={roleData?.data.map(role => ({
+              label: role.name,
+              value: role?.id?.toString() || "",
+            })) || []}
           />
         </div>
 
