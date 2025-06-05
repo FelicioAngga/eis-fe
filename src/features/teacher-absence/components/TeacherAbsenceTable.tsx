@@ -77,12 +77,12 @@ function TeacherAbsenceTable({ paginationModel, search, handleEdit }: TeacherAbs
       {
         accessorKey: "log_in_time",
         header: () => "Scan Masuk",
-        cell: ({ row }) => formatDateToTime(row.original.log_in_time) || "-"
+        cell: ({ row }) => formatDateToTime(row.original.log_in_time || "") || "-"
       },
       {
         accessorKey: "log_out_time",
         header: () => "Scan Keluar",
-        cell: ({ row }) => formatDateToTime(row.original.log_out_time) || "-"
+        cell: ({ row }) => formatDateToTime(row.original.log_out_time || "") || "-"
       },
       {
         accessorKey: "remark",

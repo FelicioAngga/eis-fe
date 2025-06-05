@@ -3,7 +3,10 @@ import { AccessRightModel } from "../../../api-hooks/access-rights/models/Access
 import Table, { PaginationModelProps } from "../../../components/Table";
 import { useMemo } from "react";
 import { FiEdit, FiTrash2 } from "react-icons/fi";
-import { useAccessRightQuery } from "../../../api-hooks/access-rights/api";
+import { useAccessRightQuery, useDeleteRole } from "../../../api-hooks/access-rights/api";
+import { useAlert } from "../../../contexts/AlertContext";
+import { useQueryClient } from "@tanstack/react-query";
+import Swal from "sweetalert2";
 
 interface AccessRightTableProps {
   search: string;
@@ -12,6 +15,8 @@ interface AccessRightTableProps {
 }
 
 function AccessRightTable({ paginationModel, search, handleEdit }: AccessRightTableProps) {
+  const { showAlert } = useAlert();
+  const queryClient = useQueryClient();
   const { data } = useAccessRightQuery({
     pagination: {
       limit: paginationModel.pageSize,
@@ -22,8 +27,31 @@ function AccessRightTable({ paginationModel, search, handleEdit }: AccessRightTa
     search: search || "",
   });
 
+  const { mutateAsync } = useDeleteRole();
   async function handleDelete(id: number) {
-
+    const modalResult = await Swal.fire({
+      title: "Konfirmasi",
+      text: "Apakah anda yakin untuk menghapus?",
+      icon: "warning",
+      confirmButtonText: "Ya",
+      showCancelButton: true,
+    });
+    if (!modalResult.isConfirmed) return;
+    const response = await mutateAsync(id);
+    if (response.status === 200) {
+      showAlert({
+        title: "Berhasil",
+        type: "success",
+        message: "Role berhasil dihapus",
+      });
+      queryClient.invalidateQueries({ queryKey: ["access-rights"] });
+    } else {
+      showAlert({
+        title: "Gagal",
+        type: "error",
+        message: response.message || "Gagal menghapus role",
+      });
+    }
   }
 
   const columns = useMemo<ColumnDef<AccessRightModel>[]>(

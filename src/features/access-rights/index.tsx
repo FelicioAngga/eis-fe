@@ -22,7 +22,7 @@ export default function() {
 
   return (
     <div className="flex flex-col gap-5">
-      <AccessRightModal editId={editId} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      <AccessRightModal editId={editId} isOpen={isModalOpen} onClose={() => {setIsModalOpen(false); setEditId(null)}} />
       <SearchTableLayout 
         onSearch={handleSubmit}
         buttonText="Tambah Role"

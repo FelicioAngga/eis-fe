@@ -6,9 +6,15 @@ export type AccessRightModel = {
 }
 
 export type AccessRightDetailModel = {
-  id: number;
+  id?: number;
   name: string;
   permissions: AccessRightPermission[];
+}
+
+export type CreateAccessRightModel = {
+  id: number;
+  name: string;
+  permissions: number[];
 }
 
 export type AccessRightPermission = {
