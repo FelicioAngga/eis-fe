@@ -1,3 +1,4 @@
+import { ClassModel } from "../../class/models/ClassModel";
 import { DocumentModel } from "../../documents/models/DocumentModel";
 import { PaginationParams } from "../../method";
 import { GuardianModel } from "../../registration/models/RegistrationModel";
@@ -6,6 +7,7 @@ export type StudentModel = {
   id?: number;
   email?: string;
   applicant_id: number;
+  academics?: ClassModel
   current_academic_id: number;
   user_id: number;
   profile_pic: string;

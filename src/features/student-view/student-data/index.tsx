@@ -1,38 +1,84 @@
-import { useRef, useState } from "react";
-import defaultUser from "../../../assets/images/default-user.jpeg";
-import { FiEdit } from "react-icons/fi";
+
+import dayjs from "dayjs";
+import { useDetailStudentByToken } from "../../../api-hooks/students/api";
+import StudentDataCard from "./components/StudentDataCard";
+import { useMemo } from "react";
 
 function StudentViewData() {
-  const [file, setFile] = useState<File | null>(null);
-  const [preview, setPreview] = useState<string | null>(null);
-  const inputFileRef = useRef<any>(null);
+  const { data: studentData } = useDetailStudentByToken();
+  const fatherData = useMemo(() => {
+    return studentData?.data.guardians?.find(guardian => guardian.relation === "father");
+  }, [studentData?.data.guardians]);
   
-  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const objectUrl = URL.createObjectURL(file);
-    setFile(file);
-    setPreview(objectUrl);
-    return () => URL.revokeObjectURL(objectUrl);
-  }
+  const motherData = useMemo(() => {
+    return studentData?.data.guardians?.find(guardian => guardian.relation === "mother");
+  }, [studentData?.data.guardians]);
 
   return (
     <div className="flex gap-5">
-      <div className="border border-gray-300 p-2">
-        <div className="relative size-20 mx-auto">
-          <img src={preview || defaultUser} className="rounded-full object-cover size-20" />
-          <input
-            onChange={handleFileChange}
-            ref={inputFileRef}
-            type="file"
-            className="hidden"
-            multiple={false}
-            accept='image/*'
-          />
-          <div onClick={() => inputFileRef.current.click()} className="rounded-full absolute right-0 bottom-0 bg-blue p-1 cursor-pointer">
-            <FiEdit className="size-4 text-white" />
-          </div>
-        </div>
+      <StudentDataCard studentData={studentData?.data} />
+      <div className="w-full border border-gray-300 rounded-lg p-3">
+        <p className="text-2xl font-medium">Data Diri Pribadi</p>
+        <table className="mt-5 font-medium text-sm">
+          <tbody>
+            <tr>
+              <td className="pr-3 pb-6">NIK</td>
+              <td className="pr-3 pb-6">:</td>
+              <td className="pr-3 pb-6">{studentData?.data.identity_no}</td>
+            </tr>
+            <tr>
+              <td className="pr-3 pb-6">Tempat, Tanggal Lahir</td>
+              <td className="pr-3 pb-6">:</td>
+              <td className="pr-3 pb-6">{studentData?.data.place_of_birth}, {dayjs(studentData?.data.date_of_birth).format("DD MMMM YYYY")}</td>
+            </tr>
+            <tr>
+              <td className="pr-3 pb-6">Agama</td>
+              <td className="pr-3 pb-6">:</td>
+              <td className="pr-3 pb-6">{studentData?.data.religion}</td>
+            </tr>
+            <tr>
+              <td className="pr-3 pb-6">Alamat</td>
+              <td className="pr-3 pb-6">:</td>
+              <td className="pr-3 pb-6">{studentData?.data.address}</td>
+            </tr>
+            <tr>
+              <td className="pr-3 pb-6">Telepon</td>
+              <td className="pr-3 pb-6">:</td>
+              <td className="pr-3 pb-6">{studentData?.data.phone || "-"}</td>
+            </tr>
+            <tr>
+              <td className="pr-3 pb-6">Email</td>
+              <td className="pr-3 pb-6">:</td>
+              <td className="pr-3 pb-6">{studentData?.data.email}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p className="text-2xl font-medium mt-5">Data Orang Tua</p>
+        <table className="mt-5 font-medium text-sm">
+          <tbody>
+            <tr>
+              <td className="pr-3 pb-6">Nama Ayah</td>
+              <td className="pr-3 pb-6">:</td>
+              <td className="pr-3 pb-6">{fatherData?.name}</td>
+            </tr>
+            <tr>
+              <td className="pr-3 pb-6">No Telepon Ayah</td>
+              <td className="pr-3 pb-6">:</td>
+              <td className="pr-3 pb-6">{fatherData?.phone}</td>
+            </tr>
+            <tr>
+              <td className="pr-3 pb-6">Nama Ibu</td>
+              <td className="pr-3 pb-6">:</td>
+              <td className="pr-3 pb-6">{fatherData?.name}</td>
+            </tr>
+            <tr>
+              <td className="pr-3 pb-6">No Telepon Ibu</td>
+              <td className="pr-3 pb-6">:</td>
+              <td className="pr-3 pb-6">{fatherData?.phone}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   )

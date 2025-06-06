@@ -85,6 +85,20 @@ export const useDetailStudentQuery = (id: number) => {
   });
 }
 
+export const useDetailStudentByToken = () => {
+  const apiCall = useApiCall<{data: StudentModel}>({
+    method: "GET",
+    url: `${BASE_URL}/students/my`,
+  });
+  return useQuery({
+    queryKey: ["student-by-token"],
+    queryFn: async () => {
+      return await apiCall();
+    },
+    enabled: true,
+  });
+}
+
 export const useDeleteStudent = () => {
   const apiCall = useApiCall<ResponseModel<any>>({
     method: "DELETE",
