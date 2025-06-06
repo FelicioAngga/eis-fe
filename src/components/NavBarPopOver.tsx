@@ -8,7 +8,7 @@ import { useDetailStudentByToken } from '../api-hooks/students/api';
 function NavBarPopOver() {
   const [popoverOpen, setPopoverOpen] = useState(false);
   const { getUser, logout } = useAuth();
-  const isStudent = getUser().role_name.toLocaleLowerCase() === "student";
+  const isStudent = getUser()?.role_name?.toLocaleLowerCase() === "student";
   const { data: studentData } = useDetailStudentByToken(isStudent);
 
   return (
