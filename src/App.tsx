@@ -42,6 +42,8 @@ import ConfigClassScheduleDetail from "./features/config-class-schedule-detail";
 import AbsenceDetail from "./features/absence/components/AbsenceDetail";
 import PrintStudentReport from "./features/class-academic-detail/components/PrintStudentReport";
 import ClassNoteDetail from "./features/class-note-detail";
+import StudentSchedule from "./features/student-view/student-schedule";
+import StudentViewScore from "./features/student-view/student-score";
 
 function App() {
   const queryClient = new QueryClient();
@@ -73,6 +75,8 @@ function App() {
                   <Route path="/exam-recap" element={<ExamRecap />} />
                   <Route path="/grade" element={<Grade />} />
                   <Route path="/config/class" element={<ConfigClass />} />
+                  <Route path="/student-schedule" element={<StudentSchedule />} />
+                  <Route path="/score" element={<StudentViewScore />} />
                   <Route path="/config/class-schedule" element={<ConfigClassSchedule />} />
                   <Route path="/config/class-schedule/detail/:id" element={<ConfigClassScheduleDetail />} />
                   <Route path="/document" element={<Document />} />

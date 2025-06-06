@@ -20,3 +20,11 @@ export type StudentGradesEntryModel = {
   finals?: number;
   remarks?: string;
 }
+
+export type StudentScoreModel = {
+  subject_name: string;
+  quiz?: number;
+  first_month?: number;
+  second_month?: number;
+  finals?: number;
+}

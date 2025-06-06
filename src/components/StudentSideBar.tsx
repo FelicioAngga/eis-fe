@@ -25,9 +25,9 @@ function StudentSideBar() {
       </Link>
       <p className="font-semibold text-sm mb-2">Academic</p>
       <Link
-        to={"/class-schedule"}
+        to={"/student-schedule"}
         className={`block p-3 rounded font-medium ${
-          isActive("/class-schedule")
+          isActive("/student-schedule")
             ? "bg-blue text-white"
             : "text-gray-700 hover:bg-gray-100"
         }`}

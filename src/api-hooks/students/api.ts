@@ -85,7 +85,7 @@ export const useDetailStudentQuery = (id: number) => {
   });
 }
 
-export const useDetailStudentByToken = () => {
+export const useDetailStudentByToken = (enable: boolean = true) => {
   const apiCall = useApiCall<{data: StudentModel}>({
     method: "GET",
     url: `${BASE_URL}/students/my`,
@@ -95,7 +95,7 @@ export const useDetailStudentByToken = () => {
     queryFn: async () => {
       return await apiCall();
     },
-    enabled: true,
+    enabled: enable,
   });
 }
 
