@@ -64,7 +64,7 @@ function TeacherClassNote() {
         {selectedDaySchedule.map((schedule, idx) => (
           <div key={idx} className="font-medium text-sm flex px-2 py-3 border-b border-r border-l border-gray-300">
             <div className="w-2/12">{schedule.class}</div>
-            <div className="w-3/12">{schedule.subject}</div>
+            <div className="w-3/12">{schedule.subject} {schedule?.teacher_act_id ? schedule.teacher_act_id !== schedule.teacher_id ? "(Infal)" : "" : ""}</div>
             <div className="w-1/12">{schedule.start_hour}</div>
             <div className="w-1/12">{schedule.end_hour}</div>
             <div className="w-4/12">{schedule.materials || "-"}</div>

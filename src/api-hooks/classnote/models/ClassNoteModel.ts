@@ -10,6 +10,7 @@ export type ClassNoteModel = {
   materials: string;
   note_id: number;
   teacher_id: number;
+  teacher_act_id?: number;
   teacher: string;
   subject: string;
   absence_count: {
