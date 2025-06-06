@@ -35,7 +35,7 @@ export const Sidebar: React.FC = () => {
     if (activeMenu) setOpenMenus((prev) => [...prev, `${activeMenu.title}${match.category}`]);
   }, []);
 
-  if (getUser().role_name.toLocaleLowerCase() === "student") return <StudentSideBar />;
+  if (getUser()?.role_name?.toLocaleLowerCase() === "student") return <StudentSideBar />;
   return (
     <aside className="h-full overflow-y-auto bg-white border-r border-gray-300 px-4 py-6 space-y-4 shadow-sm print:hidden">
       <nav className="space-y-5">
