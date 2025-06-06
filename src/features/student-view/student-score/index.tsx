@@ -34,9 +34,9 @@ function StudentViewScore() {
         </tbody>
       </table>
 
-      <table className="border w-full mt-5">
+      <table className="border w-full mt-5 font-medium">
         <tbody>
-          <tr className="border border-gray-500">
+          <tr className="border bg-gray-100 border-gray-500">
             <td className="border border-gray-500 px-3 py-1.5 text-center">No</td>
             <td className="border border-gray-500 px-3 py-1.5">Mata Pelajaran</td>
             <td className="border border-gray-500 px-3 py-1.5">Pembagian Nilai</td>

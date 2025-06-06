@@ -28,3 +28,17 @@ export type ResponseStudentAbsenceModel = {
     date: string;
   }
 }
+export type StudentViewAbsenceModel = {
+  month: number;
+  student: string;
+  academic: string;
+  presence_count: number;
+  sick_count: number;
+  permission_count: number;
+  alpha_count: number;
+  details: {
+    date: string;
+    status: string;
+    remarks?: string;
+  }[];
+}

@@ -26,6 +26,8 @@ function ClassAcademicTable() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         studentToTransfer={checkedStudents}
+        students={classDetail?.data?.students || []}
+        setStudentToTransfer={setCheckedStudents}
       />
       <AddStudentToAcademicModal 
         isOpen={isAddStudentModalOpen}

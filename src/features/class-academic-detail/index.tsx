@@ -150,7 +150,7 @@ export default function ClassAcademicDetail() {
                 <td className="pr-8 pb-3">:</td>
                 <td className="pr-8 pb-3">
                   <div 
-                    onClick={() => (navigate(`/config/class-schedule`))}
+                    onClick={() => (navigate(`/config/class-schedule/detail/${id}`))}
                     className="flex gap-2 items-center rounded border border-gray-500 px-2 py-1 cursor-pointer w-fit"
                   >
                     <p>View</p>
@@ -163,7 +163,7 @@ export default function ClassAcademicDetail() {
                 <td className="pr-8 pb-3">:</td>
                 <td className="pr-8 pb-3">
                   <div 
-                    onClick={() => (navigate(`/absence`))}
+                    onClick={() => (navigate(`/absence/detail/${id}`))}
                     className="flex gap-2 items-center rounded border border-gray-500 px-2 py-1 cursor-pointer w-fit"
                   >
                     <p>View</p>

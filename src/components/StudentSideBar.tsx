@@ -39,9 +39,9 @@ function StudentSideBar() {
       </Link>
       <p className="font-semibold text-sm mb-2">Reporting</p>
       <Link
-        to={"/absence"}
+        to={"/student-absence"}
         className={`block p-3 rounded font-medium ${
-          isActive("/absence")
+          isActive("/student-absence")
             ? "bg-blue text-white"
             : "text-gray-700 hover:bg-gray-100"
         }`}

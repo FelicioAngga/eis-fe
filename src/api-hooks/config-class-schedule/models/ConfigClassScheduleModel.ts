@@ -37,3 +37,19 @@ export type UpdateConfigClassSchedModel = {
     end_hour: string;
   }[];
 }
+
+
+export type StudentScheduleModel = {
+  day: string;
+  details: {
+    subj_sched_id: number;
+    class_id: number;
+    class: string;
+    subject_id: number;
+    subject: string;
+    teacher_id: number;
+    teacher: string;
+    start_hour: string;
+    end_hour: string;
+  }[];
+}

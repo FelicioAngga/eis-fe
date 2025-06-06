@@ -16,9 +16,11 @@ interface TransferClassModalProps {
   isOpen: boolean;
   onClose: () => void;
   studentToTransfer?: StudentModel[];
+  setStudentToTransfer?: React.Dispatch<React.SetStateAction<StudentModel[]>>;
+  students?: StudentModel[];
 }
 
-function TransferClassModal({ isOpen, onClose, studentToTransfer }: TransferClassModalProps) {
+function TransferClassModal({ isOpen, onClose, studentToTransfer, students, setStudentToTransfer }: TransferClassModalProps) {
   const { showAlert } = useAlert();
   const queryClient = useQueryClient();
   const { classDetail } = useSelector((state: RootState) => state.classAcademic);
@@ -52,10 +54,11 @@ function TransferClassModal({ isOpen, onClose, studentToTransfer }: TransferClas
       ...selectedClass,
       students: studentIds as any || [],
     });
+    setStudentToTransfer?.([]);
     if (response.status === 200) {
       const lastResponse = await mutateAsync({
         ...classDetail,
-        students: [],
+        students: students?.filter(student => !studentToTransfer?.some(s => s.id === student.id)).map(student => student.id || 0) as any || [],
       });
       if (lastResponse.status === 200) {
         showAlert({

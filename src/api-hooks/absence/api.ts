@@ -2,7 +2,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useApiCall } from "../../hooks/useApiCall";
 import { BASE_URL } from "../../utils/base-url";
 import { ResponseModel, ResponsePaginationModel } from "../method";
-import { ResponseStudentAbsenceModel, StudentAbsenceModel, StudentAbsenceParams, UpdateAbsenceModel } from "./models/AbsenceModel";
+import { ResponseStudentAbsenceModel, StudentAbsenceModel, StudentAbsenceParams, StudentViewAbsenceModel, UpdateAbsenceModel } from "./models/AbsenceModel";
 
 export const useCreateAbsenceBatch = () => {
   const apiCall = useApiCall<ResponseModel<any>>({
@@ -48,6 +48,20 @@ export const useUpdateAbsence = () => {
         url: `${BASE_URL}/academics/${data.academic_id}/attendances`,
         body: data
       });
+    },
+  });
+}
+
+export const useGetStudentAbsenceByToken = (month: number) => {
+  const apiCall = useApiCall<{data: StudentViewAbsenceModel }>({
+    method: "GET",
+    url: `${BASE_URL}/students/my/attendances?month=${month}`,
+  });
+
+  return useQuery({
+    queryKey: ["student-attendances-my", month],
+    queryFn: async () => {
+      return await apiCall();
     },
   });
 }

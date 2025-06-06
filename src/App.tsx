@@ -44,6 +44,7 @@ import PrintStudentReport from "./features/class-academic-detail/components/Prin
 import ClassNoteDetail from "./features/class-note-detail";
 import StudentSchedule from "./features/student-view/student-schedule";
 import StudentViewScore from "./features/student-view/student-score";
+import StudentAbsence from "./features/student-view/student-absence";
 
 function App() {
   const queryClient = new QueryClient();
@@ -66,6 +67,7 @@ function App() {
                   <Route path="/academic" element={<Classes />} />
                   <Route path="/academic/detail/:id" element={<ClassAcademicDetail />} />
                   <Route path="/class/student-report/:student_id/:academic_id" element={<PrintStudentReport />} />
+                  <Route path="/student-absence" element={<StudentAbsence />} />
                   <Route path="/absence" element={<Absence />} />
                   <Route path="/absence/detail/:id" element={<AbsenceDetail />} />
                   <Route path="/subject" element={<Subject />} />
