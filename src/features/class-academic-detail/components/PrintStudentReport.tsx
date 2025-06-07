@@ -21,9 +21,9 @@ function PrintStudentReport() {
   const allFetched = isClassDetailFetched && isStudentGradeFetched && isStudentFetched && uniqueSubjectList.length > 0;
 
   const getFinalScoreBySubject = (subjectId: number) => {
-    const subject = studentGrade?.data.details.find((s) => s.subject_id === subjectId);
+    const subject = studentGrade?.data?.details.find((s) => s.subject_id === subjectId);
     const student = subject?.students.find(student => student.student_id === parseInt(student_id || "0"));
-    if (allFetched && subjectId === studentGrade?.data.details[studentGrade?.data.details.length - 1].subject_id) {
+    if (allFetched && subjectId === studentGrade?.data?.details[studentGrade?.data?.details.length - 1].subject_id) {
       setTimeout(() => {
         window.print();
       }, 100)
@@ -101,7 +101,7 @@ function PrintStudentReport() {
           </tr>
         </thead>
         <tbody>
-          {uniqueSubjectList.map((subject, idx) => (
+          {uniqueSubjectList?.map((subject, idx) => (
             <tr key={idx}>
               <td className="border border-gray-400 px-3 py-4 text-center font-medium">{idx + 1}</td>
               <td className="border border-gray-400 px-3 py-4">{subject.subject}</td>

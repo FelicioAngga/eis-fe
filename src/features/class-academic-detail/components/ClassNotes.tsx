@@ -10,6 +10,7 @@ import ClassNoteModal from "./ClassNoteModal";
 import { changeActiveMenu } from "../classAcademicSlice";
 import { useDetailClassNote } from "../../../api-hooks/class/api";
 import { ClassNoteDetailModel } from "../../../api-hooks/class/models/ClassModel";
+import { useBrowseAbsenceByAcademicId } from "../../../api-hooks/absence/api";
 
 function ClassNotes() {
   const { id } = useParams();
@@ -17,16 +18,12 @@ function ClassNotes() {
   const { classDetail } = useSelector(
     (state: RootState) => state.classAcademic
   );
-
-  const { data: classNoteDetail } = useDetailClassNote(id ? parseInt(id) : 0);
-
+  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split("T")[0] || "");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentClassNoteDetail, setCurrentClassNoteDetail] = useState<ClassNoteDetailModel | null>(null);
   const [editData, setEditData] = useState<ConfigClassSchedModel | null>(null);
-  const [selectedDate, setSelectedDate] = useState(
-    new Date().toISOString().split("T")[0] || ""
-  );
   const [classLesson, setClassLesson] = useState<ConfigClassSchedModel[]>([]);
+  const { data: absenceData } = useBrowseAbsenceByAcademicId(id ? parseInt(id) : 0, selectedDate, { pagination: { limit: 99999}, search: "" });
+  const { data: classNoteDetail } = useDetailClassNote(id ? parseInt(id) : 0);
 
   useEffect(() => {
     if (!selectedDate) return;
@@ -50,7 +47,6 @@ function ClassNotes() {
         materials: matchedNote?.materials || "",
       };
     }) || [];
-    setCurrentClassNoteDetail(classNoteDetail?.data?.find(note => note?.date.split("T")[0] === selectedDate) || null);
     setClassLesson(enrichedEntries || []);
   }, [selectedDate, classDetail, classNoteDetail]);
 
@@ -143,19 +139,19 @@ function ClassNotes() {
       {classNoteDetail?.data && (
         <div className="mt-5 w-fit min-w-xs">
           <p className="font-medium">Siswa Yang Tidak Hadir</p>
-          <p className="text-sm font-medium">Siswa Sakit: {currentClassNoteDetail?.absence_count?.find(x => x.status === "Sick")?.total || 0}</p>
-          <p className="text-sm font-medium">Siswa Izin: {currentClassNoteDetail?.absence_count?.find(x => x.status === "Permission")?.total || 0}</p>
+          <p className="text-sm font-medium">Siswa Sakit: {absenceData?.data.students.filter(x => x.status === "Sick").length || 0}</p>
+          <p className="text-sm font-medium">Siswa Izin: {absenceData?.data.students.filter(x => x.status === "Permission").length || 0}</p>
           <div className="px-3 mt-5 font-medium text-sm flex py-2 border border-gray-300 bg-gray-100">
             <div className="w-full">Nama Siswa</div>
             <div className="w-full">Keterangan</div>
           </div>
 
-          {currentClassNoteDetail?.absence_details?.map((student, index) => (
+          {absenceData?.data?.students?.filter(x => x.status !== "Present").map((student, index) => (
             <div
               key={index}
               className="px-3 font-medium text-sm flex py-2 border-b border-r border-l border-gray-300"
             >
-              <div className="w-full">{student.full_name}</div>
+              <div className="w-full">{student?.student}</div>
               <div className="w-full">{student.status === "Sick" ? "Sakit" : "Izin"}</div>
             </div>
           ))}

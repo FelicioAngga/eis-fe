@@ -12,6 +12,7 @@ export type UpdateAbsenceModel = {
 
 export type StudentAbsenceModel = {
   student_id: number;
+  student?: string;
   status: "Present" | "Sick" | "Permission" | "Alpha";
   remarks?: string;
 }
