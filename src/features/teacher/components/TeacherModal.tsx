@@ -40,7 +40,7 @@ function TeacherModal({ isOpen, onClose, editData }: TeacherModalProps) {
     address: Yup.string().required("Alamat tidak boleh kosong"),
     job_title: Yup.string().required("Jabatan tidak boleh kosong"),
     nuptk: Yup.string().required("NUPTK tidak boleh kosong"),
-    level_id: Yup.string().required("Jenjang tidak boleh kosong"),
+    level_id: Yup.string(),
     work_sched_id: Yup.string().required("Jadwal Kerja tidak boleh kosong"),
     machine_id: Yup.number().required("Id Mesin Absensi tidak boleh kosong").typeError("Id Mesin Absensi harus berupa angka"),
   });
@@ -174,7 +174,6 @@ function TeacherModal({ isOpen, onClose, editData }: TeacherModalProps) {
                   value: grade?.id?.toString() || "",
                   label: grade.name,
                 }))}
-                required
               />
               <Input 
                 type="select" 
