@@ -23,3 +23,18 @@ export type TeacherAbsenceCreateModel = {
   remark?: string;
   working_schedule_id?: number;
 }
+
+export type TeacherAbsenceReportModel = {
+  teacher: string;
+  late: number;
+  absence: number;
+  early_leave: number;
+  total: number;
+  present: number;
+}
+
+export type TeacherAbsenceReportParams = {
+  search?: string;
+  start_date?: string;
+  end_date?: string;
+}

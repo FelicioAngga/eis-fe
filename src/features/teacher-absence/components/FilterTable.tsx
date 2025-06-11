@@ -8,7 +8,6 @@ interface Props {
   importButtonOnClick?: () => void;
   buttonOnClick?: () => void;
   hideButton?: boolean;
-
 }
 
 function FilterTable({ hideButton, buttonText, onSearch, importButtonOnClick, buttonOnClick }: Props) {
