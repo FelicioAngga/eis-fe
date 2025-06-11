@@ -41,28 +41,29 @@ export default function () {
 
       <div className="mt-6 flex gap-4">
         <div className="overflow-x-auto shrink-0">
-          <table className="w-full table-auto border-collapse border border-gray-300">
-            <thead>
-              <tr>
-                <th className="border border-gray-300 px-1.5 py-2 text-left">Jenjang</th>
-                <th className="border border-gray-300 px-1.5 py-2">Kehadiran</th>
-                <th className="border border-gray-300 px-1.5 py-2">Sakit</th>
-                <th className="border border-gray-300 px-1.5 py-2">Izin</th>
-                <th className="border border-gray-300 px-1.5 py-2">Alpha</th>
-              </tr>
-            </thead>
-            <tbody>
-              {studentAbsenceReport?.data?.levels?.map((level, index) => (
-                <tr key={index}>
-                  <td className="border border-gray-300 px-1.5 py-2">{level.level}</td>
+          {studentAbsenceReport?.data?.levels?.map((level, index) => (
+            <table key={index} className="w-full table-auto border-collapse border border-gray-300">
+              <thead>
+                <tr>
+                  <th colSpan={4} className="border border-gray-300 px-1.5 py-2 text-center">{level.level}</th>
+                </tr>
+                <tr>
+                  <th className="border border-gray-300 px-1.5 py-2">Hadir</th>
+                  <th className="border border-gray-300 px-1.5 py-2">Sakit</th>
+                  <th className="border border-gray-300 px-1.5 py-2">Izin</th>
+                  <th className="border border-gray-300 px-1.5 py-2">Alpha</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
                   <td className="border border-gray-300 px-1.5 py-2 text-center">{level.present_count}</td>
                   <td className="border border-gray-300 px-1.5 py-2 text-center">{level.sick_count}</td>
                   <td className="border border-gray-300 px-1.5 py-2 text-center">{level.permission_count}</td>
                   <td className="border border-gray-300 px-1.5 py-2 text-center">{level.alpha_count}</td>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </tbody>
+            </table>
+          ))}
         </div>
 
         <div className="overflow-x-auto w-full">

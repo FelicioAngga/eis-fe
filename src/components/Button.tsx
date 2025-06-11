@@ -31,7 +31,7 @@ function Button({
     <button
       {...rest}
       disabled={rest.disabled || disabledUI}
-      className={`transition-all duration-[400ms] flex justify-center items-center gap-3 ${showArrow && 'min-w-[120px] 2xl:min-w-32'} px-5 py-2.5 h-10 cursor-pointer group
+      className={`transition-all duration-[400ms] whitespace-nowrap flex justify-center items-center gap-3 ${showArrow && 'min-w-[120px] 2xl:min-w-32'} px-5 py-2.5 h-10 cursor-pointer group
         font-semibold text-sm 2xl:text-base disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-primary-300 ${variantStyles[variant]} ${className}
         ${(disabledUI || rest.disabled) && '!bg-gray-100 !text-primary-300 hover:border-transparent'}
       `}

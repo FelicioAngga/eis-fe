@@ -136,7 +136,7 @@ function TeacherAbsenceModal({ isOpen, onClose, editData }: TeacherAbsenceModalP
         </div>
 
         <div className="flex gap-5 mt-5">
-          <Button className="w-full" variant="outline" type="button">Batal</Button>
+          <Button onClick={onClose} className="w-full" variant="outline" type="button">Batal</Button>
           <Button disabled={isCreatePending || isUpdatePending} className="w-full">Simpan</Button>
         </div>
       </Form>

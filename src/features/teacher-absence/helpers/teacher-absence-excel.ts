@@ -56,7 +56,7 @@ function formatCustomDateTime(dateString: string): { timeOnly: string; dateOnly:
   const day = dateComponents[0];
   const month = dateComponents[1];
   const year = dateComponents[2];
-  const formattedDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+  const formattedDate = `${year}-${month?.padStart(2, '0')}-${day.padStart(2, '0')}`;
 
   return {
     timeOnly: timeOnly,
