@@ -1,8 +1,8 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useApiCall } from "../../hooks/useApiCall";
 import { BASE_URL } from "../../utils/base-url";
-import { ResponseModel, ResponsePaginationModel } from "../method";
-import { ResponseStudentAbsenceModel, StudentAbsenceModel, StudentAbsenceParams, StudentAbsenceReportModel, StudentAbsenceReportParams, StudentViewAbsenceModel, UpdateAbsenceModel } from "./models/AbsenceModel";
+import { ResponseModel } from "../method";
+import { ResponseStudentAbsenceModel, StudentAbsenceParams, StudentAbsenceReportModel, StudentAbsenceReportParams, StudentViewAbsenceModel, UpdateAbsenceModel } from "./models/AbsenceModel";
 
 export const useCreateAbsenceBatch = () => {
   const apiCall = useApiCall<ResponseModel<any>>({
