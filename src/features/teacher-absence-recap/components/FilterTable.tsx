@@ -13,7 +13,7 @@ function FilterTable({ onSearch }: Props) {
 
   return (
     <div>
-      {/* <p className="mb-3 font-semibold text-xl">Laporan Absensi Guru</p> */}
+      <p className="mb-3 font-semibold text-xl">Laporan Absensi Guru</p>
       <div className="flex gap-3 items-center justify-between">
         <div className="flex gap-2 items-center">
           <div>

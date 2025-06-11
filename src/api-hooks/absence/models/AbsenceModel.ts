@@ -43,3 +43,28 @@ export type StudentViewAbsenceModel = {
     remarks?: string;
   }[];
 }
+
+export type StudentAbsenceReportModel = {
+  entries: {
+    student: string;
+    present_count: number;
+    sick_count: number;
+    permission_count: number;
+    alpha_count: number;
+  }[];
+  levels: {
+    level: string;
+    present_count: number;
+    sick_count: number;
+    permission_count: number;
+    alpha_count: number;
+  }[];
+}
+
+export type StudentAbsenceReportParams = {
+  academic_id: string;
+  level_id: string;
+  search: string;
+  start_date: string;
+  end_date: string;
+}
