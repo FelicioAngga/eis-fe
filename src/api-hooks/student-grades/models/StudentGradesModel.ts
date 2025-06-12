@@ -28,3 +28,21 @@ export type StudentScoreModel = {
   second_month?: number;
   finals?: number;
 }
+
+export type StudentGradeReportParams = {
+  academic_id: number;
+  level_id: number;
+  academic_year: string;
+}
+
+export type StudentGradeReportModel = {
+  average: number;
+  class: string;
+  students: {
+    finals: number;
+    nis: string;
+    rank: number;
+    student: string;
+    class: string;
+  }[]
+}

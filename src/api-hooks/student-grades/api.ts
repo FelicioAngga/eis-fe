@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { StudentGradesModel, StudentScoreModel } from "./models/StudentGradesModel";
+import { StudentGradeReportModel, StudentGradeReportParams, StudentGradesModel, StudentScoreModel } from "./models/StudentGradesModel";
 import { BASE_URL } from "../../utils/base-url";
 import { ResponseModel } from "../method";
 import { useApiCall } from "../../hooks/useApiCall";
@@ -60,6 +60,29 @@ export const useUpdateStudentGrades = () => {
         url: `${BASE_URL}/academics/${data.academic_id}/grades`,
         body: data
       });
+    },
+  });
+}
+
+export const useGetExamRecap = (params: StudentGradeReportParams) => {
+  const apiCall = useApiCall<{data: StudentGradeReportModel[] }>({
+    method: "GET",
+    url: `${BASE_URL}/students/marks/report`,
+    inputOptions: {
+      limit: undefined,
+      page: undefined,
+      sortOrder: undefined,
+      sortColumn: undefined,
+      ...(params?.academic_year ? { academic_year: params.academic_year } : {}),
+      ...(params?.level_id ? { level_id: params.level_id } : {}),
+      ...(params?.academic_id ? { academic_id: params.academic_id } : {}),
+    }
+  });
+
+  return useQuery({
+    queryKey: ["exam-recap", params],
+    queryFn: async () => {
+      return await apiCall();
     },
   });
 }
