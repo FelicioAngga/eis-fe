@@ -122,6 +122,7 @@ export function InputText({ error, label, formatNumberSeparator, placeholders = 
         className={cn(
           "w-full relative bg-white px-3 py-3 text-sm rounded overflow-hidden transition duration-200 border",
           error ? "border-danger" : "border-primary-200",
+          props.disabled ? "bg-gray-200 cursor-not-allowed" : "cursor-text",
         )}
       >
         <canvas

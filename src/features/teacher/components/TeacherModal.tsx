@@ -15,6 +15,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useAlert } from '../../../contexts/AlertContext';
 import { useGradeQuery } from '../../../api-hooks/grade/api';
 import { useWorkingScheduleQuery } from '../../../api-hooks/working-schedule/api';
+import { useAccessRightQuery } from '../../../api-hooks/access-rights/api';
 
 interface TeacherModalProps {
   isOpen: boolean;
@@ -30,6 +31,7 @@ function TeacherModal({ isOpen, onClose, editData }: TeacherModalProps) {
   const inputFileRef = useRef<any>(null);
   const { data: gradeData } = useGradeQuery({ pagination: { limit: 9999 }, search: "" });
   const { data: workSchedData } = useWorkingScheduleQuery({ pagination: { limit: 9999 }, search: "" });
+  const { data: accessRightData } = useAccessRightQuery({ pagination: {limit: 9999}, search: "" });
 
   const yupSchema = Yup.object().shape({
     profile_pic: Yup.string(),
@@ -41,6 +43,7 @@ function TeacherModal({ isOpen, onClose, editData }: TeacherModalProps) {
     job_title: Yup.string().required("Jabatan tidak boleh kosong"),
     nuptk: Yup.string().required("NUPTK tidak boleh kosong"),
     level_id: Yup.string(),
+    role_id: Yup.string().required("Role tidak boleh kosong"),
     work_sched_id: Yup.string().required("Jadwal Kerja tidak boleh kosong"),
     machine_id: Yup.number().required("Id Mesin Absensi tidak boleh kosong").typeError("Id Mesin Absensi harus berupa angka"),
   });
@@ -59,6 +62,7 @@ function TeacherModal({ isOpen, onClose, editData }: TeacherModalProps) {
       nuptk: editData?.nuptk || "",
       level_id: editData?.level_id?.toString() || "",
       work_sched_id: editData?.work_sched_id || "",
+      role_id: editData?.user?.role_id || "",
       machine_id: editData?.machine_id || "",
     };
   }, [editData])
@@ -94,6 +98,7 @@ function TeacherModal({ isOpen, onClose, editData }: TeacherModalProps) {
       ...data,
       phone: data.phone.toString(),
       profile_pic: base64File,
+      role_id: +data.role_id,
       level_id: data.level_id ? +data.level_id : undefined,
       work_sched_id: data.work_sched_id ? +data.work_sched_id : undefined,
     });
@@ -158,7 +163,7 @@ function TeacherModal({ isOpen, onClose, editData }: TeacherModalProps) {
             <div className="flex flex-col gap-4 w-full">
               <Input type="number" name="identity_no" label="NIK" placeholder="Masukkan NIK" required />
               <Input type="text" name="name" label="Nama Lengkap" placeholder="Masukkan nama lengkap" required />
-              <Input type="text" name="email" label="Email" placeholder="Masukkan Email" required />
+              <Input disabled={!!editData?.email} type="text" name="email" label="Email" placeholder="Masukkan Email" required />
               <Input type="text" name="address" label="Alamat" placeholder="Masukkan Alamat" required />
               <Input type="text" name="nuptk" label="NUPTK" placeholder="Masukkan NUPTK" required />
             </div>
@@ -189,6 +194,17 @@ function TeacherModal({ isOpen, onClose, editData }: TeacherModalProps) {
               <Input type="number" name="machine_id" label="Id Mesin Absensi" placeholder="Masukkan Id Mesin Absensi" required />
             </div>
           </div>
+          <Input 
+            type="select"
+            name="role_id"
+            label="Role"
+            placeholder="Pilih Role"
+            options={accessRightData?.data.filter(x => x.name.toLowerCase() !== "student" && x.name.toLowerCase() !== "applicant").map((role) => ({
+              value: (role?.id || 0).toString(),
+              label: role.name,
+            }))}
+            required
+          />
 
           <div className="flex gap-4 mt-5">
             <Button type="button" onClick={handleClose} className="w-full" variant="outline">Batal</Button>

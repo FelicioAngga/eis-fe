@@ -10,10 +10,14 @@ export type TeacherModel = {
 	address: string;
 	job_title: string;
 	profile_pic: string;
+	role_id: number;
 	level_id?: number;
 	work_sched_id?: number;
 	deleted_at?: string | null;
 	machine_id?: number;
+	user?: {
+		role_id: number;
+	}
 }
 
 export type TeacherParams = {
