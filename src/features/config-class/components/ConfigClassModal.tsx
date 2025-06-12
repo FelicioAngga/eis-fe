@@ -27,7 +27,7 @@ function ConfigClassModal({ isOpen, onClose, editData }: ConfigClassModalProps) 
   });
 
   const yupSchema = Yup.object().shape({
-    display_name: Yup.string().required("Nama tidak boleh kosong"),
+    display_name: Yup.string(),
     level_id: Yup.string().required("Jenjang tidak boleh kosong"),
     grade: Yup.string().required("Tingkat tidak boleh kosong"),
     name: Yup.string().required("Kelas tidak boleh kosong"),
@@ -96,13 +96,15 @@ function ConfigClassModal({ isOpen, onClose, editData }: ConfigClassModalProps) 
     >
       <Form methods={methods} onSubmit={handleSubmit}>
         <div className="flex flex-col gap-3">
-          <Input
-            type="text"
-            name="display_name"
-            placeholder="Nama"
-            label="Nama"
-            required
-          />
+          {editData && (
+            <Input
+              type="text"
+              name="display_name"
+              placeholder="Nama"
+              label="Nama"
+              disabled
+            />
+          )}
           <Input
             type="select"
             name="level_id"
