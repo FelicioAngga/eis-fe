@@ -14,7 +14,8 @@ export type StudentGradesEntryModel = {
   student_id?: number;
   student_name?: string;
   nis?: string;
-  quiz?: number;
+  first_quiz?: number;
+  second_quiz?: number;
   first_month?: number;
   second_month?: number;
   finals?: number;
@@ -23,7 +24,8 @@ export type StudentGradesEntryModel = {
 
 export type StudentScoreModel = {
   subject_name: string;
-  quiz?: number;
+  first_quiz?: number;
+  second_quiz?: number;
   first_month?: number;
   second_month?: number;
   finals?: number;

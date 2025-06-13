@@ -77,8 +77,9 @@ function ClassMarks() {
           student_id: student.id,
           nis: student.nis || "",
           student_name: student.full_name,
-          quiz: studentMark?.quiz || "",
+          first_quiz: studentMark?.first_quiz || "",
           first_month: studentMark?.first_month || "",
+          second_quiz: studentMark?.second_quiz || "",
           second_month: studentMark?.second_month || "",
           finals: studentMark?.finals || "",
           remarks: studentMark?.remarks || "",
@@ -100,8 +101,9 @@ function ClassMarks() {
           student_id: student.id,
           nis: student.nis || "",
           student_name: student.full_name,
-          quiz: studentMark?.quiz || "",
+          first_quiz: studentMark?.first_quiz || "",
           first_month: studentMark?.first_month || "",
+          second_quiz: studentMark?.second_quiz || "",
           second_month: studentMark?.second_month || "",
           finals: studentMark?.finals || "",
           remarks: studentMark?.remarks || "",
@@ -151,9 +153,9 @@ function ClassMarks() {
   };
 
   useEffect(() => {
-    if (!studentGradesData?.data.details) return;
+    if (!studentGradesData?.data?.details) return;
     setStudentMarks(studentGradesData.data.details || []);
-  }, [studentGradesData?.data.details]);
+  }, [studentGradesData?.data?.details]);
 
   return (
     <div>

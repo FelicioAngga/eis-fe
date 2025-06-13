@@ -22,8 +22,9 @@ interface MarkType {
 }
 
 export const markTypes: MarkType[] = [
-  { label: "Tugas", dataKey: "quiz" },
+  { label: "Tugas Bulanan 1", dataKey: "first_quiz" },
   { label: "Ujian Bulanan 1", dataKey: "first_month" },
+  { label: "Tugas Bulanan 2", dataKey: "second_quiz" },
   { label: "Ujian Bulanan 2", dataKey: "second_month" },
   { label: "Ujian Akhir", dataKey: "finals" },
   { label: "Deskripsi", dataKey: "remarks" },

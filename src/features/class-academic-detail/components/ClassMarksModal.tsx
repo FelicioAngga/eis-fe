@@ -25,8 +25,9 @@ interface ClassMarksModalProps {
 
 function ClassMarksModal({ isOpen, onClose, editData, handleSaveModal }: ClassMarksModalProps) {
   const yupSchema = Yup.object().shape({
-    quiz: Yup.string(),
+    first_quiz: Yup.string(),
     first_month: Yup.string(),
+    second_quiz: Yup.string(),
     second_month: Yup.string(),
     finals: Yup.string(),
     remarks: Yup.string().optional(),
@@ -37,8 +38,9 @@ function ClassMarksModal({ isOpen, onClose, editData, handleSaveModal }: ClassMa
     mode: "onChange",
     resolver,
     defaultValues: {
-      quiz: editData?.quiz || "",
+      first_quiz: editData?.first_quiz || "",
       first_month: editData?.first_month || "",
+      second_quiz: editData?.second_quiz || "",
       second_month: editData?.second_month || "",
       finals: editData?.finals || "",
       remarks: editData?.remarks || "",
@@ -49,8 +51,9 @@ function ClassMarksModal({ isOpen, onClose, editData, handleSaveModal }: ClassMa
     if (!handleSaveModal) return;
     handleSaveModal({
       student_id: editData?.student_id,
-      quiz: data.quiz ? parseFloat(data.quiz.toString()) : undefined,
+      first_quiz: data.first_quiz ? parseFloat(data.first_quiz.toString()) : undefined,
       first_month: data.first_month ? parseFloat(data.first_month.toString()) : undefined,
+      second_quiz: data.second_quiz ? parseFloat(data.second_quiz.toString()) : undefined,
       second_month: data.second_month ? parseFloat(data.second_month.toString()) : undefined,
       finals: data.finals ? parseFloat(data.finals.toString()) : undefined,
       remarks: data.remarks,
@@ -66,8 +69,9 @@ function ClassMarksModal({ isOpen, onClose, editData, handleSaveModal }: ClassMa
   useEffect(() => {
     if (!editData) return;
     methods.reset({
-      quiz: editData?.quiz || "",
+      first_quiz: editData?.first_quiz || "",
       first_month: editData?.first_month || "",
+      second_quiz: editData?.second_quiz || "",
       second_month: editData?.second_month || "",
       finals: editData?.finals || "",
       remarks: editData?.remarks || "",
@@ -107,15 +111,21 @@ function ClassMarksModal({ isOpen, onClose, editData, handleSaveModal }: ClassMa
         <div className="mt-2 flex flex-col gap-3">
           <Input
             type="number"
-            name="quiz"
-            label="Nilai Tugas"
-            placeholder="Masukkan nilai tugas"
+            name="first_quiz"
+            label="Nilai Tugas Bulanan 1"
+            placeholder="Masukkan nilai tugas bulanan 1"
           />
           <Input
             type="number"
             name="first_month"
             label="Ujian Bulanan 1"
             placeholder="Masukkan nilai ujian bulanan 1"
+          />
+          <Input
+            type="number"
+            name="second_quiz"
+            label="Nilai Tugas Bulanan 2"
+            placeholder="Masukkan nilai tugas bulanan 2"
           />
           <Input
             type="number"

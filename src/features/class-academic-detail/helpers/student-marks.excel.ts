@@ -29,16 +29,18 @@ export const downloadStudentMarksExcel = (
   let currentRow = 2;
   for (let i = 0; i < students.length; i++) {
     const student = students[i];
-    const studentMarkQuiz = [];
+    const studentMarkFirstQuiz = [];
     const studentMarkFirstMonth = [];
+    const studentMarkSecondQuiz = [];
     const studentMarkSecondMonth = [];
     const studentMarkFinals = [];
     const studentMarkRemarks = [];
 
     for (const mark of studentMarks) {
       const studentMark = mark.students.find((s) => s.student_id === student.student_id) || {};
-      studentMarkQuiz.push(studentMark.quiz || "");
+      studentMarkFirstQuiz.push(studentMark.first_quiz || "");
       studentMarkFirstMonth.push(studentMark.first_month || "");
+      studentMarkSecondQuiz.push(studentMark.second_quiz || "");
       studentMarkSecondMonth.push(studentMark.second_month || "");
       studentMarkFinals.push(studentMark.finals || "");
       studentMarkRemarks.push(studentMark.remarks || "");
@@ -48,31 +50,36 @@ export const downloadStudentMarksExcel = (
       i + 1,
       student.nis,
       student.student_name,
-      "Tugas",
-      ...studentMarkQuiz,
+      "Tugas Bulanan 1",
+      ...studentMarkFirstQuiz,
     ]);
     const row2 = ws.addRow([
       ...Array(3).fill(undefined),
       "Ujian Bulanan 1",
       ...studentMarkFirstMonth,
     ]);
+    const row4 = ws.addRow([
+      ...Array(3).fill(undefined),
+      "Tugas Bulanan 2",
+      ...studentMarkSecondQuiz,
+    ]);
     const row3 = ws.addRow([
       ...Array(3).fill(undefined),
       "Ujian Bulanan 2",
       ...studentMarkSecondMonth,
     ]);
-    const row4 = ws.addRow([
+    const row5 = ws.addRow([
       ...Array(3).fill(undefined),
       "Ujian Akhir",
       ...studentMarkFinals,
     ]);
-    const row5 = ws.addRow([
+    const row6 = ws.addRow([
       ...Array(3).fill(undefined),
       "Deskripsi",
       ...studentMarkRemarks,
     ]);
 
-    const untilRowNo = currentRow + 4;
+    const untilRowNo = currentRow + 5;
     ws.mergeCells(`A${currentRow}:A${untilRowNo}`);
     ws.mergeCells(`B${currentRow}:B${untilRowNo}`);
     ws.mergeCells(`C${currentRow}:C${untilRowNo}`);
@@ -121,6 +128,14 @@ export const downloadStudentMarksExcel = (
         right: { style: "thin" },
       };
     });
+    row6.eachCell((cell) => {
+      cell.border = {
+        top: { style: "thin" },
+        left: { style: "thin" },
+        bottom: { style: "thin" },
+        right: { style: "thin" },
+      };
+    });
   }
 
   const columnWidths = [5, 10, 25, 15, ...Array(studentMarks.length).fill(20)];
@@ -147,19 +162,22 @@ export const handleImportStudentMarks = async (fileData: any, studentMarks: Stud
       const studentNis = rowValues[2]
       for (let i = 0; i < studentMarks.length; i++) {
         const studentMark = studentMarks[i].students.find(s => s.nis === studentNis);
-        if (studentMark && (rowNumber - 2) % 5 === 0 && rowNumber >= 2) {
-          studentMark.quiz = rowValues[5 + i] || undefined;
+        if (studentMark && (rowNumber - 2) % 6 === 0 && rowNumber >= 2) {
+          studentMark.first_quiz = rowValues[5 + i] || undefined;
         }
-        if (studentMark && (rowNumber - 3) % 5 === 0 && rowNumber >= 3) {
+        if (studentMark && (rowNumber - 3) % 6 === 0 && rowNumber >= 3) {
           studentMark.first_month = rowValues[5 + i] || undefined;
         }
-        if (studentMark && (rowNumber - 4) % 5 === 0 && rowNumber >= 4) {
+         if (studentMark && (rowNumber - 4) % 6 === 0 && rowNumber >= 4) {
+          studentMark.second_quiz = rowValues[5 + i] || undefined;
+        }
+        if (studentMark && (rowNumber - 5) % 6 === 0 && rowNumber >= 5) {
           studentMark.second_month = rowValues[5 + i] || undefined;
         }
-        if (studentMark && (rowNumber - 5) % 5 === 0 && rowNumber >= 5) {
+        if (studentMark && (rowNumber - 6) % 6 === 0 && rowNumber >= 6) {
           studentMark.finals = rowValues[5 + i] || undefined;
         }
-        if (studentMark && (rowNumber - 6) % 5 === 0 && rowNumber >= 6) {
+        if (studentMark && (rowNumber - 7) % 6 === 0 && rowNumber >= 7) {
           studentMark.remarks = rowValues[5 + i] || undefined;
         }
       }
