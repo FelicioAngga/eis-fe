@@ -83,7 +83,7 @@ function BatchModal({ isOpen, onClose }: BatchModalProps) {
           </div>
         </div>
         <div className="flex gap-5 mt-5">
-          <Button type="button" variant="outline" className="w-full">Batal</Button>
+          <Button onClick={onClose} type="button" variant="outline" className="w-full">Batal</Button>
           <Button className="w-full">Tambah</Button>
         </div>
       </Form>

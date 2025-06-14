@@ -9,9 +9,9 @@ import { getUniqueSubjects } from "../helpers/unique-subject";
 import { useDetailStudentQuery } from "../../../api-hooks/students/api";
 
 function PrintStudentReport() {
-  const { student_id, academic_id } = useParams();
+  const { student_id, academic_id, term_id } = useParams();
   const navigate = useNavigate();
-  const { data: studentGrade, isFetched: isStudentGradeFetched } = useGetStudentGrades(academic_id ? parseInt(academic_id) : 0);
+  const { data: studentGrade, isFetched: isStudentGradeFetched } = useGetStudentGrades(academic_id ? parseInt(academic_id) : 0, term_id ? parseInt(term_id) : 0);
   const { data: classDetail, isFetched: isClassDetailFetched } = useClassDetail(academic_id ? parseInt(academic_id) : 0);
   const { data: studentData, isFetched: isStudentFetched } = useDetailStudentQuery(parseInt(student_id || "0"));
 
@@ -21,9 +21,15 @@ function PrintStudentReport() {
   const allFetched = isClassDetailFetched && isStudentGradeFetched && isStudentFetched && uniqueSubjectList.length > 0;
 
   const getFinalScoreBySubject = (subjectId: number) => {
-    const subject = studentGrade?.data?.details.find((s) => s.subject_id === subjectId);
+    const subject = studentGrade?.data?.details?.find((s) => s.subject_id === subjectId);
     const student = subject?.students?.find(student => student?.student_id === parseInt(student_id || "0"));
-    if (allFetched && subjectId === studentGrade?.data?.details[studentGrade?.data?.details.length - 1]?.subject_id) {
+    if (!student) {
+      setTimeout(() => {
+        window.print();
+      }, 100)
+      return { score: 0, remarks: "-" };
+    }
+    if (allFetched && subjectId === studentGrade?.data?.details[studentGrade?.data?.details?.length - 1]?.subject_id) {
       setTimeout(() => {
         window.print();
       }, 100)
@@ -49,7 +55,7 @@ function PrintStudentReport() {
   return (
     <div>
       <div
-        onClick={() => navigate("/class")}
+        onClick={() => navigate(`/academic/detail/${academic_id}`)}
         className="print:hidden mb-2 transition-all duration-[400ms] flex items-center gap-1 hover:gap-3 text-primary cursor-pointer"
       >
         <BiChevronLeft className="text-2xl" />

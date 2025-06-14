@@ -19,11 +19,13 @@ export type ClassModel = {
   }[];
   class_notes?: ClassNoteModel[];
   students?: StudentModel[];
+  terms: TermsModel[];
 }
 
 export type ClassNoteModel = {
   id?: number;
   academic_id: number;
+  term_id: number;
   date: string;
   entries: {
     id?: number;
@@ -87,9 +89,18 @@ export type ClassNoteDetailModel = {
     full_name: string;
     status: string;
   }[];
+  details: {
+    id: number;
+    subject: string;
+  }[];
 }
 
 export type UniqueSubject = {
   subject_id: number;
   subject: string;
+}
+
+export type TermsModel = {
+  id: number;
+  name: string;
 }

@@ -46,7 +46,8 @@ function ClassNoteModal({ isOpen, onClose, editData, selectedDate }: ClassNoteMo
   const { mutateAsync: mutateCreate } = useCreateClassNote();
   const { mutateAsync: mutateUpdate } = useUpdateClassNote();
   async function handleSubmit(data: { materials: string }) {
-    const selectedClassNoteDate = classDetail?.class_notes?.find(note => note.date.split("T")[0] === selectedDate)
+    const selectedClassNoteDate = classDetail?.class_notes?.find(note => note.date.split("T")[0] === selectedDate);
+
     let response;
     if ((selectedClassNoteDate?.entries?.length || 0) > 0) {
       response = await mutateUpdate({

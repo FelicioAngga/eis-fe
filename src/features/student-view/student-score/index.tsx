@@ -42,17 +42,21 @@ function StudentViewScore() {
             <td className="border border-gray-500 px-3 py-1.5">Pembagian Nilai</td>
             <td className="border border-gray-500 px-3 py-1.5 text-center">Nilai</td>
           </tr>
-          {studentScore?.data.map((score, idx) => (
+          {studentScore?.data?.map((score, idx) => (
             <React.Fragment key={idx}>
               <tr>
-                <td rowSpan={4} className="border border-gray-500 text-center px-3 py-1.5">{idx + 1}</td>
-                <td className="border border-gray-500 px-3 py-1.5" rowSpan={4}>{score.subject_name}</td>
-                <td className="border border-gray-500 px-3 py-1.5">Tugas</td>
-                <td className="border border-gray-500 px-3 py-1.5 text-center">{score.quiz}</td>
+                <td rowSpan={5} className="border border-gray-500 text-center px-3 py-1.5">{idx + 1}</td>
+                <td className="border border-gray-500 px-3 py-1.5" rowSpan={5}>{score.subject_name}</td>
+                <td className="border border-gray-500 px-3 py-1.5">Tugas Bulanan 1</td>
+                <td className="border border-gray-500 px-3 py-1.5 text-center">{score.first_quiz}</td>
               </tr>
               <tr>
                 <td className="border border-gray-500 px-3 py-1.5">Bulanan 1</td>
                 <td className="border border-gray-500 text-center px-3 py-1.5">{score.first_month}</td>
+              </tr>
+              <tr>
+                <td className="border border-gray-500 px-3 py-1.5">Tugas Bulanan 2</td>
+                <td className="border border-gray-500 text-center px-3 py-1.5">{score.second_quiz}</td>
               </tr>
               <tr>
                 <td className="border border-gray-500 px-3 py-1.5">Bulanan 2</td>

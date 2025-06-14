@@ -2,7 +2,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { useClassDetail } from '../../../api-hooks/class/api';
 import { useEffect, useState } from 'react';
 import Button from '../../../components/Button';
-import { useBrowseAbsenceByAcademicId, useUpdateAbsence } from '../../../api-hooks/absence/api';
+import { useBrowseAbsenceByAcademicIdAndTermId, useUpdateAbsence } from '../../../api-hooks/absence/api';
 import { useAlert } from '../../../contexts/AlertContext';
 import { useQueryClient } from '@tanstack/react-query';
 
@@ -19,8 +19,15 @@ function AbsenceDetail() {
   const navigate = useNavigate();
   const { data: classDetail } = useClassDetail(id ? parseInt(id) : 0);
   const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split("T")[0] || "");
-  const { data: absenceData } = useBrowseAbsenceByAcademicId(id ? parseInt(id) : 0, selectedDate, { pagination: { limit: 99999}, search: "" });
+  const [termId, setTermId] = useState<number>(0);
   const [radioValues, setRadioValues] = useState<RadioState>({});
+
+  const { data: absenceData } = useBrowseAbsenceByAcademicIdAndTermId(
+    id ? parseInt(id) : 0, 
+    termId, 
+    selectedDate, 
+    { pagination: { limit: 99999}, search: "" }
+  );
 
   const handleRadioChange = (rowIndex: number, value: OptionValue) => {
     setRadioValues((prev) => ({
@@ -39,6 +46,7 @@ function AbsenceDetail() {
       academic_id: id ? parseInt(id) : 0,
       date: selectedDate,
       students,
+      term_id: termId,
     });
     if (response.status === 200) {
       showAlert({
@@ -67,7 +75,11 @@ function AbsenceDetail() {
       initialValues[absence.student_id] = absence.status as OptionValue;
     });
     setRadioValues(initialValues);
-  }, [classDetail, selectedDate, absenceData]);
+  }, [classDetail, selectedDate, absenceData, termId]);
+
+  useEffect(() => {
+    setTermId(classDetail?.data?.terms?.[0]?.id || 0);
+  }, [classDetail?.data?.terms]);
 
   return (
     <div>
@@ -86,6 +98,25 @@ function AbsenceDetail() {
                     value={selectedDate || ""}
                     onChange={(e) => setSelectedDate(e.currentTarget.value || "")}
                   />
+                </td>
+              </tr>
+              <tr>
+                <td className="pr-8 pb-2">Semester</td>
+                <td className="pr-8 pb-2">:</td>
+                <td className="pr-8 pb-2">
+                  <div className="relative pr-3">
+                    <select
+                      className="w-full border border-gray-300 appearance-none rounded-md px-3 py-2 cursor-pointer"
+                      onChange={(e) => setTermId(parseInt(e.currentTarget.value))}
+                    >
+                      {classDetail?.data?.terms?.map(term => 
+                        <option value={term.id} key={term.id}>{term.name}</option>
+                      )}
+                    </select>
+                    <div className="absolute inset-y-0 right-5 flex items-center px-2 pointer-events-none">
+                      <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </div>
+                  </div>
                 </td>
               </tr>
               <tr>

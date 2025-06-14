@@ -1,5 +1,6 @@
 export type StudentGradesModel = {
   academic_id: number;
+  term_id: number;
   details: StudentGradesDetailModel[];
 }
 

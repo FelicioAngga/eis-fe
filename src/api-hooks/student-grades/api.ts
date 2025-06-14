@@ -4,14 +4,14 @@ import { BASE_URL } from "../../utils/base-url";
 import { ResponseModel } from "../method";
 import { useApiCall } from "../../hooks/useApiCall";
 
-export const useGetStudentGrades = (academicId: number) => {
+export const useGetStudentGrades = (academicId: number, termId: number) => {
   const apiCall = useApiCall<{ data: StudentGradesModel }>({
     method: "GET",
-    url: `${BASE_URL}/academics/${academicId}/grades`,
+    url: `${BASE_URL}/academics/${academicId}/${termId}/grades`,
   });
 
   return useQuery({
-    queryKey: ["student-grades", academicId],
+    queryKey: ["student-grades", academicId, termId],
     queryFn: async () => {
       return await apiCall();
     },
@@ -41,7 +41,7 @@ export const useCreateStudentGrades = () => {
   return useMutation({
     mutationFn: async (data: StudentGradesModel) => {
       return await apiCall({ 
-        url: `${BASE_URL}/academics/${data.academic_id}/grades`,
+        url: `${BASE_URL}/academics/${data.academic_id}/${data.term_id}/grades`,
         body: data
       });
     },
@@ -57,7 +57,7 @@ export const useUpdateStudentGrades = () => {
   return useMutation({
     mutationFn: async (data: StudentGradesModel) => {
       return await apiCall({ 
-        url: `${BASE_URL}/academics/${data.academic_id}/grades`,
+        url: `${BASE_URL}/academics/${data.academic_id}/${data.term_id}/grades`,
         body: data
       });
     },

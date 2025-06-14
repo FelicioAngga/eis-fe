@@ -6,6 +6,7 @@ export type CreateAbsenceBatchModel = {
 
 export type UpdateAbsenceModel = {
   academic_id: number;
+  term_id: number;
   date: string;
   students: StudentAbsenceModel[];
 };

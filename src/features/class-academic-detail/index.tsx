@@ -23,6 +23,7 @@ export default function ClassAcademicDetail() {
   const { activeMenu } = useSelector((state: RootState) => state.classAcademic);
 
   const { data: classDetail } = useClassDetail(id ? parseInt(id) : 0);
+  const [termId, setTermId] = useState<number>(classDetail?.data.terms?.[0]?.id || 0);
   const { data: teacherData } = useTeacherQuery({ pagination: { limit: 99999 }, search: "" });
   const [homeRoomTeacherId, setHomeRoomTeacherId] = useState<number | null>(null);
   const [major, setMajor] = useState<string>("General");
@@ -66,6 +67,7 @@ export default function ClassAcademicDetail() {
     dispatch(changeClassDetail(classDetail.data))
     setMajor(classDetail.data.major || "General");
     setHomeRoomTeacherId(classDetail.data.homeroom_teacher_id || null);
+    setTermId(classDetail.data.terms?.[0]?.id || 0);
   }, [classDetail]);
 
   useEffect(() => {
@@ -75,8 +77,8 @@ export default function ClassAcademicDetail() {
     }
   }, []);
 
-  if (activeMenu === "class-note") return <ClassNotes />
-  if (activeMenu === "class-marks") return <ClassMarks />
+  if (activeMenu === "class-note") return <ClassNotes parentTermId={termId} />
+  if (activeMenu === "class-marks") return <ClassMarks setTermId={setTermId} termId={termId} />
   
   if (!activeMenu) return (
     <div>
@@ -117,6 +119,26 @@ export default function ClassAcademicDetail() {
                       <option value="General">General</option>
                       <option value="IPA">IPA</option>
                       <option value="IPS">IPS</option>
+                    </select>
+                    <div className="absolute inset-y-0 right-5 flex items-center px-2 pointer-events-none">
+                      <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td className="pr-8 pb-2">Semester</td>
+                <td className="pr-8 pb-2">:</td>
+                <td className="pr-8 pb-2">
+                  <div className="relative pr-3">
+                    <select
+                      className="w-full border border-gray-300 appearance-none rounded-md px-3 py-2 cursor-pointer"
+                      onChange={(e) => setTermId(parseInt(e.currentTarget.value))}
+                      value={termId}
+                    >
+                      {classDetail?.data?.terms?.map(term => 
+                        <option value={term.id} key={term.id}>{term.name}</option>
+                      )}
                     </select>
                     <div className="absolute inset-y-0 right-5 flex items-center px-2 pointer-events-none">
                       <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
@@ -204,7 +226,7 @@ export default function ClassAcademicDetail() {
       </div>
 
       <div className="my-5 bg-gray-400 h-[1px]"></div>
-      <ClassAcademicTable />
+      <ClassAcademicTable termId={termId} />
     </div>
   );
 }

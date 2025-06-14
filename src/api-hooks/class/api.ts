@@ -113,16 +113,17 @@ export const useUpdateClassNote = () => {
   });
 }
 
-export const useDetailClassNote = (academic_id: number) => {
+export const useDetailClassNote = (academic_id: number, term_id: number) => {
   const apiCall = useApiCall<{ data: ClassNoteDetailModel[] }>({
     method: "GET",
-    url: `${BASE_URL}/academics/${academic_id}/classnotes?limit=99999`,
+    url: `${BASE_URL}/academics/${academic_id}/${term_id}/classnotes?limit=99999`,
   });
 
   return useQuery({
-    queryKey: ["classNote", academic_id],
+    queryKey: ["classNote", academic_id, term_id],
     queryFn: async () => {
       return await apiCall();
     },
+    enabled: !!academic_id && !!term_id,
   });
 }

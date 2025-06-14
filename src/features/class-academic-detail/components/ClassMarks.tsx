@@ -15,12 +15,17 @@ import { useAlert } from "../../../contexts/AlertContext";
 import { useQueryClient } from "@tanstack/react-query";
 import { downloadStudentMarksExcel, handleImportStudentMarks } from "../helpers/student-marks.excel";
 
-function ClassMarks() {
+interface ClassMarksProps {
+  termId: number;
+  setTermId: React.Dispatch<React.SetStateAction<number>>;
+}
+
+function ClassMarks({ setTermId, termId }: ClassMarksProps) {
   const { id } = useParams();
   const queryClient = useQueryClient();
   const dispatch = useDispatch();
   const { showAlert } = useAlert();
-  const { data: studentGradesData } = useGetStudentGrades(parseInt(id || "0"));
+  const { data: studentGradesData } = useGetStudentGrades(parseInt(id || "0"), termId);
     const inputFileRef = useRef<HTMLInputElement>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { classDetail } = useSelector((state: RootState) => state.classAcademic);
@@ -127,6 +132,7 @@ function ClassMarks() {
     const mutate = studentGradesData?.data.details?.length ? mutateUpdate : mutateCreate;
     const response = await mutate({
       academic_id: id ? parseInt(id) : 0,
+      term_id: termId,
       details: studentMarks,
     });
     
@@ -153,7 +159,8 @@ function ClassMarks() {
   };
 
   useEffect(() => {
-    if (!studentGradesData?.data?.details) return;
+    if (!studentGradesData?.data) return;
+    console.log("Student Grades Data:", studentGradesData.data.details);
     setStudentMarks(studentGradesData.data.details || []);
   }, [studentGradesData?.data?.details]);
 
@@ -189,6 +196,26 @@ function ClassMarks() {
                 <td className="pr-8 pb-3">Wali Kelas</td>
                 <td className="pr-8 pb-3">:</td>
                 <td className="pr-8 pb-3">{classDetail?.homeroom_teacher}</td>
+              </tr>
+              <tr>
+                <td className="pr-8 pb-2">Semester</td>
+                <td className="pr-8 pb-2">:</td>
+                <td className="pr-8 pb-2">
+                  <div className="relative pr-3">
+                    <select
+                      className="w-full border border-gray-300 appearance-none rounded-md px-3 py-2 cursor-pointer"
+                      onChange={(e) => setTermId(parseInt(e.currentTarget.value))}
+                      value={termId}
+                    >
+                      {classDetail?.terms?.map(term => 
+                        <option value={term.id} key={term.id}>{term.name}</option>
+                      )}
+                    </select>
+                    <div className="absolute inset-y-0 right-5 flex items-center px-2 pointer-events-none">
+                      <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </div>
+                  </div>
+                </td>
               </tr>
             </tbody>
           </table>

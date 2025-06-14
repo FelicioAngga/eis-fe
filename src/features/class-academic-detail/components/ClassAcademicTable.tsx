@@ -8,8 +8,11 @@ import { useClassDetail } from "../../../api-hooks/class/api";
 import { useParams } from "react-router-dom";
 import { StudentModel } from "../../../api-hooks/students/models/StudentModel";
 
+interface ClassAcademicTableProps {
+  termId: number;
+}
 
-function ClassAcademicTable() {
+function ClassAcademicTable({ termId }: ClassAcademicTableProps) {
   const { id } = useParams();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAddStudentModalOpen, setIsAddStudentModalOpen] = useState(false);
@@ -17,7 +20,7 @@ function ClassAcademicTable() {
   const [checkedStudents, setCheckedStudents] = useState<StudentModel[]>([]);
 
   function handlePrint(studentId: number) {
-    window.open(`/class/student-report/${studentId}/${id}`, "_blank");
+    window.open(`/class/student-report/${studentId}/${id}/${termId}`, "_blank");
   }
 
   return (

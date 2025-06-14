@@ -19,10 +19,10 @@ export const useCreateAbsenceBatch = () => {
   });
 }
 
-export const useBrowseAbsenceByAcademicId = (academicId: number, date: string, params: StudentAbsenceParams) => {
+export const useBrowseAbsenceByAcademicIdAndTermId = (academicId: number, termId: number, date: string, params: StudentAbsenceParams) => {
   const apiCall = useApiCall<ResponseStudentAbsenceModel>({
     method: "GET",
-    url: `${BASE_URL}/academics/${academicId}/attendances`,
+    url: `${BASE_URL}/academics/${academicId}/${termId}/attendances`,
     inputOptions: {
       ...params?.pagination,
       ...(date ? { date: date } : {}),
@@ -30,10 +30,11 @@ export const useBrowseAbsenceByAcademicId = (academicId: number, date: string, p
   });
 
   return useQuery({
-    queryKey: ["student-attendances", date, params],
+    queryKey: ["student-attendances", date, termId, params],
     queryFn: async () => {
       return await apiCall();
     },
+    enabled: !!academicId && !!termId,
   });
 }
 
@@ -45,7 +46,7 @@ export const useUpdateAbsence = () => {
   return useMutation({
     mutationFn: async (data: UpdateAbsenceModel) => {
       return await apiCall({ 
-        url: `${BASE_URL}/academics/${data.academic_id}/attendances`,
+        url: `${BASE_URL}/academics/${data.academic_id}/${data.term_id}/attendances`,
         body: data
       });
     },
