@@ -9,6 +9,7 @@ export default function () {
     endDate: "",
     level_id: "",
     academic_id: "",
+    term_id: "",
   });
 
   const { data: studentAbsenceReport } = useGetStudentAbsenceReport({
@@ -17,6 +18,7 @@ export default function () {
     end_date: search.endDate,
     level_id: search.level_id,
     academic_id: search.academic_id,
+    term_id: search.term_id,
   });
 
   function handleSearch(data: {
@@ -25,6 +27,7 @@ export default function () {
     endDate: string;
     level_id?: string;
     academic_id?: string;
+    term_id?: string;
   }) {
     setSearch({
       name: data.name,
@@ -32,6 +35,7 @@ export default function () {
       endDate: data.endDate,
       level_id: data.level_id || "",
       academic_id: data.academic_id || "",
+      term_id: data.term_id || "",
     });
   }
 

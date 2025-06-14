@@ -160,7 +160,6 @@ function ClassMarks({ setTermId, termId }: ClassMarksProps) {
 
   useEffect(() => {
     if (!studentGradesData?.data) return;
-    console.log("Student Grades Data:", studentGradesData.data.details);
     setStudentMarks(studentGradesData.data.details || []);
   }, [studentGradesData?.data?.details]);
 

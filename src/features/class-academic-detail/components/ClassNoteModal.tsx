@@ -74,9 +74,8 @@ function ClassNoteModal({ isOpen, onClose, editData, selectedDate }: ClassNoteMo
         message: "Catatan kelas berhasil disimpan",
         type: "success",
       });
-      queryClient.invalidateQueries({
-        queryKey: ["class", editData?.academic_id],
-      })
+      queryClient.invalidateQueries({queryKey: ["class", editData?.academic_id]})
+      queryClient.invalidateQueries({queryKey: ["classNote", editData?.academic_id]});
       handleClose();
     } else {
       showAlert({

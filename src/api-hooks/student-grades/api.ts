@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { StudentGradeReportModel, StudentGradeReportParams, StudentGradesModel, StudentScoreModel } from "./models/StudentGradesModel";
+import { StudentAcademicModel, StudentGradeReportModel, StudentGradeReportParams, StudentGradesModel, StudentScoreModel } from "./models/StudentGradesModel";
 import { BASE_URL } from "../../utils/base-url";
 import { ResponseModel } from "../method";
 import { useApiCall } from "../../hooks/useApiCall";
@@ -18,17 +18,18 @@ export const useGetStudentGrades = (academicId: number, termId: number) => {
   });
 }
 
-export const useGetStudentGradeByToken = () => {
+export const useGetStudentGradeByToken = (academic_id: number, term_id: number) => {
   const apiCall = useApiCall<{ data: StudentScoreModel[] }>({
     method: "GET",
-    url: `${BASE_URL}/students/score`,
+    url: `${BASE_URL}/students/my/${academic_id}/${term_id}/scores`,
   });
 
   return useQuery({
-    queryKey: ["student-grades-by-token"],
+    queryKey: ["student-grades-by-token", academic_id, term_id],
     queryFn: async () => {
       return await apiCall();
     },
+    enabled: !!academic_id && !!term_id,
   });
 }
 
@@ -76,11 +77,26 @@ export const useGetExamRecap = (params: StudentGradeReportParams) => {
       ...(params?.academic_year ? { academic_year: params.academic_year } : {}),
       ...(params?.level_id ? { level_id: params.level_id } : {}),
       ...(params?.academic_id ? { academic_id: params.academic_id } : {}),
+      ...(params?.term_id ? { term_id: params.term_id } : {}),
     }
   });
 
   return useQuery({
     queryKey: ["exam-recap", params],
+    queryFn: async () => {
+      return await apiCall();
+    },
+  });
+}
+
+export const useGetAcademicsByStudent = () => {
+  const apiCall = useApiCall<{ data: StudentAcademicModel[] }>({
+    method: "GET",
+    url: `${BASE_URL}/students/my/academics`,
+  });
+
+  return useQuery({
+    queryKey: ["academics-by-student"],
     queryFn: async () => {
       return await apiCall();
     },

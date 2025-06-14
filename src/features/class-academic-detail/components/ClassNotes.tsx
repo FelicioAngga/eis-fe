@@ -28,7 +28,7 @@ function ClassNotes({ parentTermId }: { parentTermId: number }) {
     selectedDate,
     { pagination: { limit: 99999},search: "" }
   );
-  const { data: classNoteDetail } = useDetailClassNote(id ? parseInt(id) : 0, parentTermId);
+  const { data: classNoteDetail } = useDetailClassNote(id ? parseInt(id) : 0);
 
   useEffect(() => {
     if (!selectedDate) return;

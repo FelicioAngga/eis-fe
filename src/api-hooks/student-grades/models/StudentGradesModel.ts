@@ -36,6 +36,7 @@ export type StudentGradeReportParams = {
   academic_id: number;
   level_id: number;
   academic_year: string;
+  term_id: number;
 }
 
 export type StudentGradeReportModel = {
@@ -48,4 +49,14 @@ export type StudentGradeReportModel = {
     student: string;
     class: string;
   }[]
+}
+
+export type StudentAcademicModel = {
+  id: number;
+  display_name: string;
+  terms: {
+    id: number;
+    name: string;
+    display_name: string;
+  }[];
 }

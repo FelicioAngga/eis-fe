@@ -23,7 +23,7 @@ export default function ClassAcademicDetail() {
   const { activeMenu } = useSelector((state: RootState) => state.classAcademic);
 
   const { data: classDetail } = useClassDetail(id ? parseInt(id) : 0);
-  const [termId, setTermId] = useState<number>(classDetail?.data.terms?.[0]?.id || 0);
+  const [termId, setTermId] = useState<number>(classDetail?.data?.terms?.[0]?.id || 0);
   const { data: teacherData } = useTeacherQuery({ pagination: { limit: 99999 }, search: "" });
   const [homeRoomTeacherId, setHomeRoomTeacherId] = useState<number | null>(null);
   const [major, setMajor] = useState<string>("General");
@@ -67,7 +67,7 @@ export default function ClassAcademicDetail() {
     dispatch(changeClassDetail(classDetail.data))
     setMajor(classDetail.data.major || "General");
     setHomeRoomTeacherId(classDetail.data.homeroom_teacher_id || null);
-    setTermId(classDetail.data.terms?.[0]?.id || 0);
+    setTermId(classDetail.data?.terms?.[0]?.id || 0);
   }, [classDetail]);
 
   useEffect(() => {
