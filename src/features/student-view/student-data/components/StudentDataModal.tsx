@@ -90,7 +90,7 @@ function StudentDataModal({ isOpen, onClose, editData }: StudentDataModalProps) 
           />
         </div>
         <div className="mt-4 flex gap-5">
-          <Button className="w-full" type="button" variant="outline">Batal</Button>
+          <Button onClick={onClose} className="w-full" type="button" variant="outline">Batal</Button>
           <Button disabled={isPending} className="w-full">Simpan</Button>
         </div>
       </Form>

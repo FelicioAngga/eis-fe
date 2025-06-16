@@ -14,9 +14,9 @@ function NavBarPopOver() {
   return (
     <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
       <PopoverTrigger asChild>
-        <div className="flex gap-4 items-center cursor-pointer min-w-[150px]">
-          <img src={isStudent ? studentData?.data.profile_pic || defaultUser : defaultUser} className="size-10 object-cover rounded-full" />
-          <p className="font-semibold text-sm">{getUser()?.name || ""}</p>
+        <div className="flex gap-2 md:gap-4 items-center cursor-pointer md:min-w-[150px]">
+          <img src={isStudent ? studentData?.data.profile_pic || defaultUser : defaultUser} className="size-6 md:size-10 object-cover rounded-full" />
+          <p className="font-semibold text-xs md:text-sm">{getUser()?.name || ""}</p>
         </div>
       </PopoverTrigger>
       <PopoverContent className="py-3 px-2 rounded bg-white">

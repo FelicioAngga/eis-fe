@@ -18,7 +18,7 @@ function StudentViewData() {
   }, [studentData?.data.guardians]);
 
   return (
-    <div className="flex gap-5">
+    <div className="flex flex-col md:flex-row gap-5">
       <StudentDataModal editData={studentData?.data} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
       <StudentDataCard studentData={studentData?.data} />
       <div className="w-full border border-gray-300 rounded-lg p-3">

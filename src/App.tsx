@@ -53,7 +53,6 @@ function App() {
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
         <AlertProvider>
-
           <AuthProvider>
             <BrowserRouter>
               <Routes>
@@ -110,9 +109,9 @@ const PrivateRoute = () => {
   return isAuthenticated ? (
     <>
       <NavBar />
-      <div className="flex h-[91.5vh]">
+      <div className="flex flex-col md:flex-row md:h-[91.5vh]">
         <Sidebar />
-        <div className="flex-1 overflow-auto p-6">
+        <div className="flex-1 overflow-auto p-3 md:p-6">
           <Outlet />
         </div>
       </div>
