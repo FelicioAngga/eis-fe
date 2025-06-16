@@ -60,6 +60,7 @@ export function TimeInputRHF({
         </svg>
       </div>
       <input
+        {...props}
         ref={timeInputRef}
         id={inputId}
         type="time"

@@ -137,14 +137,14 @@ function GradeModal({ isOpen, onClose, editData }: GradeModalProps) {
             name="principle_id"
             label="Kepala Sekolah"
             placeholder="Pilih Kepala Sekolah"
-            options={userList?.data?.map(user => ({ label: user.name, value: user.id.toString() }))}
+            options={userList?.data?.map(user => ({ label: user.name, value: user?.id?.toString() || "" }))}
           />
           <Input 
             type="select"
             name="operator_id"
             label="Operator"
             placeholder="Pilih Operator"
-            options={userList?.data?.map(user => ({ label: user.name, value: user.id.toString() }))}
+            options={userList?.data?.map(user => ({ label: user.name, value: user?.id?.toString() || "" }))}
           />
 
           <div className="flex gap-4 mt-4">

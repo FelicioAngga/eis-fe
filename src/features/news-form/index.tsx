@@ -22,7 +22,7 @@ export default function NewsForm() {
 
   const { mutateAsync: addNews, isPending: isCreating } = useCreateNews();
   const { mutateAsync: updateNews, isPending: isUpdating } = useUpdateNews();
-  const { mutateAsync: deleteNews, isPending: isDeleting } = useDeleteNews();
+  const { mutateAsync: deleteNews } = useDeleteNews();
 
   async function handleSubmit() {
     if (!title || !value || !selectedFile || !previewUrl) {
