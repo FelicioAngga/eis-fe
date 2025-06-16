@@ -20,7 +20,7 @@ interface TransferClassModalProps {
   students?: StudentModel[];
 }
 
-function TransferClassModal({ isOpen, onClose, studentToTransfer, students, setStudentToTransfer }: TransferClassModalProps) {
+function TransferClassModal({ isOpen, onClose, studentToTransfer, setStudentToTransfer }: TransferClassModalProps) {
   const { showAlert } = useAlert();
   const queryClient = useQueryClient();
   const { classDetail } = useSelector((state: RootState) => state.classAcademic);
@@ -52,15 +52,10 @@ function TransferClassModal({ isOpen, onClose, studentToTransfer, students, setS
     const studentIds = studentToTransfer?.map(student => student.id);
     const response = await mutateAsync({
       ...selectedClass,
-      students: studentIds as any || [],
+      students: [...(selectedClass?.students?.map(student => student?.id) || []), ...studentIds as any],
     });
-    setStudentToTransfer?.([]);
     if (response.status === 200) {
-      const lastResponse = await mutateAsync({
-        ...classDetail,
-        students: students?.filter(student => !studentToTransfer?.some(s => s.id === student.id)).map(student => student.id || 0) as any || [],
-      });
-      if (lastResponse.status === 200) {
+      if (response.status === 200) {
         showAlert({
           title: 'Sukses',
           type: 'success',
@@ -69,6 +64,7 @@ function TransferClassModal({ isOpen, onClose, studentToTransfer, students, setS
         queryClient.invalidateQueries({
           queryKey: ['class', classDetail.id],
         });
+        setStudentToTransfer?.([]);
         onClose();
       }
     }

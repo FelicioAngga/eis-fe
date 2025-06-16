@@ -4,9 +4,12 @@ import Checkbox from "../../../components/Checkbox";
 import TransferClassModal from "./TransferClassModal";
 import { useState } from "react";
 import AddStudentToAcademicModal from "./AddStudentToAcademicModal";
-import { useClassDetail } from "../../../api-hooks/class/api";
+import { useClassDetail, useUpdateAcademic } from "../../../api-hooks/class/api";
 import { useParams } from "react-router-dom";
 import { StudentModel } from "../../../api-hooks/students/models/StudentModel";
+import Swal from "sweetalert2";
+import { useQueryClient } from "@tanstack/react-query";
+import { useAlert } from "../../../contexts/AlertContext";
 
 interface ClassAcademicTableProps {
   termId: number;
@@ -14,6 +17,8 @@ interface ClassAcademicTableProps {
 
 function ClassAcademicTable({ termId }: ClassAcademicTableProps) {
   const { id } = useParams();
+  const { showAlert } = useAlert();
+  const queryClient = useQueryClient();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAddStudentModalOpen, setIsAddStudentModalOpen] = useState(false);
   const { data: classDetail } = useClassDetail(id ? parseInt(id) : 0);
@@ -23,6 +28,37 @@ function ClassAcademicTable({ termId }: ClassAcademicTableProps) {
     window.open(`/class/student-report/${studentId}/${id}/${termId}`, "_blank");
   }
 
+  const { mutateAsync } = useUpdateAcademic();
+  const handleDelete = async () => {
+    if (!classDetail?.data) return;
+
+    const swalResponse = await Swal.fire({
+      title: 'Konfirmasi',
+      text: `Apakah Anda yakin ingin menghapus ${checkedStudents.length} murid?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Hapus',
+      cancelButtonText: 'Batal',
+    });
+    if (!swalResponse.isConfirmed) return;
+    const response = await mutateAsync({
+      ...classDetail?.data,
+      students: classDetail?.data.students?.
+        filter(student => !checkedStudents.
+          some(s => s.id === student.id))
+          .map(student => student.id) as any || [],
+    });
+    if (response.status === 200) {
+      setCheckedStudents([]);
+      showAlert({
+        title: 'Sukses',
+        type: 'success',
+        message: `Berhasil menghapus siswa dari kelas ${classDetail.data.display_name}`,
+      });
+      queryClient.invalidateQueries({queryKey: ['class', classDetail.data.id],});
+    }
+  }
+  
   return (
     <div className="border p-3 rounded-lg border-gray-300">
       <TransferClassModal 
@@ -39,6 +75,7 @@ function ClassAcademicTable({ termId }: ClassAcademicTableProps) {
       <div className="flex items-center justify-between">
         <p className="font-semibold text-lg">Data Siswa</p>
         <div className="flex gap-5">
+          <Button className="bg-danger" onClick={() => handleDelete()}>Hapus Murid</Button>
           <Button onClick={() => setIsAddStudentModalOpen(true)}>Tambah Murid</Button>
           <Button onClick={() => setIsModalOpen(true)}>Pindah Kelas</Button>
         </div>
