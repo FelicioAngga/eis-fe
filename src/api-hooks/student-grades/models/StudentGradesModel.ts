@@ -20,6 +20,7 @@ export type StudentGradesEntryModel = {
   first_month?: number;
   second_month?: number;
   finals?: number;
+  final_grade?: number;
   remarks?: string;
 }
 
@@ -30,6 +31,7 @@ export type StudentScoreModel = {
   first_month?: number;
   second_month?: number;
   finals?: number;
+  final_grade?: number;
 }
 
 export type StudentGradeReportParams = {
@@ -43,7 +45,8 @@ export type StudentGradeReportModel = {
   average: number;
   class: string;
   students: {
-    finals: number;
+    final_grade?: number;
+    finals?: number;
     nis: string;
     rank: number;
     student: string;

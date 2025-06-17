@@ -73,7 +73,7 @@ function RegistrationTable({
       },
       {
         accessorKey: "full_name",
-        header: () => "Name",
+        header: () => "Nama",
       },
       {
         accessorKey: "address",

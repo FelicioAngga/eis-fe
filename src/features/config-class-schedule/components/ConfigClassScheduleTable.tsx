@@ -33,7 +33,7 @@ function ConfigClassScheduleTable({ paginationModel, search }: ConfigClassSchedT
       },
       {
         accessorKey: "display_name",
-        header: () => "Name Kelas",
+        header: () => "Nama Kelas",
       },
       {
         accessorKey: "homeroom_teacher",

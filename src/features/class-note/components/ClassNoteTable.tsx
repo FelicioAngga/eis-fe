@@ -34,7 +34,7 @@ function ClassNoteTable({ paginationModel, search }: ClassNoteTableProps) {
       },
       {
         accessorKey: "display_name",
-        header: () => "Name Kelas",
+        header: () => "Nama Kelas",
       },
       {
         accessorKey: "homeroom_teacher",

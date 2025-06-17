@@ -84,7 +84,7 @@ function StudentTable({ paginationModel, search }: StudentTableProps) {
       },
       {
         accessorKey: "full_name",
-        header: () => "Name Lengkap",
+        header: () => "Nama Lengkap",
       },
       {
         accessorKey: "nisn",
@@ -111,8 +111,8 @@ function StudentTable({ paginationModel, search }: StudentTableProps) {
       {
         accessorKey: "class",
         header: () => "Kelas",
-        cell: () => (
-          <div>{"-"}</div>
+        cell: ({ row }) => (
+          <div>{row.original.academics?.classroom.display_name}</div>
         ),
       },
       {

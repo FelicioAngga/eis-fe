@@ -63,7 +63,7 @@ function ConfigClassTable({ paginationModel, search, handleEdit }: ConfigClassTa
       },
       {
         accessorKey: "display_name",
-        header: () => "Name",
+        header: () => "Nama",
       },
       {
         accessorKey: "level",

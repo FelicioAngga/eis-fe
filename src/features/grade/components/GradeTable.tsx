@@ -35,7 +35,7 @@ function GradeTable({ paginationModel, search, handleEdit }: GradeTableProps) {
       },
       {
         accessorKey: "name",
-        header: () => "Nam",
+        header: () => "Nama",
       },
       {
         accessorKey: "op_cert_num",

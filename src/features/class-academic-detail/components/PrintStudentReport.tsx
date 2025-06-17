@@ -36,7 +36,7 @@ function PrintStudentReport() {
     }
 
     return {
-      score: student?.finals || 0,
+      score: student?.final_grade || 0,
       remarks: student?.remarks || "-"
     }
   }

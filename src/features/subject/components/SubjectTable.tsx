@@ -60,7 +60,7 @@ function SubjectTable({ paginationModel, search }: SubjectTableProps) {
       },
       {
         accessorKey: "name",
-        header: () => "Name",
+        header: () => "Nama",
         enableSorting: true,
       },
       {

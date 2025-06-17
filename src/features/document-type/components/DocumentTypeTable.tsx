@@ -61,7 +61,7 @@ function DocumentTypeTable({ paginationModel, search }: DocumentTypeProps) {
       },
       {
         accessorKey: "name",
-        header: () => "Name",
+        header: () => "Nama",
       },
       {
         accessorKey: "description",
