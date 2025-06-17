@@ -6,6 +6,7 @@ export type RegistrationModel = {
   profile_pic: string;
 	full_name: string;
 	identity_no: string;
+	nisn: string;
 	place_of_birth: string;
 	date_of_birth: string;
 	address: string;

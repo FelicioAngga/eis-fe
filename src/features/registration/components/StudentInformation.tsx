@@ -1,4 +1,5 @@
 import { RegistrationModel } from "../../../api-hooks/registration/models/RegistrationModel";
+import { formatDate } from "../../../utils/formatDate";
 
 function StudentInformation({ selectedData }: { selectedData?: RegistrationModel | null }) {
   return (
@@ -27,12 +28,20 @@ function StudentInformation({ selectedData }: { selectedData?: RegistrationModel
         <table>
           <tbody>
             <tr>
+              <td className="pb-2">NISN</td>
+              <td className="pl-5 pb-2">{selectedData?.nisn || "-"}</td>
+            </tr>
+            <tr>
+              <td className="pb-2">NIK</td>
+              <td className="pl-5 pb-2">{selectedData?.identity_no || "-"}</td>
+            </tr>
+            <tr>
               <td className="pb-2">Tempat Lahir</td>
               <td className="pl-5 pb-2">{selectedData?.place_of_birth || "-"}</td>
             </tr>
             <tr>
               <td className="pb-2">Tanggal Lahir</td>
-              <td className="pl-5 pb-2">{selectedData?.date_of_birth || "-"}</td>
+              <td className="pl-5 pb-2">{formatDate(selectedData?.date_of_birth || "") || "-"}</td>
             </tr>
             <tr>
               <td className="pb-2">Agama</td>

@@ -15,19 +15,25 @@ function Documents({ selectedData }: { selectedData?: RegistrationModel | null }
   }
 
   function handleOpenBirthCertif() {
-    const typeId = docTypes?.data.find(docType => docType.name.toLowerCase() === "akte lahir")?.id;
+    const typeId = docTypes?.data.find(docType => docType.name.toLowerCase() === "akta kelahiran")?.id;
     const file = documents.find(doc => doc.type_id === typeId)?.uploaded_file;
     previewBase64Image(file as string);
   }
 
   function handleOpenGuardianId() {
-    const typeId = docTypes?.data.find(docType => docType.name.toLowerCase() === "ktp wali")?.id;
+    const typeId = docTypes?.data.find(docType => docType.name.toLowerCase() === "ktp orang tua")?.id;
     const file = documents.find(doc => doc.type_id === typeId)?.uploaded_file;
     previewBase64Image(file as string);
   }
 
+  function handleOpenEducationCertif() {
+    const typeId = docTypes?.data.find(docType => docType.name.toLowerCase() === "ijazah")?.id;
+    const file = documents.find(doc => doc.type_id === typeId)?.uploaded_file;
+    previewBase64Image(file as string);
+  }
+  
   function handleOpenPayment() {
-    const typeId = docTypes?.data.find(docType => docType.name.toLowerCase() === "pembayaran")?.id;
+    const typeId = docTypes?.data.find(docType => docType.name.toLowerCase() === "bukti pembayaran")?.id;
     const file = documents.find(doc => doc.type_id === typeId)?.uploaded_file;
     previewBase64Image(file as string);
   }
@@ -47,6 +53,10 @@ function Documents({ selectedData }: { selectedData?: RegistrationModel | null }
         <div className="flex items-center">
           <div className="w-1/3">KTP Orang Tua/Wali</div>
           <div onClick={handleOpenGuardianId} className="cursor-pointer"><BsEye className="text-lg" /></div>
+        </div>
+        <div className="flex items-center">
+          <div className="w-1/3">Ijazah Terakhir</div>
+          <div onClick={handleOpenEducationCertif} className="cursor-pointer"><BsEye className="text-lg" /></div>
         </div>
       </div>
       <p className="font-semibold text-gray-600 mt-5">Bukti Transfer Pembayaran Pertama</p>

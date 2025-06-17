@@ -23,7 +23,7 @@ function RegistrationModal({ selectedData, isOpen, onClose }: RegistrationModalP
       maskClosable={false}
       centered
       width={600}
-      title={ selectedData?.full_name || "Detail Pendaftaran"}
+      title={`Nama Siswa: ${selectedData?.full_name}`}
     >
       <div className="flex gap-2 mb-2">
         <div 

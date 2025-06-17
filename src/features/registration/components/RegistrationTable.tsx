@@ -5,8 +5,9 @@ import Swal from "sweetalert2";
 import { useAlert } from "../../../contexts/AlertContext";
 import { useQueryClient } from "@tanstack/react-query";
 import {
-  useMarkRegistration,
+  useApproveRegistration,
   useRegistrationQuery,
+  useRejectRegistration,
 } from "../../../api-hooks/registration/api";
 import { formatDateTime } from "../../../utils/formatDate";
 import Button from "../../../components/Button";
@@ -26,7 +27,8 @@ function RegistrationTable({
 }: RegistrationTableProps) {
   const { showAlert } = useAlert();
   const queryClient = useQueryClient();
-  const { mutateAsync: mutateMark } = useMarkRegistration();
+  const { mutateAsync: mutateApprove } = useApproveRegistration();
+  const { mutateAsync: mutateReject } = useRejectRegistration();
 
   const { data } = useRegistrationQuery({
     pagination: {
@@ -38,7 +40,32 @@ function RegistrationTable({
     search: search || "",
   });
 
-  const handleMark = async (id: number) => {
+  const handleReject = async (id: number) => {
+    const modalResult = await Swal.fire({
+      title: "Konfirmasi",
+      text: "Berikan Alasan Menolak Data Ini",
+      icon: "warning",
+      input: "textarea",
+      inputPlaceholder: "Masukkan alasan penolakan",
+      inputLabel: "Alasan Penolakan",
+      confirmButtonText: "Ya",
+      showCancelButton: true,
+    });
+    if (!modalResult.isConfirmed) return;
+    const response = await mutateReject({ id, reason: modalResult.value || "" });
+    if (response.status === 200) {
+      queryClient.invalidateQueries({
+        queryKey: ["applicants"],
+      });
+      showAlert({
+        title: "Berhasil",
+        message: response.message,
+        type: "success",
+      });
+    }
+  }
+
+  const handleApprove = async (id: number) => {
     const modalResult = await Swal.fire({
       title: "Konfirmasi",
       text: "Apakah anda yakin ingin meninjau dan menerima data ini sebagai murid?",
@@ -47,7 +74,7 @@ function RegistrationTable({
       showCancelButton: true,
     });
     if (!modalResult.isConfirmed) return;
-    const response = await mutateMark(id);
+    const response = await mutateApprove(id);
     if (response.status === 200) {
       queryClient.invalidateQueries({
         queryKey: ["applicants"],
@@ -114,11 +141,16 @@ function RegistrationTable({
         cell: ({ row }) => (
           <div>
             {row.original.state === "draft" ? (
-              <Button onClick={() => handleMark(row.original.id)}>
-                Tandai
-              </Button>
+              <div className="flex gap-2">
+                <Button className="bg-danger" onClick={() => handleReject(row.original.id)}>Tolak</Button>
+                <Button onClick={() => handleApprove(row.original.id)}>Setujui</Button>
+              </div>
             ) : (
-              <div className="bg-green-400 text-white w-fit px-2 py-1 rounded-lg">Marked</div>
+              <div>
+                {row.original.state === "rejected" 
+                ? <div className="bg-red-400 text-white w-fit px-2 py-1 rounded-lg">Ditolak</div> 
+                : <div className="bg-green-400 text-white w-fit px-2 py-1 rounded-lg">Diterima</div>}
+              </div>
             )}
           </div>
         ),

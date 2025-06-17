@@ -22,7 +22,7 @@ export const useRegistrationQuery = (params: RegistrationParams) => {
   });
 }
 
-export const useMarkRegistration = () => {
+export const useApproveRegistration = () => {
   const apiCall = useApiCall<ResponseModel<any>>({
     method: "POST",
     url: `${BASE_URL}/approve`,
@@ -32,6 +32,24 @@ export const useMarkRegistration = () => {
     mutationFn: async (id: number) => {
       return await apiCall({ 
         url: `${BASE_URL}/applicants/approve/${id}`,
+      });
+    },
+  });
+}
+
+export const useRejectRegistration = () => {
+  const apiCall = useApiCall<ResponseModel<any>>({
+    method: "POST",
+    url: `${BASE_URL}/reject`,
+  });
+
+  return useMutation({
+    mutationFn: async ({ id, reason }: { id: number, reason: string }) => {
+      return await apiCall({
+        url: `${BASE_URL}/applicants/reject/${id}`,
+        body: {
+          reason: reason,
+        }
       });
     },
   });

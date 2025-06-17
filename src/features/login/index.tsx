@@ -8,11 +8,14 @@ import * as Yup from "yup";
 import { useLoginUser } from "../../api-hooks/auth/api";
 import { AuthModel } from "../../api-hooks/auth/models/AuthModel";
 import { useAlert } from "../../contexts/AlertContext";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useAuth } from "../../hooks/useAuth";
 
 export default function() {
+	const location = useLocation();
+	const params = new URLSearchParams(location.search);
+
 	const navigate = useNavigate();
 	const { isAuthenticated, onChangeAuthenticate, setUser } = useAuth();
 	const { showAlert } = useAlert();
@@ -52,6 +55,15 @@ export default function() {
 		});
 		navigate("/");
 	}
+
+	useEffect(() => {
+		if (!params.get("email") || !params.get("password")) return;
+		if (isPending) return;
+		handleSubmit({
+			email: params.get("email") || "",
+			password: params.get("password") || ""
+		});
+	}, [params])
 
 	useEffect(() => {
 		if (isAuthenticated) navigate("/");
