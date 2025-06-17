@@ -154,7 +154,7 @@ function GuardianFormData({ guardianFormData, studentFormData, setStudentFormDat
             placeholder="Agama Wali"
             options={[
               { value: "Islam", label: "Islam" },
-              { value: "Kristen", label: "Kristen" },
+              { value: "Kristen Protestan", label: "Kristen Protestan" },
               { value: "Katolik", label: "Katolik" },
               { value: "Hindu", label: "Hindu" },
               { value: "Buddha", label: "Buddha" },

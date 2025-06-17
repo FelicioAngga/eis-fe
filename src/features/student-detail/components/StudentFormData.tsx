@@ -33,7 +33,8 @@ function StudentFormData({ studentFormData, setCurrentTab, setStudentFormData }:
   const yupSchema = Yup.object().shape({
     email: Yup.string().email('Email tidak valid').required('Email tidak boleh kosong'),
     full_name: Yup.string().required('Nama Siswa tidak boleh kosong'),
-    identity_no: Yup.string().required('NIK (Nomor Induk Kependudukan) tidak boleh kosong'),
+    identity_no: Yup.string(),
+    nisn: Yup.string(),
     place_of_birth: Yup.string().required('Tempat lahir tidak boleh kosong'),
     date_of_birth: Yup.date().required('Tanggal lahir tidak boleh kosong').typeError('Tanggal lahir tidak valid'),
     religion: Yup.string().required('Agama tidak boleh kosong'),
@@ -51,6 +52,7 @@ function StudentFormData({ studentFormData, setCurrentTab, setStudentFormData }:
       profile_pic: studentFormData?.profile_pic || "",
       full_name: studentFormData?.full_name|| "",
       identity_no: studentFormData?.identity_no|| "",
+      nisn: studentFormData?.nisn|| "",
       place_of_birth: studentFormData?.place_of_birth|| "",
       date_of_birth: studentFormData?.date_of_birth|| "",
       religion: studentFormData?.religion || "",
@@ -156,6 +158,12 @@ function StudentFormData({ studentFormData, setCurrentTab, setStudentFormData }:
             placeholder='NIK'
           />
           <Input 
+            type="number"
+            name="nisn"
+            label="NISN (Nomor Induk Siswa Nasional)"
+            placeholder='NISN'
+          />
+          <Input 
             type="text"
             name="place_of_birth"
             label="Tempat Lahir"
@@ -174,7 +182,7 @@ function StudentFormData({ studentFormData, setCurrentTab, setStudentFormData }:
             placeholder="Agama"
             options={[
               { value: 'Islam', label: 'Islam' },
-              { value: 'Kristen', label: 'Kristen' },
+              { value: 'Kristen Protestan', label: 'Kristen Protestan' },
               { value: 'Katolik', label: 'Katolik' },
               { value: 'Hindu', label: 'Hindu' },
               { value: 'Buddha', label: 'Buddha' },
