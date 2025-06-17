@@ -45,10 +45,18 @@ function DocumentData({ documentData, studentId }: DocumentProps) {
     file: null,
   });
 
+  const [educationCertificateInfo, setEducationCertificateInfo] = useState({
+    id: 0,
+    preview: "",
+    name: "",
+    file: null,
+  });
+
   const [docsTypeInfo, setDocsTypeInfo] = useState({
     familyCardId: 0,
     birthCertificateId: 0,
     guardianId: 0,
+    educationCertificateId: 0,
   });
   
   const propsFamilyCard: UploadProps = {
@@ -105,6 +113,27 @@ function DocumentData({ documentData, studentId }: DocumentProps) {
         }
         const previewUrl = URL.createObjectURL(file);
         setGuardianIdInfo(prev => ({
+          ...prev,
+          preview: previewUrl,
+          name: info.file.name,
+          file: file as any,
+        }));
+      }
+    }
+  };
+
+  const propsEducationCertificate: UploadProps = {
+    name: 'file',
+    multiple: false,
+    onChange(info) {
+      const file = info.file.originFileObj;
+      if (file) {
+        if (file?.size > 1024 * 1024) {
+          showAlert({ title: "Error", message: "File size exceeds 1MB", type: "error" });
+          return;
+        }
+        const previewUrl = URL.createObjectURL(file);
+        setEducationCertificateInfo(prev => ({
           ...prev,
           preview: previewUrl,
           name: info.file.name,
@@ -176,6 +205,17 @@ function DocumentData({ documentData, studentId }: DocumentProps) {
         name: guardianIdInfo.name
       });
     }
+    if (educationCertificateInfo.file) {
+      const base64 = await fileToBase64(educationCertificateInfo.file);
+      documentsToUpload.push({
+        id: educationCertificateInfo.id,
+        student_id: id ? +id : studentId,
+        type_id: docsTypeInfo.educationCertificateId,
+        uploaded_file: base64,
+        description: educationCertificateInfo.name,
+        name: educationCertificateInfo.name
+      });
+    }
 
     if (documentsToUpload.length > 0) await mutateAsync(documentsToUpload as any);
   }
@@ -187,8 +227,9 @@ function DocumentData({ documentData, studentId }: DocumentProps) {
 
     const typeInfo = {
       familyCardId: getTypeId("kartu keluarga") || 0,
-      birthCertificateId: getTypeId("akte lahir") || 0,
-      guardianId: getTypeId("ktp wali") || 0,
+      birthCertificateId: getTypeId("akta kelahiran") || 0,
+      guardianId: getTypeId("ktp orang tua") || 0,
+      educationCertificateId: getTypeId("ijazah") || 0,
     };
     setDocsTypeInfo(typeInfo);
 
@@ -196,6 +237,7 @@ function DocumentData({ documentData, studentId }: DocumentProps) {
     const familyCard = documentData.find((doc) => doc.type_id === typeInfo.familyCardId);
     const birthCertificate = documentData.find((doc) => doc.type_id === typeInfo.birthCertificateId);
     const guardianId = documentData.find((doc) => doc.type_id === typeInfo.guardianId);
+    const educationCertificate = documentData.find((doc) => doc.type_id === typeInfo.educationCertificateId);
 
     if (familyCard) {
       setFamilyCardInfo({
@@ -221,6 +263,14 @@ function DocumentData({ documentData, studentId }: DocumentProps) {
         file: null,
       });
     }
+    if (educationCertificate) {
+      setEducationCertificateInfo({
+        id: educationCertificate.id || 0,
+        preview: educationCertificate.uploaded_file.toString(),
+        name: educationCertificate.description,
+        file: null,
+      });
+    }
   }, [documentData, docsType]);
 
   useEffect(() => {
@@ -228,8 +278,9 @@ function DocumentData({ documentData, studentId }: DocumentProps) {
       if (familyCardInfo.preview) URL.revokeObjectURL(familyCardInfo.preview);
       if (birthCertificateInfo.preview) URL.revokeObjectURL(birthCertificateInfo.preview);
       if (guardianIdInfo.preview) URL.revokeObjectURL(guardianIdInfo.preview);
+      if (educationCertificateInfo.preview) URL.revokeObjectURL(educationCertificateInfo.preview);
     };
-}, [familyCardInfo, birthCertificateInfo, guardianIdInfo]);
+}, [familyCardInfo, birthCertificateInfo, guardianIdInfo, educationCertificateInfo]);
 
   return (
     <div className="mt-12">
@@ -292,6 +343,27 @@ function DocumentData({ documentData, studentId }: DocumentProps) {
               <div className="relative">
                 <img className="size-[200px] object-cover rounded-lg" src={guardianIdInfo.preview} />
                 <p className="text-sm mt-1">{guardianIdInfo.name}</p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="border p-4 rounded md:border-none md:p-0">
+          <p className="font-medium mb-3">Ijazah Terakhir</p>
+          <div className="flex flex-col md:flex-row items-center gap-4 md:gap-28">
+            <div className="w-[320px]">
+              <Dragger {...propsEducationCertificate} accept="image/*" className="block h-[220px]" showUploadList={false} multiple={false} customRequest={() => {}}>
+                <IoMdDocument size={48} className="text-gray-500 mx-auto" />
+                <p className="mt-4 font-medium">Click to upload or drag your file here</p>
+                <p className="font-medium text-sm">
+                  Max files size 1MB
+                </p>
+              </Dragger>
+            </div>
+            {educationCertificateInfo.preview && (
+              <div className="relative">
+                <img className="size-[200px] object-cover rounded-lg" src={educationCertificateInfo.preview} />
+                <p className="text-sm mt-1">{educationCertificateInfo.name}</p>
               </div>
             )}
           </div>

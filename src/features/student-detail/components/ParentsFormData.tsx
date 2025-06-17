@@ -29,14 +29,14 @@ function ParentsFormData({ parentsFormData, setCurrentTab, setParentsFormData }:
     date_of_birth: Yup.date().required('Tanggal lahir Ayah tidak boleh kosong').typeError('Tanggal lahir tidak valid'),
     religion: Yup.string().required('Agama Ayah tidak boleh kosong'),
     highest_education: Yup.string().required('Pendidikan tertinggi Ayah tidak boleh kosong'),
-    job: Yup.string().required('Pekerjaan Ayah tidak boleh kosong'),
+    job: Yup.string(),
     phone: Yup.string().required('No telepon Ayah tidak boleh kosong'),
     momName: Yup.string().required('Nama Ibu tidak boleh kosong'),
     momPlaceOfBirth: Yup.string().required('Tempat lahir Ibu tidak boleh kosong'),
     momDateOfBirth: Yup.date().required('Tanggal lahir Ibu tidak boleh kosong').typeError('Tanggal lahir Ibu tidak valid'),
     momReligion: Yup.string().required('Agama Ibu tidak boleh kosong'),
     momHighestEducation: Yup.string().required('Pendidikan tertinggi Ibu tidak boleh kosong'),
-    momJob: Yup.string().required('Pekerjaan Ibu tidak boleh kosong'),
+    momJob: Yup.string(),
     momPhone: Yup.string().required('No telepon Ibu tidak boleh kosong'),
   });
 
@@ -157,10 +157,20 @@ function ParentsFormData({ parentsFormData, setCurrentTab, setParentsFormData }:
             ]}
           />
           <Input 
-            type="text"
+            type="select"
             name="highest_education"
             label="Pendidikan Tertinggi"
             placeholder="Pendidikan Tertinggi Ayah"
+            options={[
+              { value: 'Tidak Sekolah', label: 'Tidak Sekolah' },
+              { value: 'TK', label: 'TK' },
+              { value: 'SD', label: 'SD' },
+              { value: 'SMP', label: 'SMP' },
+              { value: 'SMA', label: 'SMA' },
+              { value: 'S1', label: 'S1' },
+              { value: 'S2', label: 'S2' },
+              { value: 'S3', label: 'S3' }
+            ]}
           />
           <Input 
             type="text"
@@ -202,19 +212,29 @@ function ParentsFormData({ parentsFormData, setCurrentTab, setParentsFormData }:
             label="Agama"
             placeholder="Agama Ibu"
             options={[
-              { value: 'Islam', label: 'Islam' },
-              { value: 'Kristen', label: 'Kristen' },
-              { value: 'Katolik', label: 'Katolik' },
-              { value: 'Hindu', label: 'Hindu' },
-              { value: 'Buddha', label: 'Buddha' },
-              { value: 'Konghucu', label: 'Konghucu' },
+              { value: "Islam", label: "Islam" },
+              { value: "Kristen Protestan", label: "Kristen Protestan" },
+              { value: "Katolik", label: "Katolik" },
+              { value: "Hindu", label: "Hindu" },
+              { value: "Buddha", label: "Buddha" },
+              { value: "Konghucu", label: "Konghucu" },
             ]}
           />
           <Input 
-            type="text"
+            type="select"
             name="momHighestEducation"
             label="Pendidikan Tertinggi"
             placeholder="Pendidikan Tertinggi Ibu"
+            options={[
+              { value: 'Tidak Sekolah', label: 'Tidak Sekolah' },
+              { value: 'TK', label: 'TK' },
+              { value: 'SD', label: 'SD' },
+              { value: 'SMP', label: 'SMP' },
+              { value: 'SMA', label: 'SMA' },
+              { value: 'S1', label: 'S1' },
+              { value: 'S2', label: 'S2' },
+              { value: 'S3', label: 'S3' }
+            ]}
           />
           <Input 
             type="text"
