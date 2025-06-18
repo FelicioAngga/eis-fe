@@ -141,6 +141,7 @@ function ParentsFormData({ parentsFormData, setCurrentTab, setParentsFormData }:
             name="date_of_birth"
             label="Tanggal Lahir"
             placeholder='Tanggal Lahir Ayah'
+            maxDate={new Date()}
           />
           <Input 
             type="select"
@@ -205,6 +206,7 @@ function ParentsFormData({ parentsFormData, setCurrentTab, setParentsFormData }:
             name="momDateOfBirth"
             label="Tanggal Lahir"
             placeholder='Tanggal Lahir Ibu'
+            maxDate={new Date()}
           />
           <Input 
             type="select"

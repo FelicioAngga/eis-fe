@@ -146,6 +146,7 @@ export function InputText({ error, label, formatNumberSeparator, placeholders = 
               value = value.replace(/,/g, "");
               if (!/^\d*$/.test(value)) return;
             }
+            if (value > (props.max || Number.MAX_VALUE)) value = props.max?.toString() || "";
             field.onChange(value);
           }}
           ref={inputRef}

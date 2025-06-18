@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import defaultUser from "../../../../assets/images/default-user.jpeg";
-import { FiEdit } from "react-icons/fi";
 import { StudentModel } from "../../../../api-hooks/students/models/StudentModel";
 import { useUpdateStudent } from "../../../../api-hooks/students/api";
 import { fileToBase64 } from "../../../../utils/base64";
@@ -43,9 +42,9 @@ function StudentDataCard({ studentData }: { studentData?: StudentModel }) {
           multiple={false}
           accept='image/*'
         />
-        <div onClick={() => inputFileRef.current.click()} className="rounded-full absolute right-0 bottom-0 bg-blue p-1 cursor-pointer">
+        {/* <div onClick={() => inputFileRef.current.click()} className="rounded-full absolute right-0 bottom-0 bg-blue p-1 cursor-pointer">
           <FiEdit className="size-4 text-white" />
-        </div>
+        </div> */}
       </div>
 
       <table className="w-full mt-5 font-medium text-sm">

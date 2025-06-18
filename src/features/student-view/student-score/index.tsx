@@ -102,8 +102,8 @@ function StudentViewScore() {
           {studentScore?.data?.map((score, idx) => (
             <React.Fragment key={idx}>
               <tr>
-                <td rowSpan={5} className="border border-gray-500 text-center px-3 py-1.5">{idx + 1}</td>
-                <td className="border border-gray-500 px-3 py-1.5" rowSpan={5}>{score.subject_name}</td>
+                <td rowSpan={6} className="border border-gray-500 text-center px-3 py-1.5">{idx + 1}</td>
+                <td className="border border-gray-500 px-3 py-1.5" rowSpan={6}>{score.subject_name}</td>
                 <td className="border border-gray-500 px-3 py-1.5">Tugas Bulanan 1</td>
                 <td className="border border-gray-500 px-3 py-1.5 text-center">{score.first_quiz}</td>
               </tr>
@@ -122,6 +122,10 @@ function StudentViewScore() {
               <tr>
                 <td className="border border-gray-500 px-3 py-1.5">UAS</td>
                 <td className="border border-gray-500 text-center px-3 py-1.5">{score.finals}</td>
+              </tr>
+              <tr>
+                <td className="border border-gray-500 px-3 py-1.5">Nilai Akhir</td>
+                <td className="border border-gray-500 text-center px-3 py-1.5">{score.final_grade}</td>
               </tr>
             </React.Fragment>
           ))}

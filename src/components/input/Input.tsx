@@ -24,6 +24,7 @@ type InputProps = {
   formatNumberSeparator?: boolean;
   showEyeIcon?: boolean;
   onValueChange?: (value: string) => void;
+  maxDate?: Date;
   ref?: any;
 } & React.InputHTMLAttributes<HTMLInputElement> &
   React.TextareaHTMLAttributes<HTMLTextAreaElement> &
@@ -75,6 +76,7 @@ export function Input(props: InputProps) {
           {...field}
           error={error?.message}
           label={label}
+          maxDate={restProps.maxDate}
         />
       );
     case "textarea":

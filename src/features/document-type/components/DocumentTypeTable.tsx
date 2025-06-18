@@ -80,10 +80,12 @@ function DocumentTypeTable({ paginationModel, search }: DocumentTypeProps) {
         header: () => "Action",
         cell: ({ row }) => (
           <div>
-            <FiTrash2
-              className="text-danger size-5 cursor-pointer"
-              onClick={() => handleDelete(row.original.id)}
-            />
+            {row.original.id > 5 && (
+              <FiTrash2
+                className="text-danger size-5 cursor-pointer"
+                onClick={() => handleDelete(row.original.id)}
+              />
+            )}
           </div>
         ),
       },

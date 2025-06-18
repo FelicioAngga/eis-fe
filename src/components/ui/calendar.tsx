@@ -21,10 +21,12 @@ function Calendar({
   className,
   classNames,
   showOutsideDays = true,
+  maxDate,
   ...props
-}: React.ComponentProps<typeof DayPicker>) {
+}: React.ComponentProps<typeof DayPicker | any>) {
   return (
     <DayPicker
+      disabled={{ after: maxDate }}
       showOutsideDays={showOutsideDays}
       className={cn("p-3", className)}
       classNames={{

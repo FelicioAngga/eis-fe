@@ -174,6 +174,7 @@ function StudentFormData({ studentFormData, setCurrentTab, setStudentFormData }:
             name="date_of_birth"
             label="Tanggal Lahir"
             placeholder='Tanggal Lahir'
+            maxDate={new Date()}
           />
           <Input 
             type="select"

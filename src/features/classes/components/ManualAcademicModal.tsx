@@ -12,6 +12,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Input } from "../../../components/input/Input";
 import { useTeacherQuery } from "../../../api-hooks/teacher/api";
 import { useConfigClassQuery } from "../../../api-hooks/config-class/api";
+import { useMemo } from "react";
 
 interface ManualAcademicModalProps {
   isOpen: boolean;
@@ -72,10 +73,21 @@ function ManualAcademicModal({ isOpen, onClose }: ManualAcademicModalProps) {
     }
   }
 
+  const selectedLevel = useMemo(() => {
+    const classroomId = methods.getValues('classroom_id');
+    return configClassData?.data.find(item => item.id === parseInt(classroomId))?.level?.name || "";
+  }, [methods.watch('classroom_id')]);
+
   function onCloseModal() {
     methods.reset();
     onClose();
   }
+
+  const major = [
+    { label: "General", value: "General" },
+    { label: "IPA", value: "IPA" },
+    { label: "IPS", value: "IPS" },
+  ]
 
   return (
     <Modal
@@ -99,17 +111,6 @@ function ManualAcademicModal({ isOpen, onClose }: ManualAcademicModalProps) {
               <div className="font-medium h-full flex items-center pb-5">{+methods.watch('start_year') + 1}</div>
             </div>
           </div>
-          <Input 
-            type="select"
-            name="major"
-            label="Jurusan"
-            placeholder="Pilih Jurusan"
-            options={[
-              { label: "General", value: "General" },
-              { label: "IPA", value: "IPA" },
-              { label: "IPS", value: "IPS" },
-            ]}
-          />
           <Input
             type="select"
             name="classroom_id"
@@ -119,6 +120,13 @@ function ManualAcademicModal({ isOpen, onClose }: ManualAcademicModalProps) {
               label: item.display_name,
               value: item.id?.toString() || "",
             })) || []}
+          />
+          <Input 
+            type="select"
+            name="major"
+            label="Jurusan"
+            placeholder="Pilih Jurusan"
+            options={selectedLevel.toString() === "SMA" ? major : major.slice(0, 1)}
           />
           <Input
             type="select"

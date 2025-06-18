@@ -46,6 +46,15 @@ function AdminClassNote() {
   const handleSave = async () => {
     const classNote = classData?.data.class_notes?.find(note => note.date.split("T")[0] === selectedDate);
     const selectedClassNoteDate = classData?.data?.class_notes?.find(note => note.date.split("T")[0] === selectedDate);
+    if (!selectedInfal?.length) {
+      showAlert({
+        title: "Peringatan",
+        type: "warning",
+        message: "Silakan pilih penginfal terlebih dahulu",
+      });
+      return;
+    }
+
     const promises = selectedInfal.map(async (infal) => {
       const classNoteToSave = classNote?.entries.find((entry) => entry.subject_schedule_id === infal.subject_schedule_id);
 

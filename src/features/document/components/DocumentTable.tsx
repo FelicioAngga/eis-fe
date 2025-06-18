@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import Table, { PaginationModelProps } from '../../../components/Table';
-import { FiEdit, FiTrash2 } from 'react-icons/fi';
+import { FiDownload, FiEdit, FiTrash2 } from 'react-icons/fi';
 import { ColumnDef } from '@tanstack/react-table';
 import { DocumentModel } from '../../../api-hooks/documents/models/DocumentModel';
 import { formatDateTime } from '../../../utils/formatDate';
@@ -89,6 +89,26 @@ function DocumentTable({ handleEditDoc, paginationModel, search }: DocumentProps
             <FiEdit
               className="size-5 cursor-pointer"
               onClick={() => handleEditDoc(row.original)}
+            />
+            <FiDownload 
+              className='size-5 cursor-pointer'
+              onClick={() => {
+                const fileUrl = row.original.uploaded_file;
+                if (fileUrl) {
+                  const link = document.createElement('a');
+                  link.href = fileUrl.toString();
+                  link.download = row.original.name || 'document';
+                  document.body.appendChild(link);
+                  link.click();
+                  document.body.removeChild(link);
+                } else {
+                  showAlert({
+                    title: "Error",
+                    message: "File tidak ditemukan.",
+                    type: "error",
+                  });
+                }
+              }}
             />
             <FiTrash2
               className="text-danger size-5 cursor-pointer"

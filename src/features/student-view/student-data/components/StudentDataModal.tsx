@@ -79,14 +79,14 @@ function StudentDataModal({ isOpen, onClose, editData }: StudentDataModalProps) 
           <Input
             name="phone"
             type="text"
-            label="Nomor Telepon"
-            placeholder="Masukkan nomor telepon"
+            label="Nomor Telepon Siswa"
+            placeholder="Masukkan nomor telepon siswa"
           />
           <Input
             name="address"
             type="text"
-            label="Alamat"
-            placeholder="Masukkan alamat"
+            label="Alamat Siswa"
+            placeholder="Masukkan alamat siswa"
           />
         </div>
         <div className="mt-4 flex gap-5">

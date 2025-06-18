@@ -20,9 +20,9 @@ export default function () {
     if (!detailStudent) return;
     setStudentFormData({
       ...detailStudent.data,
-      date_of_birth: detailStudent.data.date_of_birth ? new Date(detailStudent.data.date_of_birth).toString() : "",
+      date_of_birth: detailStudent.data?.date_of_birth ? new Date(detailStudent.data?.date_of_birth).toString() : "",
     });
-    setParentsFormData(detailStudent.data.guardians.map(g => ({
+    setParentsFormData(detailStudent.data?.guardians.map(g => ({
       ...g,
       date_of_birth: g.date_of_birth ? new Date(g.date_of_birth).toString() : "",
     })));

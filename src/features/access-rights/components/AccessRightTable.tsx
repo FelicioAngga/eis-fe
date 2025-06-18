@@ -75,10 +75,13 @@ function AccessRightTable({ paginationModel, search, handleEdit }: AccessRightTa
               className="size-5 cursor-pointer"
               onClick={() => handleEdit && handleEdit(row.original.id || 0)}
             />
-            <FiTrash2
-              className="text-danger size-5 cursor-pointer"
-              onClick={() => handleDelete(row.original.id || 0)}
-            />
+            {
+              (row?.original?.id || 0) > 5 &&
+              <FiTrash2
+                className="text-danger size-5 cursor-pointer"
+                onClick={() => handleDelete(row.original.id || 0)}
+              />
+            }
           </div>
         ),
       },

@@ -20,7 +20,7 @@ function AddStudentToAcademicModal({ isOpen, onClose }: AddStudentToAcademicModa
   const [searchValue, setSearchValue] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedStudentIds, setSelectedStudentIds] = useState<number[]>([]);
-  const { data: studentData } = useStudentsQuery({ pagination: { limit: 999999 }, search: searchTerm });
+  const { data: studentData } = useStudentsQuery({ pagination: { limit: 999999999 }, search: searchTerm });
   const { data: classDetail, refetch } = useClassDetail(id ? parseInt(id) : 0);
   
   const onSearch = () => {
@@ -45,6 +45,7 @@ function AddStudentToAcademicModal({ isOpen, onClose }: AddStudentToAcademicModa
     if (response.status === 200) {
       refetch();
       queryClient.invalidateQueries({ queryKey: ["class", id] });
+      queryClient.invalidateQueries({queryKey: ['students']});
       showAlert({
         title: "Sukses",
         type: "success",
@@ -95,7 +96,7 @@ function AddStudentToAcademicModal({ isOpen, onClose }: AddStudentToAcademicModa
         </div>
         
         <div className="overflow-y-auto max-h-[400px]">
-          {studentData?.data.map((student, index) => (
+          {studentData?.data?.filter(x => !x.current_academic_id).map((student, index) => (
             <div key={student.id} className="font-medium text-sm flex py-3 border-b border-r border-l border-gray-300">
               <div className="w-1/12 flex justify-center">
                 <Checkbox

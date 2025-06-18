@@ -31,6 +31,14 @@ function ClassAcademicTable({ termId }: ClassAcademicTableProps) {
   const { mutateAsync } = useUpdateAcademic();
   const handleDelete = async () => {
     if (!classDetail?.data) return;
+    if (!checkedStudents.length) {
+      showAlert({
+        title: 'Peringatan',
+        type: 'error',
+        message: 'Pilih minimal satu siswa untuk dihapus dari kelas.',
+      });
+      return;
+    }
 
     const swalResponse = await Swal.fire({
       title: 'Konfirmasi',
@@ -56,7 +64,20 @@ function ClassAcademicTable({ termId }: ClassAcademicTableProps) {
         message: `Berhasil menghapus siswa dari kelas ${classDetail.data.display_name}`,
       });
       queryClient.invalidateQueries({queryKey: ['class', classDetail.data.id],});
+      queryClient.invalidateQueries({queryKey: ['students']});
     }
+  }
+
+  function handleTransferClass() {
+    if (!checkedStudents.length) {
+      showAlert({
+        title: 'Peringatan',
+        type: 'error',
+        message: 'Pilih minimal satu siswa untuk ditransfer dari kelas.',
+      });
+      return;
+    }
+    setIsModalOpen(true);
   }
   
   return (
@@ -77,7 +98,7 @@ function ClassAcademicTable({ termId }: ClassAcademicTableProps) {
         <div className="flex gap-5">
           <Button className="bg-danger" onClick={() => handleDelete()}>Hapus Murid</Button>
           <Button onClick={() => setIsAddStudentModalOpen(true)}>Tambah Murid</Button>
-          <Button onClick={() => setIsModalOpen(true)}>Pindah Kelas</Button>
+          <Button onClick={handleTransferClass}>Pindah Kelas</Button>
         </div>
       </div>
 

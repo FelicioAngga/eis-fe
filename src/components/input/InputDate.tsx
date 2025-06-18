@@ -8,9 +8,10 @@ import { useController, useFormContext } from "react-hook-form";
 type InputDateProps = React.InputHTMLAttributes<HTMLInputElement> & {
   error?: string;
   label?: string;
+  maxDate?: Date;
 };
 
-export function InputDate({ error, label, ...props }: InputDateProps) {
+export function InputDate({ error, label, maxDate, ...props }: InputDateProps) {
   const { control } = useFormContext();
   const { field } = useController({ control, name: props.name || "" });
 
@@ -47,6 +48,7 @@ export function InputDate({ error, label, ...props }: InputDateProps) {
             selected={field.value}
             onSelect={field.onChange}
             initialFocus
+            maxDate={maxDate}
           />
         </PopoverContent>
       </Popover>

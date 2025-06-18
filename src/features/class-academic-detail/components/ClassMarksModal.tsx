@@ -114,30 +114,35 @@ function ClassMarksModal({ isOpen, onClose, editData, handleSaveModal }: ClassMa
             name="first_quiz"
             label="Nilai Tugas Bulanan 1"
             placeholder="Masukkan nilai tugas bulanan 1"
+            max={100}
           />
           <Input
             type="number"
             name="first_month"
             label="Ujian Bulanan 1"
             placeholder="Masukkan nilai ujian bulanan 1"
+            max={100}
           />
           <Input
             type="number"
             name="second_quiz"
             label="Nilai Tugas Bulanan 2"
             placeholder="Masukkan nilai tugas bulanan 2"
+            max={100}
           />
           <Input
             type="number"
             name="second_month"
             label="Ujian Bulanan 2"
             placeholder="Masukkan nilai ujian bulanan 2"
+            max={100}
           />
           <Input
             type="number"
             name="finals"
             label="Ujian Akhir"
             placeholder="Masukkan nilai Ujian Akhir"
+            max={100}
           />
           <Input
             type="text"

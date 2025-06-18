@@ -146,6 +146,7 @@ function GuardianFormData({ guardianFormData, studentFormData, setStudentFormDat
             name="date_of_birth"
             label="Tanggal Lahir"
             placeholder="Tanggal Lahir Wali"
+            maxDate={new Date()}
           />
           <Input
             type="select"
