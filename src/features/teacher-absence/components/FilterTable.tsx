@@ -44,7 +44,7 @@ function FilterTable({ hideButton, buttonText, onSearch, importButtonOnClick, bu
           <Button onClick={() => onSearch({ name: search, date })}>Cari</Button>
         </div>
         <div className="flex gap-2 items-center">
-          <Button onClick={importButtonOnClick} className="h-full">Import Data Absensi</Button>
+          {hideButton || <Button onClick={importButtonOnClick} className="h-full">Import Data Absensi</Button>}
           {hideButton || <Button onClick={buttonOnClick} className="h-full">{buttonText}</Button>}
         </div>
       </div>

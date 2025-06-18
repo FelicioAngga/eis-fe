@@ -80,3 +80,18 @@ export const useDeleteUser = () => {
     },
   })
 }
+
+export const useChangePassword = () => {
+  const apiCall = useApiCall<ResponseModel<any>>({
+    method: "PUT",
+    url: `${BASE_URL}/users`,
+  });
+  return useMutation({
+    mutationFn: async ({ id, password }: { id: number, password: string }) => {
+      return await apiCall({ 
+        url: `${BASE_URL}/users/change-password/${id}`,
+        body: { new_password: password }
+      });
+    },
+  })
+}

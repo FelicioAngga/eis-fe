@@ -8,6 +8,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useAlert } from "../../../contexts/AlertContext";
 import Swal from "sweetalert2";
 import { formatDate, formatDateToTime } from "../../../utils/formatDate";
+import { usePermissionAccess } from "../../../hooks/useAccessRight";
+import { useAuth } from "../../../hooks/useAuth";
 
 interface TeacherAbsenceTableProps {
   search: {name: string; date: string} | null;
@@ -18,6 +20,9 @@ interface TeacherAbsenceTableProps {
 function TeacherAbsenceTable({ paginationModel, search, handleEdit }: TeacherAbsenceTableProps) {
   const { showAlert } = useAlert();
   const queryClient = useQueryClient();
+  const { getPermissionAccess } = usePermissionAccess();
+  const { getUser } = useAuth();
+  const user = getUser();
   
   const { data } = useTeacherAbsenceQuery({
     pagination: {
@@ -28,6 +33,7 @@ function TeacherAbsenceTable({ paginationModel, search, handleEdit }: TeacherAbs
     },
     date: search?.date || "",
     search: search?.name || "",
+    ...(user.role_name === "Teacher" ? { userId: user.id } : {})
   });
 
   const { mutateAsync: mutateDeleteTeacherAbsence } = useDeleteTeacherAbsence();
@@ -94,14 +100,16 @@ function TeacherAbsenceTable({ paginationModel, search, handleEdit }: TeacherAbs
         header: () => "Action",
         cell: ({ row }) => (
           <div className="flex items-center gap-2">
-            <FiEdit 
-              className="text-primary size-5 cursor-pointer"
-              onClick={() => handleEdit(row.original)}
-            />
-            <FiTrash2
-              className="text-danger size-5 cursor-pointer"
-              onClick={() => handleDelete(row.original.id || 0)}
-            />
+            {getPermissionAccess("teacheratt").write && <>
+              <FiEdit 
+                className="text-primary size-5 cursor-pointer"
+                onClick={() => handleEdit(row.original)}
+              />
+              <FiTrash2
+                className="text-danger size-5 cursor-pointer"
+                onClick={() => handleDelete(row.original.id || 0)}
+              />
+            </>}
           </div>
         ),
       },

@@ -11,6 +11,7 @@ export type TeacherAbsenceModel = {
 export type TeacherAbsenceParams = {
   search: string;
   date: string;
+  userId?: number;
   pagination: PaginationParams;
 }
 

@@ -12,6 +12,7 @@ export const useTeacherAbsenceQuery = (params: TeacherAbsenceParams) => {
       ...params?.pagination,
       ...(params?.search ? { search: params.search } : {}),
       ...(params?.date ? { date: params.date } : {}),
+      ...(params?.userId ? { userId: params.userId } : {}),
     }
   });
 

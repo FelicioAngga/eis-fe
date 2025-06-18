@@ -10,6 +10,7 @@ import { StudentModel } from '../../../api-hooks/students/models/StudentModel';
 import { ColumnDef } from '@tanstack/react-table';
 import { MdArchive, MdUnarchive } from 'react-icons/md';
 import dayjs from 'dayjs';
+import { usePermissionAccess } from '../../../hooks/useAccessRight';
 
 interface StudentTableProps {
   search: string;
@@ -21,6 +22,7 @@ function StudentTable({ paginationModel, search }: StudentTableProps) {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { mutateAsync: mutateDeleteStudent } = useDeleteStudent();
+  const { getPermissionAccess } = usePermissionAccess();
   
   const { data } = useStudentsQuery({
     pagination: {
@@ -131,24 +133,28 @@ function StudentTable({ paginationModel, search }: StudentTableProps) {
         header: () => "Action",
         cell: ({ row }) => (
           <div className="flex gap-2">
-            {row.original.deleted_at ? (
-              <MdUnarchive
-                className="text-blue size-5 cursor-pointer"
-                onClick={() => handleUnArchive(row.original)}
-              />
-            ) : (
+            {getPermissionAccess("student").write && 
               <>
-                <FiEdit
-                  className="size-5 cursor-pointer"
-                  onClick={() => navigate(`/student-data/detail/${row.original.id}`)}
-                />
+                {row.original.deleted_at ? (
+                  <MdUnarchive
+                    className="text-blue size-5 cursor-pointer"
+                    onClick={() => handleUnArchive(row.original)}
+                  />
+                ) : (
+                  <>
+                    <FiEdit
+                      className="size-5 cursor-pointer"
+                      onClick={() => navigate(`/student-data/detail/${row.original.id}`)}
+                    />
 
-                <MdArchive
-                  className="text-danger size-5 cursor-pointer"
-                  onClick={() => handleDelete(row.original.id)}
-                />
+                    <MdArchive
+                      className="text-danger size-5 cursor-pointer"
+                      onClick={() => handleDelete(row.original.id)}
+                    />
+                  </>
+                )}
               </>
-            )}
+            }
           </div>
         ),
       },

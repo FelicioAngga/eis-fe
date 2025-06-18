@@ -43,7 +43,7 @@ export default function () {
     <div>
       <FilterTable onSearch={handleSearch} />
 
-      <div className="mt-6 flex gap-4">
+      <div className={`mt-6 flex ${(studentAbsenceReport?.data?.levels?.length || 0) > 0 && "gap-4"}`}>
         <div className="overflow-x-auto shrink-0">
           {studentAbsenceReport?.data?.levels?.map((level, index) => (
             <table key={index} className="w-full table-auto border-collapse border border-gray-300">

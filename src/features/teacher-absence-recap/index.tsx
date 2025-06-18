@@ -1,20 +1,25 @@
 import { useState } from "react";
 import { useGetTeacherAbsenceReport } from "../../api-hooks/teacher-absence/api"
 import FilterTable from "./components/FilterTable";
+import { useAuth } from "../../hooks/useAuth";
 
 export default function() {
+  const { getUser } = useAuth();
+  const user = getUser();
+
   const [search, setSearch] = useState({ name: "", startDate: "", endDate: "" });
   const { data: teacherReportData } = useGetTeacherAbsenceReport({ 
     search: search.name,
     start_date: search.startDate,
-    end_date: search.endDate
+    end_date: search.endDate,
+    ...(user.role_name === "Teacher" ? { userId: user.id } : {})
   });
 
   const handleSearch = (data: {name: string, startDate: string, endDate: string}) => {
     setSearch({
       name: data.name,
       startDate: data.startDate,
-      endDate: data.endDate
+      endDate: data.endDate,
     });
   }
 

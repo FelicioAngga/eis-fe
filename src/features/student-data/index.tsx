@@ -5,12 +5,14 @@ import { useNavigate } from "react-router-dom";
 import StudentTable from "./components/StudentTable";
 import { useAuth } from "../../hooks/useAuth";
 import StudentViewData from "../student-view/student-data";
+import { usePermissionAccess } from "../../hooks/useAccessRight";
 
 export default function StudentData() {
   const { getUser } = useAuth();
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const paginationModel = usePaginationModel({});
+  const { getPermissionAccess } = usePermissionAccess();
 
   function handleSubmit(search: string) {
     setSearch(search);
@@ -24,6 +26,7 @@ export default function StudentData() {
         onSearch={handleSubmit}
         buttonText="Tambah Siswa"
         buttonOnClick={() => navigate("/student-data/add")}
+        hideButton={!getPermissionAccess("student").write}
       />
       <StudentTable search={search} paginationModel={paginationModel} />
     </div>

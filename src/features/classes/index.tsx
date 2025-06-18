@@ -5,12 +5,14 @@ import BatchModal from "./components/BatchModal";
 import { FiSearch } from "react-icons/fi";
 import ManualAcademicModal from "./components/ManualAcademicModal";
 import Button from "../../components/Button";
+import { useAuth } from "../../hooks/useAuth";
 
 export default function Classes() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isManualModalOpen, setIsManualModalOpen] = useState(false);
   const [search, setSearch] = useState("");
   const paginationModel = usePaginationModel({});
+  const { getUser } = useAuth();
 
   function handleSubmit(search: string) {
     setSearch(search);
@@ -39,8 +41,12 @@ export default function Classes() {
           <Button onClick={() => handleSubmit(search)}>Cari</Button>
         </div>
         <div className="flex gap-4">
-          <Button onClick={() => setIsManualModalOpen(true)} className="h-full">Tambah Tahun Ajar Kelas</Button>
-          <Button onClick={() => setIsAddModalOpen(true)} className="h-full">Tambah Batch Tahun Ajar</Button>
+          {getUser()?.role_name === "Admin" && (
+            <>
+              <Button onClick={() => setIsManualModalOpen(true)} className="h-full">Tambah Tahun Ajar Kelas</Button>
+              <Button onClick={() => setIsAddModalOpen(true)} className="h-full">Tambah Batch Tahun Ajar</Button>
+            </>
+          )}
         </div>
       </div>
       <ClassTable search={search} paginationModel={paginationModel} />

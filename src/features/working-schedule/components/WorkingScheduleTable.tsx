@@ -7,6 +7,7 @@ import { useDeleteWorkingSchedule, useUnArchiveWorkingSchedule, useWorkingSchedu
 import { MdArchive, MdUnarchive } from "react-icons/md";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAlert } from "../../../contexts/AlertContext";
+import { usePermissionAccess } from "../../../hooks/useAccessRight";
 
 interface WorkingScheduleProps {
   search: string;
@@ -29,6 +30,7 @@ function WorkingScheduleTable({ handleEditWorkScheds, paginationModel, search }:
 
   const { mutateAsync: deleteMutate } = useDeleteWorkingSchedule();
   const { mutateAsync: unArchiveMutate } = useUnArchiveWorkingSchedule();
+  const { getPermissionAccess } = usePermissionAccess();
 
   const handleDelete = async (id: number) => {
     const response = await deleteMutate(id);
@@ -89,24 +91,26 @@ function WorkingScheduleTable({ handleEditWorkScheds, paginationModel, search }:
         header: () => "Action",
         cell: ({ row }) => (
           <div className="flex gap-2">
-            {row.original.deleted_at ? (
-              <MdUnarchive
-                className="text-blue size-5 cursor-pointer"
-                onClick={() => handleUnArchive(row.original)}
-              />
-            ) : (
-              <>
-                <FiEdit
-                  className="size-5 cursor-pointer"
-                  onClick={() => handleEditWorkScheds(row.original)}
+            {getPermissionAccess("worksched").write && <>
+              {row.original.deleted_at ? (
+                <MdUnarchive
+                  className="text-blue size-5 cursor-pointer"
+                  onClick={() => handleUnArchive(row.original)}
                 />
+              ) : (
+                <>
+                  <FiEdit
+                    className="size-5 cursor-pointer"
+                    onClick={() => handleEditWorkScheds(row.original)}
+                  />
 
-                <MdArchive
-                  className="text-danger size-5 cursor-pointer"
-                  onClick={() => handleDelete(row.original.id || 0)}
-                />
-              </>
-            )}
+                  <MdArchive
+                    className="text-danger size-5 cursor-pointer"
+                    onClick={() => handleDelete(row.original.id || 0)}
+                  />
+                </>
+              )}
+            </>}
           </div>
         ),
       },

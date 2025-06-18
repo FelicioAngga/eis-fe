@@ -5,6 +5,7 @@ import TeacherAbsenceTable from "./components/TeacherAbsenceTable";
 import FilterTable from "./components/FilterTable";
 import { TeacherAbsenceCreateModel } from "../../api-hooks/teacher-absence/models/TeacherAbsenceModel";
 import TeacherAbsenceImportModal from "./components/TeacherAbsenceImportModal";
+import { usePermissionAccess } from "../../hooks/useAccessRight";
 
 export default function() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -12,6 +13,7 @@ export default function() {
   const [search, setSearch] = useState({ name: "", date: "" });
   const paginationModel = usePaginationModel({});
   const [editData, setEditData] = useState<TeacherAbsenceCreateModel | null>(null);
+  const { getPermissionAccess } = usePermissionAccess();
 
   function handleSubmit(search: { name: string; date: string }) {
     setSearch(search);
@@ -32,6 +34,7 @@ export default function() {
         buttonText="Tambah Absensi"
         buttonOnClick={() => setIsModalOpen(true)}
         importButtonOnClick={() => setIsImportModalOpen(true)} 
+        hideButton={!getPermissionAccess("teacheratt").write}
       />
       <TeacherAbsenceTable search={search} paginationModel={paginationModel} handleEdit={handleEdit} />
     </div>
