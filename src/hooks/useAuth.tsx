@@ -8,6 +8,7 @@ export interface UserModel {
   role_id: number,
   role_name: string,
   permissions?: string[],
+  profile_pic?: string,
 }
 
 interface AuthContextType {

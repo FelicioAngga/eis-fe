@@ -10,8 +10,16 @@ function NavBarPopOver() {
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { getUser, logout } = useAuth();
-  const isStudent = getUser()?.role_name?.toLocaleLowerCase() === "student";
+  const isStudent = getUser()?.role_name?.toLowerCase() === "student";
   const { data: studentData } = useDetailStudentByToken(isStudent);
+
+  const getProfilePicture = () => {
+    if (isStudent) return studentData?.data.profile_pic || defaultUser;
+    else {
+      const user = getUser();
+      return user?.profile_pic || defaultUser;
+    }
+  }
 
   return (
     <div>
@@ -19,7 +27,7 @@ function NavBarPopOver() {
       <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
         <PopoverTrigger asChild>
           <div className="flex gap-2 md:gap-4 items-center cursor-pointer md:min-w-[180px]">
-            <img src={isStudent ? studentData?.data.profile_pic || defaultUser : defaultUser} className="size-6 md:size-10 object-cover rounded-full" />
+            <img src={getProfilePicture()} className="size-6 md:size-10 object-cover rounded-full" />
             <p className="font-semibold text-xs md:text-sm">{getUser()?.name || ""}</p>
           </div>
         </PopoverTrigger>
