@@ -38,6 +38,11 @@ function GradeTable({ paginationModel, search, handleEdit }: GradeTableProps) {
         header: () => "Nama",
       },
       {
+        accessorKey: "npsn",
+        header: () => "NPSN",
+        cell: ({ row }) => <div>{row.original.histories[0]?.npsn}</div>,
+      },
+      {
         accessorKey: "op_cert_num",
         header: () => "SK Operasional",
         cell: ({ row }) => <div>{row.original.histories[0]?.op_cert_num}</div>,

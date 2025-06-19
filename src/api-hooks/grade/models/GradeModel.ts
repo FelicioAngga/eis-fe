@@ -11,6 +11,7 @@ export type GradeDetailModel = {
   id?: number;
   level_id: number;
   op_cert_num: string;
+  npsn: string;
   accreditation: string;
   curriculum: string;
   email: string;

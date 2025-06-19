@@ -25,6 +25,7 @@ function GradeModal({ isOpen, onClose, editData }: GradeModalProps) {
   
   const yupSchema = Yup.object().shape({
     op_cert_num: Yup.string(),
+    npsn: Yup.string(),
     accreditation: Yup.string(),
     curriculum: Yup.string(),
     email: Yup.string().email("Email tidak valid"),
@@ -37,6 +38,7 @@ function GradeModal({ isOpen, onClose, editData }: GradeModalProps) {
   const defaultValues = useMemo(() => {
     return {
       op_cert_num: editData?.currentHistory?.op_cert_num || "",
+      npsn: editData?.currentHistory?.npsn || "",
       accreditation: editData?.currentHistory?.accreditation || "",
       curriculum: editData?.currentHistory?.curriculum || "",
       email: editData?.currentHistory?.email || "",
@@ -110,9 +112,21 @@ function GradeModal({ isOpen, onClose, editData }: GradeModalProps) {
           />
           <Input 
             type="text" 
+            name="npsn" 
+            label="NPSN (Nomor Pokok Sekolah Nasional)" 
+            placeholder="Masukkan NPSN" 
+          />
+          <Input 
+            type="select" 
             name="accreditation" 
             label="Akreditasi" 
             placeholder="Masukkan Akreditasi" 
+            options={[
+              { label: "A", value: "A" },
+              { label: "B", value: "B" },
+              { label: "C", value: "C" },
+              { label: "Tidak Terakreditasi", value: "Tidak Terakreditasi" }
+            ]}
           />
           <Input 
             type="text" 
