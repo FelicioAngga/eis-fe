@@ -50,6 +50,9 @@ function RegistrationTable({
       inputLabel: "Alasan Penolakan",
       confirmButtonText: "Ya",
       showCancelButton: true,
+      inputValidator: (value) => {
+        if (!value) return 'Alasan penolakan harus diisi!';
+      }
     });
     if (!modalResult.isConfirmed) return;
     const response = await mutateReject({ id, reason: modalResult.value || "" });
