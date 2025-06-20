@@ -11,6 +11,7 @@ import { useAlert } from "../../contexts/AlertContext";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useAuth } from "../../hooks/useAuth";
+import useEncryption from "../../hooks/useEncryption";
 
 export default function() {
 	const location = useLocation();
@@ -33,6 +34,8 @@ export default function() {
 			password: ""
 		}
 	});
+
+	const { decrypt } = useEncryption();
 	const { formState: { isValid } } = methods;
 	const { mutateAsync, isPending } = useLoginUser();
 
@@ -57,12 +60,14 @@ export default function() {
 	}
 
 	useEffect(() => {
-		if (!params.get("email") || !params.get("password")) return;
+		if (!params.get("data")) return;
 		if (isPending) return;
-		handleSubmit({
-			email: params.get("email") || "",
-			password: params.get("password") || ""
-		});
+		const encryptedData = decodeURIComponent(params.get("data") || "");
+		const decryptedData = decrypt(encryptedData || "")
+		const splitResult = decryptedData.split("&password=");
+		const email = splitResult[0].replace("email=", "");
+		const password = splitResult[1] || "";
+		handleSubmit({ email, password });
 	}, [params])
 
 	useEffect(() => {
