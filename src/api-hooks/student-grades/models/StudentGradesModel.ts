@@ -54,6 +54,27 @@ export type StudentGradeReportModel = {
   }[]
 }
 
+export type StudentPrintReportModel = {
+  name: string;
+  nis: string;
+  nisn: string;
+  level: string;
+  class: string;
+  fase: string;
+  term: number;
+  academic_year: string;
+  grades: {
+    subject: string;
+    finals: number;
+    remarks: string;
+  }[],
+  sick: number;
+  permission: number;
+  absent: number;
+  home_room_teacher: string;
+  principal: string;
+}
+
 export type StudentAcademicModel = {
   id: number;
   display_name: string;

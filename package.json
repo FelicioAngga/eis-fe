@@ -30,6 +30,8 @@
     "firebase-tools": "^14.7.0",
     "framer-motion": "^12.9.2",
     "html-react-parser": "^5.2.5",
+    "jspdf": "^3.0.1",
+    "jspdf-autotable": "^5.0.2",
     "lottie-react": "^2.4.1",
     "lucide-react": "^0.507.0",
     "motion": "^12.10.1",

@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { StudentAcademicModel, StudentGradeReportModel, StudentGradeReportParams, StudentGradesModel, StudentScoreModel } from "./models/StudentGradesModel";
+import { StudentAcademicModel, StudentPrintReportModel, StudentGradeReportModel, StudentGradeReportParams, StudentGradesModel, StudentScoreModel } from "./models/StudentGradesModel";
 import { BASE_URL } from "../../utils/base-url";
 import { ResponseModel } from "../method";
 import { useApiCall } from "../../hooks/useApiCall";
@@ -12,6 +12,20 @@ export const useGetStudentGrades = (academicId: number, termId: number) => {
 
   return useQuery({
     queryKey: ["student-grades", academicId, termId],
+    queryFn: async () => {
+      return await apiCall();
+    },
+  });
+}
+
+export const useGetStudentReport = (academicId: number, termId: number, studentId: number) => {
+  const apiCall = useApiCall<{ data: StudentPrintReportModel }>({
+    method: "GET",
+    url: `${BASE_URL}/academics/${academicId}/${termId}/grades/${studentId}`,
+  });
+
+  return useQuery({
+    queryKey: ["student-report", academicId, termId, studentId],
     queryFn: async () => {
       return await apiCall();
     },
