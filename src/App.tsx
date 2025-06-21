@@ -4,7 +4,6 @@ import {
   Routes,
   Route,
   Outlet,
-  Navigate,
 } from "react-router-dom";
 import { store } from "./store";
 import "./App.css";
