@@ -45,6 +45,7 @@ import ClassNoteDetail from "./features/class-note-detail";
 import StudentSchedule from "./features/student-view/student-schedule";
 import StudentViewScore from "./features/student-view/student-score";
 import StudentAbsence from "./features/student-view/student-absence";
+import { useEffect } from "react";
 
 function App() {
   const queryClient = new QueryClient();
@@ -106,7 +107,15 @@ export default App;
 const PrivateRoute = () => {
   const { isAuthenticated } = useAuth();
 
-  return isAuthenticated ? (
+  useEffect(() => {
+    if (!isAuthenticated) {
+      window.location.replace("https://landing-page-school.web.app/login");
+    }
+  }, [isAuthenticated]);
+
+  if (!isAuthenticated) return null;
+
+  return (
     <>
       <NavBar />
       <div className="flex flex-col md:flex-row md:h-[91.5vh]">
@@ -116,7 +125,5 @@ const PrivateRoute = () => {
         </div>
       </div>
     </>
-  ) : (
-    <Navigate to="/login" replace />
   );
 };

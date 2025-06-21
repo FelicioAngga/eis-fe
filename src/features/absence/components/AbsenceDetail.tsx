@@ -159,6 +159,7 @@ function AbsenceDetail() {
           <div className="w-2/12 text-center">Hadir</div>
           <div className="w-2/12 text-center">Sakit</div>
           <div className="w-2/12 text-center">Izin</div>
+          <div className="w-2/12 text-center">Alpha</div>
         </div>
 
         {classDetail?.data.students?.map((student, index) => (
@@ -195,6 +196,15 @@ function AbsenceDetail() {
                 value="Permission"
                 checked={radioValues[student.id || 0] === "Permission"}
                 onChange={() => handleRadioChange(student.id || 0, "Permission")}
+              />
+            </div>
+            <div className="w-2/12 text-center">
+              <input
+                type="radio"
+                name={`status-${student.id}`}
+                value="Alpha"
+                checked={radioValues[student.id || 0] === "Alpha"}
+                onChange={() => handleRadioChange(student.id || 0, "Alpha")}
               />
             </div>
           </div>

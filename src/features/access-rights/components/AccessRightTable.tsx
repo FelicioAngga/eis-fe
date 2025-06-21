@@ -76,7 +76,7 @@ function AccessRightTable({ paginationModel, search, handleEdit }: AccessRightTa
               onClick={() => handleEdit && handleEdit(row.original.id || 0)}
             />
             {
-              (row?.original?.id || 0) > 5 &&
+              (row?.original?.id || 0) > 6 &&
               <FiTrash2
                 className="text-danger size-5 cursor-pointer"
                 onClick={() => handleDelete(row.original.id || 0)}

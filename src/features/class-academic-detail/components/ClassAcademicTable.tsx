@@ -10,12 +10,14 @@ import { StudentModel } from "../../../api-hooks/students/models/StudentModel";
 import Swal from "sweetalert2";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAlert } from "../../../contexts/AlertContext";
+import { useAuth } from "../../../hooks/useAuth";
 
 interface ClassAcademicTableProps {
   termId: number;
 }
 
 function ClassAcademicTable({ termId }: ClassAcademicTableProps) {
+  const { getUser } = useAuth();
   const { id } = useParams();
   const { showAlert } = useAlert();
   const queryClient = useQueryClient();
@@ -96,9 +98,15 @@ function ClassAcademicTable({ termId }: ClassAcademicTableProps) {
       <div className="flex items-center justify-between">
         <p className="font-semibold text-lg">Data Siswa</p>
         <div className="flex gap-5">
-          <Button className="bg-danger" onClick={() => handleDelete()}>Hapus Murid</Button>
-          <Button onClick={() => setIsAddStudentModalOpen(true)}>Tambah Murid</Button>
-          <Button onClick={handleTransferClass}>Pindah Kelas</Button>
+        {
+          getUser().role_name === "Admin" && 
+          <>
+            <Button className="bg-danger" onClick={() => handleDelete()}>Hapus Murid</Button>
+            <Button onClick={() => setIsAddStudentModalOpen(true)}>Tambah Murid</Button>
+            <Button onClick={handleTransferClass}>Pindah Kelas</Button>
+          </>
+        }
+        <Button onClick={handleTransferClass}>Cetak Rapor</Button>
         </div>
       </div>
 
