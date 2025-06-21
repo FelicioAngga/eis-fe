@@ -1,4 +1,4 @@
-import { FiPrinter } from "react-icons/fi";
+import { FiPrinter, FiSave } from "react-icons/fi";
 import Button from "../../../components/Button";
 import Checkbox from "../../../components/Checkbox";
 import TransferClassModal from "./TransferClassModal";
@@ -28,6 +28,9 @@ function ClassAcademicTable({ termId }: ClassAcademicTableProps) {
 
   function handlePrint(studentId: number) {
     window.open(`/class/student-report/${studentId}/${id}/${termId}`, "_blank");
+  }
+  function handlePrintMonthly(studentId: number) {
+    window.open(`/class/student-monthly-report/${studentId}/${id}/${termId}`, "_blank");
   }
 
   const { mutateAsync } = useUpdateAcademic();
@@ -124,7 +127,8 @@ function ClassAcademicTable({ termId }: ClassAcademicTableProps) {
         <div className="w-5/12">Nama Lengkap</div>
         <div className="w-2/12">NISN</div>
         <div className="w-2/12">NIS</div>
-        <div className="w-2/12">Cetak Rapor</div>
+        <div className="w-1/12">Rapor</div>
+        <div className="w-1/12">Bulanan</div>
       </div>
 
       {classDetail?.data.students?.map((student, idx) => (
@@ -144,8 +148,11 @@ function ClassAcademicTable({ termId }: ClassAcademicTableProps) {
           <div className="w-5/12">{student.full_name}</div>
           <div className="w-2/12">{student.nisn || '-'}</div>
           <div className="w-2/12">{student.nis || '-'}</div>
-          <div className="w-2/12 text-lg">
+          <div className="w-1/12 text-lg">
             <FiPrinter onClick={() => handlePrint(student.id || 0)} className="cursor-pointer" />
+          </div>
+          <div className="w-1/12 text-lg">
+            <FiSave onClick={() => handlePrintMonthly(student.id || 0)} className="cursor-pointer" />
           </div>
         </div>
       ))}

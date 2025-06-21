@@ -40,6 +40,7 @@ import ClassAcademicDetail from "./features/class-academic-detail";
 import ConfigClassScheduleDetail from "./features/config-class-schedule-detail";
 import AbsenceDetail from "./features/absence/components/AbsenceDetail";
 import PrintStudentReport from "./features/class-academic-detail/components/PrintStudentReport";
+import PrintStudentMonthlyReport from "./features/class-academic-detail/components/PrintStudentMonthlyReport";
 import ClassNoteDetail from "./features/class-note-detail";
 import StudentSchedule from "./features/student-view/student-schedule";
 import StudentViewScore from "./features/student-view/student-score";
@@ -66,6 +67,7 @@ function App() {
                   <Route path="/academic" element={<Classes />} />
                   <Route path="/academic/detail/:id" element={<ClassAcademicDetail />} />
                   <Route path="/class/student-report/:student_id/:academic_id/:term_id" element={<PrintStudentReport />} />
+                  <Route path="/class/student-monthly-report/:student_id/:academic_id/:term_id" element={<PrintStudentMonthlyReport />} />
                   <Route path="/student-absence" element={<StudentAbsence />} />
                   <Route path="/absence" element={<Absence />} />
                   <Route path="/absence/detail/:id" element={<AbsenceDetail />} />
