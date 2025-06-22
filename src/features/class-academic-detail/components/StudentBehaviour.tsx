@@ -6,11 +6,12 @@ import { changeActiveMenu } from '../classAcademicSlice';
 import { FiEdit } from 'react-icons/fi';
 import StudentBehaviourModal, { StudentBehaviourModalEditData } from './StudentBehaviourModal';
 import { StudentModel } from '../../../api-hooks/students/models/StudentModel';
-import { useCreateStudentBehaviour, useGetStudentBehaviour, useUpdateStudentBehaviour } from '../../../api-hooks/student-behaviour/api';
+import { useCreateStudentBehaviour, useGetStudentBehaviour, useUpdateStartEndDateByTermId, useUpdateStudentBehaviour } from '../../../api-hooks/student-behaviour/api';
 import { StudentBehaviourModel } from '../../../api-hooks/student-behaviour/models/StudentBehaviourModel';
 import { useAlert } from '../../../contexts/AlertContext';
 import { useQueryClient } from '@tanstack/react-query';
 import { downloadStudentBehaviourExcel, handleImportStudentBehaviourExcel } from '../helpers/student-behaviour.excel';
+import { formatYearMonthDate } from '../../../utils/formatDate';
 
 interface StudentBehaviourProps {
   termId: number;
@@ -27,6 +28,7 @@ function StudentBehaviour({ setTermId, termId }: StudentBehaviourProps) {
   const [studentBehaviourData, setStudentBehaviourData] = useState<StudentBehaviourModel[]>([]);
   const [month, setMonth] = useState<string>("Bulanan 1");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [startEndDate, setStartEndDate] = useState<{ first_start_date?: string; first_end_date?: string; second_start_date?: string; second_end_date?: string } | null>(null);
   const { data: fetchedStudentBehaviour } = useGetStudentBehaviour(classDetail?.id || 0, termId);
   const inputFileRef = useRef<HTMLInputElement>(null);
 
@@ -59,17 +61,52 @@ function StudentBehaviour({ setTermId, termId }: StudentBehaviourProps) {
     });
   }
 
+  const handleDateChange = (data: { startDate?: string, endDate?: string }) => {
+    if (month === "Bulanan 1") {
+      setStartEndDate(prev => ({
+        ...prev,
+        first_start_date: data.startDate || prev?.first_start_date,
+        first_end_date: data.endDate || prev?.first_end_date,
+      }));
+    } else {
+      setStartEndDate(prev => ({
+        ...prev,
+        second_start_date: data.startDate || prev?.second_start_date,
+        second_end_date: data.endDate ||  prev?.second_end_date,
+      }));
+    }
+  }
+
   const { mutateAsync: mutateCreate } = useCreateStudentBehaviour();
   const { mutateAsync: mutateUpdate } = useUpdateStudentBehaviour();
+  const { mutateAsync: mutateUpdateStartEnd } = useUpdateStartEndDateByTermId();
+
   const handleSubmit = async () => {
-    if (studentBehaviourData.length === 0) {
-      showAlert({
-        title: "Tidak ada data",
-        message: "Tidak ada data yang disimpan",
-        type: "error",
+    if (startEndDate) {
+      const response = await mutateUpdateStartEnd({
+        id: termId,
+        first_start_date: startEndDate.first_start_date || "",
+        first_end_date: startEndDate.first_end_date || "",
+        second_start_date: startEndDate.second_start_date || "",
+        second_end_date: startEndDate.second_end_date || "",
       });
-      return;
+      if (response.status !== 200) {
+        showAlert({
+          title: "Gagal",
+          message: response.message || "Gagal menyimpan tanggal",
+          type: "error",
+        });
+        return;
+      } else {
+        showAlert({
+          title: "Berhasil",
+          message: "Berhasil menyimpan tanggal",
+          type: "success",
+        });
+        queryClient.invalidateQueries({ queryKey: ["class", classDetail?.id] });
+      }
     }
+    if (studentBehaviourData.length === 0) return;
     const mutate = fetchedStudentBehaviour?.data?.some(item => item?.id) ? mutateUpdate : mutateCreate;
     const response = await mutate(studentBehaviourData);
     if (response.status === 201 || response.status === 200) {
@@ -103,7 +140,21 @@ function StudentBehaviour({ setTermId, termId }: StudentBehaviourProps) {
   useEffect(() => {
     if (!fetchedStudentBehaviour?.data) return;
     setStudentBehaviourData(fetchedStudentBehaviour.data);
-  }, [fetchedStudentBehaviour?.data])
+  }, [fetchedStudentBehaviour?.data]);
+
+  useEffect(() => {
+    if (!classDetail) return;
+    const selectedTerm = classDetail.terms?.find(term => term.id === termId);
+    if (!selectedTerm) return;
+    const isValidDate = (date?: string) => date && date !== "0001-01-01T00:00:00Z";
+    const startEndDates = {
+      ...(isValidDate(selectedTerm.first_start_date) && { first_start_date: formatYearMonthDate(selectedTerm.first_start_date!) }),
+      ...(isValidDate(selectedTerm.first_end_date) && { first_end_date: formatYearMonthDate(selectedTerm.first_end_date!) }),
+      ...(isValidDate(selectedTerm.second_start_date) && { second_start_date: formatYearMonthDate(selectedTerm.second_start_date!) }),
+      ...(isValidDate(selectedTerm.second_end_date) && { second_end_date: formatYearMonthDate(selectedTerm.second_end_date!) }),
+    };
+    setStartEndDate(startEndDates);
+  }, [classDetail, termId, month]);
   
   return (
     <div>
@@ -176,6 +227,31 @@ function StudentBehaviour({ setTermId, termId }: StudentBehaviourProps) {
                       <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
                     </div>
                   </div>
+                </td>
+              </tr>
+              <tr>
+                <td className="pr-8 pb-2">Tanggal Mulai Bulanan</td>
+                <td className="pr-8 pb-2">:</td>
+                <td className="pr-8 pb-2">
+                  <input
+                    type="date"
+                    className="w-full border border-gray-300 rounded-md px-3 py-2"
+                    onChange={(e) => handleDateChange({ startDate: e.target.value })}
+                    value={month === "Bulanan 1" ? startEndDate?.first_start_date : startEndDate?.second_start_date || ""}
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className="pr-8 pb-2">Tanggal Selesai Bulanan</td>
+                <td className="pr-8 pb-2">:</td>
+                <td className="pr-8 pb-2">
+                  <input
+                    type="date"
+                    className="w-full border border-gray-300 rounded-md px-3 py-2" 
+                    onChange={(e) => handleDateChange({ endDate: e.target.value })}
+                    value={month === "Bulanan 1" ? startEndDate?.first_end_date : startEndDate?.second_end_date || ""}
+                    min={month === "Bulanan 1" ? startEndDate?.first_start_date : startEndDate?.second_start_date || ""}
+                  />
                 </td>
               </tr>
             </tbody>

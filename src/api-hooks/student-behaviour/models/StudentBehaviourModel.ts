@@ -22,3 +22,11 @@ export type StudentBehaviourModel = {
   second_month_extracurricular_second?: string;
   second_month_extracurricular_score_second?: string;
 }
+
+export type StartEndDateModel = {
+  id: number;
+  first_start_date?: string;
+  first_end_date?: string;
+  second_start_date?: string;
+  second_end_date?: string;
+}
