@@ -75,6 +75,61 @@ export type StudentPrintReportModel = {
   principal: string;
 }
 
+export type StudentPrintMonthlyReportModel = {
+  name: string;
+  nis: string;
+  class: string;
+  academic_year: string;
+  grades: {
+    subject: string;
+    st_first_quiz: number;
+    st_second_quiz: number;
+    st_first_month: number;
+    st_second_month: number;
+    nd_first_quiz: number;
+    nd_second_quiz: number;
+    nd_first_month: number;
+    nd_second_month: number;
+  }[],
+  home_room_teacher: string;
+  st_first_behavior: string,
+  st_second_behavior: string,
+  st_first_craft: string,
+  st_second_craft: string,
+  st_first_tidiness: string,
+  st_second_tidiness: string,
+  st_first_extracurricular_first: string,
+  st_first_extracurricular_score_first: string,
+  st_first_extracurricular_second: string,
+  st_first_extracurricular_score_second: string,
+  st_first_notes: string,
+  st_second_notes: string,
+  st_first_sick: number,
+  st_second_sick: number,
+  st_first_permission: number,
+  st_second_permission: number,
+  st_first_absent: number,
+  st_second_absent: number,
+  nd_first_behavior: string,
+  nd_second_behavior: string,
+  nd_first_craft: string,
+  nd_second_craft: string,
+  nd_first_tidiness: string,
+  nd_second_tidiness: string,
+  nd_first_extracurricular_first: string,
+  nd_first_extracurricular_score_first: string,
+  nd_first_extracurricular_second: string,
+  nd_first_extracurricular_score_second: string,
+  nd_first_notes: string,
+  nd_second_notes: string,
+  nd_first_sick: number,
+  nd_second_sick: number,
+  nd_first_permission: number,
+  nd_second_permission: number,
+  nd_first_absent: number,
+  nd_second_absent: number,
+}
+
 export type StudentAcademicModel = {
   id: number;
   display_name: string;

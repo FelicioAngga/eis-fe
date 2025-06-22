@@ -67,7 +67,7 @@ function App() {
                   <Route path="/academic" element={<Classes />} />
                   <Route path="/academic/detail/:id" element={<ClassAcademicDetail />} />
                   <Route path="/class/student-report/:academic_id/:term_id/:student_id" element={<PrintStudentReport />} />
-                  <Route path="/class/student-monthly-report/:academic_id/:term_id/:student_id" element={<PrintStudentMonthlyReport />} />
+                  <Route path="/class/student-monthly-report/:academic_id/:student_id" element={<PrintStudentMonthlyReport />} />
                   <Route path="/student-absence" element={<StudentAbsence />} />
                   <Route path="/absence" element={<Absence />} />
                   <Route path="/absence/detail/:id" element={<AbsenceDetail />} />
