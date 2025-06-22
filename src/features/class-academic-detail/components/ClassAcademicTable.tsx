@@ -11,6 +11,7 @@ import Swal from "sweetalert2";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAlert } from "../../../contexts/AlertContext";
 import { useAuth } from "../../../hooks/useAuth";
+import { usePermissionAccess } from "../../../hooks/useAccessRight";
 
 interface ClassAcademicTableProps {
   termId: number;
@@ -25,6 +26,7 @@ function ClassAcademicTable({ termId }: ClassAcademicTableProps) {
   const [isAddStudentModalOpen, setIsAddStudentModalOpen] = useState(false);
   const { data: classDetail } = useClassDetail(id ? parseInt(id) : 0);
   const [checkedStudents, setCheckedStudents] = useState<StudentModel[]>([]);
+  const { getPermissionAccess } = usePermissionAccess();
 
   function handlePrint(studentId: number) {
     window.open(`/class/student-report/${id}/${termId}/${studentId}`, "_blank");
@@ -126,15 +128,20 @@ function ClassAcademicTable({ termId }: ClassAcademicTableProps) {
         <p className="font-semibold text-lg">Data Siswa</p>
         <div className="flex gap-5">
         {
-          getUser().role_name === "Admin" && 
+          getPermissionAccess("academic_transfer").write && 
           <>
             <Button className="bg-danger" onClick={() => handleDelete()}>Hapus Murid</Button>
             <Button onClick={() => setIsAddStudentModalOpen(true)}>Tambah Murid</Button>
             <Button onClick={handleTransferClass}>Pindah Kelas</Button>
           </>
         }
-        <Button onClick={handleMultiplePrint}>Cetak Rapor</Button>
-        <Button onClick={handleMultipleMonthlyPrint}>Cetak Bulanan</Button>
+        {
+          getPermissionAccess('academic_print').read &&
+          <>
+            <Button onClick={handleMultiplePrint}>Cetak Rapor</Button>
+            <Button onClick={handleMultipleMonthlyPrint}>Cetak Bulanan</Button>
+          </>
+        }
         </div>
       </div>
 
@@ -152,8 +159,12 @@ function ClassAcademicTable({ termId }: ClassAcademicTableProps) {
         <div className="w-5/12">Nama Lengkap</div>
         <div className="w-2/12">NISN</div>
         <div className="w-2/12">NIS</div>
-        <div className="w-1/12">Rapor</div>
-        <div className="w-1/12">Bulanan</div>
+        {getPermissionAccess('academic_print').read && 
+          <>
+            <div className="w-1/12">Rapor</div>
+            <div className="w-1/12">Bulanan</div>
+          </>
+        }
       </div>
 
       {classDetail?.data.students?.map((student, idx) => (
@@ -173,12 +184,16 @@ function ClassAcademicTable({ termId }: ClassAcademicTableProps) {
           <div className="w-5/12">{student.full_name}</div>
           <div className="w-2/12">{student.nisn || '-'}</div>
           <div className="w-2/12">{student.nis || '-'}</div>
-          <div className="w-1/12 text-lg">
-            <FiPrinter onClick={() => handlePrint(student.id || 0)} className="cursor-pointer" />
-          </div>
-          <div className="w-1/12 text-lg">
-            <FiSave onClick={() => handlePrintMonthly(student.id || 0)} className="cursor-pointer" />
-          </div>
+          {getPermissionAccess('academic_print').read && 
+            <>
+              <div className="w-1/12 text-lg">
+                <FiPrinter onClick={() => handlePrint(student.id || 0)} className="cursor-pointer" />
+              </div>
+              <div className="w-1/12 text-lg">
+                <FiSave onClick={() => handlePrintMonthly(student.id || 0)} className="cursor-pointer" />
+              </div>
+            </>
+          }
         </div>
       ))}
     </div>

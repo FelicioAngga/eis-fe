@@ -16,6 +16,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { downloadStudentMarksExcel, handleImportStudentMarks } from "../helpers/student-marks.excel";
 import { useGetTeacherByToken } from "../../../api-hooks/teacher/api";
 import { useAuth } from "../../../hooks/useAuth";
+import { usePermissionAccess } from "../../../hooks/useAccessRight";
 
 interface ClassMarksProps {
   termId: number;
@@ -30,6 +31,7 @@ function ClassMarks({ setTermId, termId }: ClassMarksProps) {
   const { getUser } = useAuth();
   const { data: studentGradesData } = useGetStudentGrades(parseInt(id || "0"), termId);
   const { data: loggedInTeacher } = useGetTeacherByToken();
+  const { getPermissionAccess } = usePermissionAccess();
   
   const inputFileRef = useRef<HTMLInputElement>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -40,7 +42,7 @@ function ClassMarks({ setTermId, termId }: ClassMarksProps) {
   const uniqueSubjectList = useMemo(() => {
     const uniqueSubject = getUniqueSubjects(classDetail?.subject_schedules || []);
     if (!loggedInTeacher?.data?.id) return uniqueSubject;
-    if (getUser().role_name === "Teacher") {
+    if (!getPermissionAccess("academic_all_score").write) {
       return uniqueSubject.filter(subject => subject?.teacher_id === loggedInTeacher?.data?.id);
     }
     return uniqueSubject;

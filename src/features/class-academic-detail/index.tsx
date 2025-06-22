@@ -224,7 +224,7 @@ export default function ClassAcademicDetail() {
                   </td>
                 </tr>
               )}
-              {getPermissionAccess("academic_score").read && getPermissionAccess("academic_score").write && (
+              {getPermissionAccess("academic_behaviour").write && (
                 <tr>
                   <td className="pr-8 pb-3">Kepribadian dan Ekstrakurikuler</td>
                   <td className="pr-8 pb-3">:</td>
@@ -239,7 +239,7 @@ export default function ClassAcademicDetail() {
                   </td>
                 </tr>
               )}
-              {getUser()?.role_name === "Teacher" ? <></> : (
+              {getPermissionAccess("academic_classnote").write && (
                 <tr>
                   <td className="pr-8 pb-3">Catatan Kelas</td>
                   <td className="pr-8 pb-3">:</td>

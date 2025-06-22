@@ -170,6 +170,51 @@ function AccessRightModal({ isOpen, onClose, editId }: AccessRightModalProps) {
                   </div>
                 </div>
                 <div className="flex justify-between">
+                  <p className="font-medium">Academic Classnote</p>
+                  <div className="flex gap-3">
+                    <Checkbox label="Write" 
+                      checked={!!getPermissionByName("academic_classnote:write")?.name} 
+                      onChange={(e) => handleCheckboxChange("academic_classnote:write", e.target.checked)}
+                    />
+                  </div>
+                </div>
+                <div className="flex justify-between">
+                  <p className="font-medium">Academic All Score</p>
+                  <div className="flex gap-3">
+                    <Checkbox label="Write" 
+                      checked={!!getPermissionByName("academic_all_score:write")?.name} 
+                      onChange={(e) => handleCheckboxChange("academic_all_score:write", e.target.checked)}
+                    />
+                  </div>
+                </div>
+                <div className="flex justify-between">
+                  <p className="font-medium">Academic Print</p>
+                  <div className="flex gap-3">
+                    <Checkbox label="Read" 
+                      checked={!!getPermissionByName("academic_print:read")?.name} 
+                      onChange={(e) => handleCheckboxChange("academic_print:read", e.target.checked)}
+                    />
+                  </div>
+                </div>
+                <div className="flex justify-between">
+                  <p className="font-medium">Academic Behaviour</p>
+                  <div className="flex gap-3">
+                    <Checkbox label="Write" 
+                      checked={!!getPermissionByName("academic_behaviour:write")?.name} 
+                      onChange={(e) => handleCheckboxChange("academic_behaviour:write", e.target.checked)}
+                    />
+                  </div>
+                </div>
+                <div className="flex justify-between">
+                  <p className="font-medium">Academic Transfer</p>
+                  <div className="flex gap-3">
+                    <Checkbox label="Write" 
+                      checked={!!getPermissionByName("academic_transfer:write")?.name} 
+                      onChange={(e) => handleCheckboxChange("academic_transfer:write", e.target.checked)}
+                    />
+                  </div>
+                </div>
+                <div className="flex justify-between">
                   <p className="font-medium">Class Note</p>
                   <div className="flex gap-3">
                     <Checkbox label="Read" 
