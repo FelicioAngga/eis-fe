@@ -27,10 +27,34 @@ function ClassAcademicTable({ termId }: ClassAcademicTableProps) {
   const [checkedStudents, setCheckedStudents] = useState<StudentModel[]>([]);
 
   function handlePrint(studentId: number) {
-    window.open(`/class/student-report/${studentId}/${id}/${termId}`, "_blank");
+    window.open(`/class/student-report/${id}/${termId}/${studentId}`, "_blank");
   }
   function handlePrintMonthly(studentId: number) {
-    window.open(`/class/student-monthly-report/${studentId}/${id}/${termId}`, "_blank");
+    window.open(`/class/student-monthly-report/${id}/${termId}/${studentId}`, "_blank");
+  }
+  function handleMultiplePrint() {
+    if (!checkedStudents.length) {
+      showAlert({
+        title: 'Peringatan',
+        type: 'error',
+        message: 'Pilih minimal satu siswa untuk dicetak rapor.',
+      });
+      return;
+    }
+    const studentIds = checkedStudents.map(s => s.id).join(',');
+    window.open(`/class/student-report/${id}/${termId}/${studentIds}`, "_blank");
+  }
+  function handleMultipleMonthlyPrint() {
+    if (!checkedStudents.length) {
+      showAlert({
+        title: 'Peringatan',
+        type: 'error',
+        message: 'Pilih minimal satu siswa untuk dicetak bulanan.',
+      });
+      return;
+    }
+    const studentIds = checkedStudents.map(s => s.id).join(',');
+    window.open(`/class/student-monthly-report/${id}/${termId}/${studentIds}`, "_blank");
   }
 
   const { mutateAsync } = useUpdateAcademic();
@@ -109,7 +133,8 @@ function ClassAcademicTable({ termId }: ClassAcademicTableProps) {
             <Button onClick={handleTransferClass}>Pindah Kelas</Button>
           </>
         }
-        <Button onClick={handleTransferClass}>Cetak Rapor</Button>
+        <Button onClick={handleMultiplePrint}>Cetak Rapor</Button>
+        <Button onClick={handleMultipleMonthlyPrint}>Cetak Bulanan</Button>
         </div>
       </div>
 

@@ -18,14 +18,14 @@ export const useGetStudentGrades = (academicId: number, termId: number) => {
   });
 }
 
-export const useGetStudentReport = (academicId: number, termId: number, studentId: number) => {
-  const apiCall = useApiCall<{ data: StudentPrintReportModel }>({
+export const useGetStudentReport = (academicId: number, termId: number, studentIds: number[]) => {
+  const apiCall = useApiCall<{ data: StudentPrintReportModel[] }>({
     method: "GET",
-    url: `${BASE_URL}/academics/${academicId}/${termId}/grades/${studentId}`,
+    url: `${BASE_URL}/academics/${academicId}/${termId}/grades/${studentIds}`,
   });
 
   return useQuery({
-    queryKey: ["student-report", academicId, termId, studentId],
+    queryKey: ["student-report", academicId, termId, studentIds],
     queryFn: async () => {
       return await apiCall();
     },
