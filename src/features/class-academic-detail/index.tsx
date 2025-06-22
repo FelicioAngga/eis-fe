@@ -15,6 +15,7 @@ import { BiChevronLeft } from "react-icons/bi";
 import ClassMarks from "./components/ClassMarks";
 import { usePermissionAccess } from "../../hooks/useAccessRight";
 import { useAuth } from "../../hooks/useAuth";
+import StudentBehaviour from "./components/StudentBehaviour";
 
 export default function ClassAcademicDetail() {
   const { id } = useParams();
@@ -83,6 +84,7 @@ export default function ClassAcademicDetail() {
 
   if (activeMenu === "class-note") return <ClassNotes parentTermId={termId} />
   if (activeMenu === "class-marks") return <ClassMarks setTermId={setTermId} termId={termId} />
+  if (activeMenu === "student-behaviour") return <StudentBehaviour setTermId={setTermId} termId={termId} />
   
   if (!activeMenu) return (
     <div>
@@ -218,6 +220,19 @@ export default function ClassAcademicDetail() {
                   </td>
                 </tr>
               )}
+              <tr>
+                <td className="pr-8 pb-3">Kepribadian dan Ekstrakurikuler</td>
+                <td className="pr-8 pb-3">:</td>
+                <td className="pr-8 pb-3">
+                  <div 
+                    onClick={() => dispatch(changeActiveMenu("student-behaviour"))} 
+                    className="flex gap-2 items-center rounded border border-gray-500 px-2 py-1 cursor-pointer w-fit"
+                  >
+                    <p>View</p>
+                    <FiEye className="text-lg" />
+                  </div>
+                </td>
+              </tr>
               <tr>
                 <td className="pr-8 pb-3">Catatan Kelas</td>
                 <td className="pr-8 pb-3">:</td>

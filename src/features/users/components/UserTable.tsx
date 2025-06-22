@@ -109,11 +109,12 @@ function UserTable({ handleEditUser, paginationModel, search }: UserTableProps) 
                   className="size-5 cursor-pointer"
                   onClick={() => handleEditUser(row.original)}
                 />
-
-                <MdArchive
-                  className="text-danger size-5 cursor-pointer"
-                  onClick={() => handleDelete(row.original.id || 0)}
-                />
+                {row.original.role?.name !== "Admin" && 
+                  <MdArchive
+                    className="text-danger size-5 cursor-pointer"
+                    onClick={() => handleDelete(row.original.id || 0)}
+                  />
+                }
               </>
             )}
           </div>

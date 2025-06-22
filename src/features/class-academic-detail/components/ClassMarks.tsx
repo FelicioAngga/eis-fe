@@ -224,6 +224,7 @@ function ClassMarks({ setTermId, termId }: ClassMarksProps) {
           <Button variant="outline" onClick={handleBack}>Batal</Button>
         </div>
       </div>
+      
       <div className="flex gap-4 justify-end">
         <Button onClick={handleDownload}>Download</Button>
         <Button onClick={() => inputFileRef.current?.click()}>Import</Button>
