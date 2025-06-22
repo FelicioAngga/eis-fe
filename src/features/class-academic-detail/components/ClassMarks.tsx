@@ -115,6 +115,7 @@ function ClassMarks({ setTermId, termId }: ClassMarksProps) {
       students: classDetail?.students?.map(student => {
         const studentMark = getStudentMark(subject.subject_id || 0, student.id || 0);
         return {
+          id: studentMark?.id || 0,
           student_id: student.id,
           nis: student.nis || "",
           student_name: student.full_name,
