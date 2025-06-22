@@ -23,14 +23,14 @@ function PrintStudentMonthlyReport() {
       const writePage = (doc: jsPDF) => {
         const headerText = 'LAPORAN HASIL BELAJAR SISWA';
         doc.setFont('helvetica', 'bold');
-        doc.setFontSize(16);
+        doc.setFontSize(14);
         const textWidth = doc.getTextWidth(headerText);
         const xPos = (pageWidth - textWidth) / 2;
-        doc.text(headerText, xPos, 15);
+        doc.text(headerText, xPos, 12);
 
         doc.setFont('helvetica', 'bold');
-        doc.setFontSize(10);
-        let startY = 23;
+        doc.setFontSize(9);
+        let startY = 20;
         const lineHeight = 6;
 
         const lines = [
@@ -67,6 +67,7 @@ function PrintStudentMonthlyReport() {
           })
         });
         const rowTotal = reportData?.grades.length || 1;
+        const rowHeight = 6.775;
         autoTable(doc, {
           startY: startY + 10,
           tableWidth: "wrap",
@@ -97,7 +98,7 @@ function PrintStudentMonthlyReport() {
             ]
           ],
           headStyles: {
-            fontSize: 9,
+            fontSize: 8,
             fillColor: "#fff",
             halign: "center",
             valign: "middle",
@@ -120,7 +121,7 @@ function PrintStudentMonthlyReport() {
           ]),
           styles: {
             fillColor: "#fff",
-            fontSize: 9,
+            fontSize: 8,
             overflow: "linebreak",
             valign: "middle",
             lineWidth: 0.1,
@@ -144,7 +145,127 @@ function PrintStudentMonthlyReport() {
           pageBreak: "avoid",
         });
         autoTable(doc, {
-          startY: (rowTotal + 3) * 7.175 + 33,
+          useCss: true,
+          startY: startY + 10,
+          tableWidth: "wrap",
+          margin: { left: 254, right: 10 },
+          tableLineColor: "#000",
+          tableLineWidth: 0.1,
+          body: [
+            ["", "", ""],
+            ["Catatan: ", {content: `Medan, ${reportData?.st_first_date}`, colSpan: 2, styles: { halign: "right" }}],
+            [
+              {content: reportData?.st_first_notes, rowSpan: 4, styles: { halign: "left", valign: "top" }},
+              {content: "Wali Kelas,", styles: { halign: "center" }},
+              {content: "Orang Tua/Wali,", styles: { halign: "center" }},
+            ],
+            ["", ""],
+            ["", ""],
+            [
+              {content: `${reportData?.home_room_teacher}`, styles: { halign: "center" }},
+              {content: "____________", styles: { halign: "center" }},
+            ],
+            ["", "", ""],
+            ["Catatan: ", {content: `Medan, ${reportData?.st_second_date}`, colSpan: 2, styles: { halign: "right" }}],
+            [
+              {content: reportData?.st_second_notes, rowSpan: 4, styles: { halign: "left", valign: "top" }},
+              {content: "Wali Kelas,", styles: { halign: "center" }},
+              {content: "Orang Tua/Wali,", styles: { halign: "center" }},
+            ],
+            ["", ""],
+            ["", ""],
+            [
+              {content: `${reportData?.home_room_teacher}`, styles: { halign: "center" }},
+              {content: "____________", styles: { halign: "center" }},
+            ],
+            ["", "", ""],
+            ["Catatan: ", {content: `Medan, ${reportData?.nd_first_date}`, colSpan: 2, styles: { halign: "right" }}],
+            [
+              {content: reportData?.nd_first_notes, rowSpan: 4, styles: { halign: "left", valign: "top" }},
+              {content: "Wali Kelas,", styles: { halign: "center" }},
+              {content: "Orang Tua/Wali,", styles: { halign: "center" }},
+            ],
+            ["", ""],
+            ["", ""],
+            [
+              {content: `${reportData?.home_room_teacher}`, styles: { halign: "center" }},
+              {content: "____________", styles: { halign: "center" }},
+            ],
+            ["", "", ""],
+            ["Catatan: ", {content: `Medan, ${reportData?.nd_second_date}`, colSpan: 2, styles: { halign: "right" }}],
+            [
+              {content: reportData?.nd_second_notes, rowSpan: 4, styles: { halign: "left", valign: "top" }},
+              {content: "Wali Kelas,", styles: { halign: "center" }},
+              {content: "Orang Tua/Wali,", styles: { halign: "center" }},
+            ],
+            ["", ""],
+            ["", ""],
+            [
+              {content: `${reportData?.home_room_teacher}`, styles: { halign: "center" }},
+              {content: "____________", styles: { halign: "center" }},
+            ],
+            ["", "", ""],
+          ],
+          styles: {
+            fillColor: "#fff",
+            fontSize: 8,
+            overflow: "linebreak",
+            valign: "middle",
+            textColor: "#000",
+            minCellHeight: 4,
+          },
+          columnStyles: {
+            0: { cellWidth: 40, fillColor: "#fff" },
+            1: { cellWidth: 26, fillColor: "#fff" },
+            2: { cellWidth: 26, fillColor: "#fff" },
+          },
+        });
+        doc.setLineWidth(0.1);
+        doc.line(254, 75, 346, 75);
+        doc.line(254, 115.5, 346, 115.5);
+        doc.line(254, 156, 346, 156);
+        autoTable(doc, {
+          startY: (rowTotal + 3) * rowHeight + 30,
+          tableWidth: "wrap",
+          margin: { left: 10, right: 10 },
+          body: [
+            [
+              {content: "Ekstrakurikuler", rowSpan: 2},
+              reportData?.st_first_extracurricular_first,
+              reportData?.st_first_extracurricular_score_first,
+              reportData?.st_second_extracurricular_score_first,
+              reportData?.nd_first_extracurricular_score_first,
+              reportData?.nd_second_extracurricular_score_first,
+            ],
+            [
+              reportData?.st_first_extracurricular_second,
+              reportData?.st_first_extracurricular_score_second,
+              reportData?.st_second_extracurricular_score_second,
+              reportData?.nd_first_extracurricular_score_second,
+              reportData?.nd_second_extracurricular_score_second,
+            ],
+          ],
+          styles: {
+            fillColor: "#fff",
+            fontSize: 8,
+            overflow: "linebreak",
+            valign: "middle",
+            lineWidth: 0.1,
+            lineColor: "#000",
+            textColor: "#000",
+            minCellHeight: 5,
+          },
+          columnStyles: {
+            0: { cellWidth: 50, halign: "center", fillColor: "#fff" },
+            1: { cellWidth: 50, halign: "left", fillColor: "#fff" },
+            2: { cellWidth: 36, halign: "center", fillColor: "#fff" },
+            3: { cellWidth: 36, halign: "center", fillColor: "#fff" },
+            4: { cellWidth: 36, halign: "center", fillColor: "#fff" },
+            5: { cellWidth: 36, halign: "center", fillColor: "#fff" },
+          },
+        });
+        autoTable(doc, {
+          startY: (rowTotal + 5) * rowHeight + 30,
           tableWidth: "wrap",
           margin: { left: 10, right: 10 },
           body: [
@@ -196,7 +317,7 @@ function PrintStudentMonthlyReport() {
           ],
           styles: {
             fillColor: "#fff",
-            fontSize: 9,
+            fontSize: 8,
             overflow: "linebreak",
             valign: "middle",
             lineWidth: 0.1,
@@ -216,122 +337,7 @@ function PrintStudentMonthlyReport() {
           pageBreak: "avoid",
         });
         doc.setFont('helvetica', 'bolditalic');
-        doc.text("KBM: Ketuntasan Belajar Minimal, P: Pengetahuan, K: Keterampilan", 10, (rowTotal + 9) * 7.175 + 37);
-        const dateStr = new Date().toLocaleDateString('id-ID', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-        });
-        autoTable(doc, {
-          useCss: true,
-          startY: startY + 10,
-          tableWidth: "wrap",
-          margin: { left: 254, right: 10 },
-          tableLineColor: "#000",
-          tableLineWidth: 0.1,
-          body: [
-            ["", "", ""],
-            ["Catatan: ", {content: `Medan, ${dateStr}`, colSpan: 2, styles: { halign: "right" }}],
-            [
-              {content:"_____________________", styles: { halign: "center", valign: "bottom" }},
-              {content: "Wali Kelas,", styles: { halign: "center" }},
-              {content: "Orang Tua/Wali,", styles: { halign: "center" }},
-            ],
-            [
-              {content:"_____________________", styles: { halign: "center", valign: "bottom" }},
-              "", ""
-            ],
-            [
-              {content:"_____________________", styles: { halign: "center", valign: "bottom" }},
-              "", ""
-            ],
-            [
-              {content:"_____________________", styles: { halign: "center", valign: "bottom" }},
-              {content: `${reportData?.home_room_teacher}`, styles: { halign: "center" }},
-              {content: "____________", styles: { halign: "center" }},
-            ],
-            ["", "", ""],
-            ["Catatan: ", {content: `Medan, ${dateStr}`, colSpan: 2, styles: { halign: "right" }}],
-            [
-              {content:"_____________________", styles: { halign: "center", valign: "bottom" }},
-              {content: "Wali Kelas,", styles: { halign: "center" }},
-              {content: "Orang Tua/Wali,", styles: { halign: "center" }},
-            ],
-            [
-              {content:"_____________________", styles: { halign: "center", valign: "bottom" }},
-              "", ""
-            ],
-            [
-              {content:"_____________________", styles: { halign: "center", valign: "bottom" }},
-              "", ""
-            ],
-            [
-              {content:"_____________________", styles: { halign: "center", valign: "bottom" }},
-              {content: `${reportData?.home_room_teacher}`, styles: { halign: "center" }},
-              {content: "____________", styles: { halign: "center" }},
-            ],
-            ["", "", ""],
-            ["Catatan: ", {content: `Medan, ${dateStr}`, colSpan: 2, styles: { halign: "right" }}],
-            [
-              {content:"_____________________", styles: { halign: "center", valign: "bottom" }},
-              {content: "Wali Kelas,", styles: { halign: "center" }},
-              {content: "Orang Tua/Wali,", styles: { halign: "center" }},
-            ],
-            [
-              {content:"_____________________", styles: { halign: "center", valign: "bottom" }},
-              "", ""
-            ],
-            [
-              {content:"_____________________", styles: { halign: "center", valign: "bottom" }},
-              "", ""
-            ],
-            [
-              {content:"_____________________", styles: { halign: "center", valign: "bottom" }},
-              {content: `${reportData?.home_room_teacher}`, styles: { halign: "center" }},
-              {content: "____________", styles: { halign: "center" }},
-            ],
-            ["", "", ""],
-            ["Catatan: ", {content: `Medan, ${dateStr}`, colSpan: 2, styles: { halign: "right" }}],
-            [
-              {content:"_____________________", styles: { halign: "center", valign: "bottom" }},
-              {content: "Wali Kelas,", styles: { halign: "center" }},
-              {content: "Orang Tua/Wali,", styles: { halign: "center" }},
-            ],
-            [
-              {content:"_____________________", styles: { halign: "center", valign: "bottom" }},
-              "", ""
-            ],
-            [
-              {content:"_____________________", styles: { halign: "center", valign: "bottom" }},
-              "", ""
-            ],
-            [
-              {content:"_____________________", styles: { halign: "center", valign: "bottom" }},
-              {content: `${reportData?.home_room_teacher}`, styles: { halign: "center" }},
-              {content: "____________", styles: { halign: "center" }},
-            ],
-            ["", "", ""],
-          ],
-          styles: {
-            fillColor: "#fff",
-            fontSize: 7.575,
-            overflow: "linebreak",
-            valign: "middle",
-            textColor: "#000",
-            minCellHeight: 4,
-          },
-          columnStyles: {
-            0: { cellWidth: 40, fillColor: "#fff" },
-            1: { cellWidth: 26, fillColor: "#fff" },
-            2: { cellWidth: 26, fillColor: "#fff" },
-          },
-          didDrawCell: (data) => {
-            const MAX_HEIGHT = 5;
-            if (data.cell.height > MAX_HEIGHT) {
-              data.cell.height = MAX_HEIGHT;
-            }
-          },
-        });
+        doc.text("KBM: Ketuntasan Belajar Minimal, P: Pengetahuan, K: Keterampilan", 10, (rowTotal + 11) * rowHeight + 34);
       };
 
       writePage(docInstance);
