@@ -38,6 +38,7 @@ function StudentBehaviourModal({
     extracurricular_score_first: Yup.string(),
     extracurricular_second: Yup.string(),
     extracurricular_score_second: Yup.string(),
+    notes: Yup.string(),
   });
 
   const resolver = useYupValidationResolver(yupSchema);
@@ -48,6 +49,7 @@ function StudentBehaviourModal({
       craft: month === "Bulanan 1" ? editData?.first_crafts || "" : editData?.second_crafts || "",
       neatness:  month === "Bulanan 1" ? editData?.first_neatness || "" : editData?.second_neatness || "",
       behaviour:  month === "Bulanan 1" ? editData?.first_behaviour || "" : editData?.second_behaviour || "",
+      notes: month === "Bulanan 1" ? editData?.first_notes || "" : editData?.second_notes || "",
       extracurricular_first:  month === "Bulanan 1" ? editData?.first_month_extracurricular_first || "" : editData?.second_month_extracurricular_first || "",
       extracurricular_score_first: month === "Bulanan 1" ? editData?.first_month_extracurricular_score_first || "" : editData?.second_month_extracurricular_score_first || "",
       extracurricular_second:  month === "Bulanan 1" ? editData?.first_month_extracurricular_second || "" : editData?.second_month_extracurricular_second || "",
@@ -63,6 +65,7 @@ function StudentBehaviourModal({
     extracurricular_score_first: string;
     extracurricular_second: string;
     extracurricular_score_second: string;
+    notes?: string;
   }) => {
     if (!handleSaveModal) return;
     if (month === "Bulanan 1") {
@@ -74,6 +77,7 @@ function StudentBehaviourModal({
         student_name: editData?.student_name || "",
         student_nis: editData?.student_nis || "",
         first_crafts: data.craft,
+        first_notes: data.notes || "",
         first_neatness: data.neatness,
         first_behaviour: data.behaviour,
         first_month_extracurricular_first: data.extracurricular_first,
@@ -90,6 +94,7 @@ function StudentBehaviourModal({
         student_name: editData?.student_name || "",
         student_nis: editData?.student_nis || "",
         second_crafts: data.craft,
+        second_notes: data.notes || "",
         second_neatness: data.neatness,
         second_behaviour: data.behaviour,
         second_month_extracurricular_first: data.extracurricular_first,
@@ -114,6 +119,7 @@ function StudentBehaviourModal({
         craft: (month === "Bulanan 1" ? editData?.first_crafts : editData?.second_crafts) || "",
         neatness: (month === "Bulanan 1" ? editData?.first_neatness : editData?.second_neatness) || "",
         behaviour: (month === "Bulanan 1" ? editData?.first_behaviour : editData?.second_behaviour) || "",
+        notes: (month === "Bulanan 1" ? editData?.first_notes : editData?.second_notes) || "",
         extracurricular_first: month === "Bulanan 1" ? editData?.first_month_extracurricular_first || "" : editData?.second_month_extracurricular_first || "",
         extracurricular_score_first: month === "Bulanan 1" ? editData?.first_month_extracurricular_score_first || "" : editData?.second_month_extracurricular_score_first || "",
         extracurricular_second: month === "Bulanan 1" ? editData?.first_month_extracurricular_second || "" : editData?.second_month_extracurricular_second || "",
@@ -189,6 +195,12 @@ function StudentBehaviourModal({
               { label: "C", value: "C" },
               { label: "D", value: "D" },
             ]}
+          />
+          <Input
+            type="text"
+            name="notes"
+            label="Nama Catatan"
+            placeholder="Masukkan Catatan"
           />
           <Input
             type="text"

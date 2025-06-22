@@ -13,6 +13,7 @@ export const downloadStudentBehaviourExcel = async (studentBehaviour: StudentBeh
     "Kelakuan",
     "Kerapian",
     "Kerajinan",
+    "Catatan",
     "Ekstrakurikuler",
   ]);
 
@@ -24,7 +25,7 @@ export const downloadStudentBehaviourExcel = async (studentBehaviour: StudentBeh
       right: { style: "thin" },
     };
   });
-  ws.mergeCells("G2:H2");
+  ws.mergeCells("H2:I2");
 
   let currentRow = 3;
   studentBehaviour.forEach((behaviour, index) => {
@@ -35,11 +36,12 @@ export const downloadStudentBehaviourExcel = async (studentBehaviour: StudentBeh
       (month === "Bulanan 1" ? behaviour.first_behaviour : behaviour.second_behaviour) || "",
       (month === "Bulanan 1" ? behaviour.first_neatness : behaviour.second_neatness) || "",
       (month === "Bulanan 1" ? behaviour.first_crafts : behaviour.second_crafts) || "",
+      (month === "Bulanan 1" ? behaviour.first_notes : behaviour.second_notes) || "",
       (month === "Bulanan 1" ? behaviour.first_month_extracurricular_first : behaviour.second_month_extracurricular_first) || "",
       (month === "Bulanan 1" ? behaviour.first_month_extracurricular_score_first : behaviour.second_month_extracurricular_score_first) || "",
     ]);
     const row2 = ws.addRow([
-      ...Array(6).fill(undefined),
+      ...Array(7).fill(undefined),
       (month === "Bulanan 1" ? behaviour.first_month_extracurricular_second : behaviour.second_month_extracurricular_second) || "",
       (month === "Bulanan 1" ? behaviour.first_month_extracurricular_score_second : behaviour.second_month_extracurricular_score_second) || "",
     ])
@@ -51,6 +53,7 @@ export const downloadStudentBehaviourExcel = async (studentBehaviour: StudentBeh
     ws.mergeCells(`D${currentRow}:D${untilRowNo}`);
     ws.mergeCells(`E${currentRow}:E${untilRowNo}`);
     ws.mergeCells(`F${currentRow}:F${untilRowNo}`);
+    ws.mergeCells(`G${currentRow}:G${untilRowNo}`);
     currentRow = untilRowNo + 1;
 
     row.eachCell((cell) => {
@@ -71,7 +74,7 @@ export const downloadStudentBehaviourExcel = async (studentBehaviour: StudentBeh
     });
   });
 
-  const columnWidths = [5, 10, 25, 15, 15, 15, 20, 20];
+  const columnWidths = [5, 10, 25, 15, 15, 15, 25, 20, 20];
   columnWidths.forEach((width, index) => {
     ws.getColumn(index + 1).width = width;
   });
@@ -104,37 +107,17 @@ export const handleImportStudentBehaviourExcel = async (file: any, studentBehavi
               existingBehaviour.first_behaviour = rowValues[4] || "";
               existingBehaviour.first_neatness = rowValues[5] || "";
               existingBehaviour.first_crafts = rowValues[6] || "";
-              existingBehaviour.first_month_extracurricular_first = rowValues[7] || "";
-              existingBehaviour.first_month_extracurricular_score_first = rowValues[8] || "";
+              existingBehaviour.first_notes = rowValues[7] || "";
+              existingBehaviour.first_month_extracurricular_first = rowValues[8] || "";
+              existingBehaviour.first_month_extracurricular_score_first = rowValues[9] || "";
             } else {
               existingBehaviour.second_behaviour = rowValues[4] || "";
               existingBehaviour.second_neatness = rowValues[5] || "";
               existingBehaviour.second_crafts = rowValues[6] || "";
-              existingBehaviour.second_month_extracurricular_first = rowValues[7] || "";
-              existingBehaviour.second_month_extracurricular_score_second = rowValues[8] || "";
+              existingBehaviour.second_notes = rowValues[7] || "";
+              existingBehaviour.second_month_extracurricular_first = rowValues[8] || "";
+              existingBehaviour.second_month_extracurricular_score_second = rowValues[9] || "";
             }
-          } else {
-            const newBehaviour: StudentBehaviourModel = {
-              academic_id: 0,
-              term_id: 0,
-              student_nis: studentNis,
-              student_name: rowValues[3] || "",
-              first_behaviour: isFirstMonth ? rowValues[4] : "",
-              second_behaviour: isFirstMonth ? "" : rowValues[4],
-              first_neatness: isFirstMonth ? rowValues[5] : "",
-              second_neatness: isFirstMonth ? "" : rowValues[5],
-              first_crafts: isFirstMonth ? rowValues[6] : "",
-              second_crafts: isFirstMonth ? "" : rowValues[6],
-              first_month_extracurricular_first: isFirstMonth ? rowValues[7] : "",
-              first_month_extracurricular_score_first: isFirstMonth ? rowValues[8] : "",
-              first_month_extracurricular_second: isFirstMonth ? rowValues[9] : "",
-              first_month_extracurricular_score_second: isFirstMonth ? rowValues[10] : "",
-              second_month_extracurricular_first: isFirstMonth ? "" : rowValues[7],
-              second_month_extracurricular_score_first: isFirstMonth ? "" : rowValues[8],
-              second_month_extracurricular_second: isFirstMonth ? "" : rowValues[9],
-              second_month_extracurricular_score_second: isFirstMonth ? "" : rowValues[10],
-            };
-            studentBehaviour.push(newBehaviour);
           }
         }
       }

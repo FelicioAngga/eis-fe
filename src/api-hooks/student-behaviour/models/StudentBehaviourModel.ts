@@ -7,9 +7,11 @@ export type StudentBehaviourModel = {
   student_nis?: string;
   first_neatness?: string;
   first_crafts?: string;
+  first_notes?: string;
   first_behaviour?: string;
   second_neatness?: string;
   second_crafts?: string;
+  second_notes?: string;
   second_behaviour?: string;
   first_month_extracurricular_first?: string;
   first_month_extracurricular_score_first?: string;

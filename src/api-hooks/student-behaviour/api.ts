@@ -15,6 +15,7 @@ export const useGetStudentBehaviour = (academicId: number, termId: number) => {
     queryFn: async () => {
       return await apiCall();
     },
+    refetchOnWindowFocus: false,
   });
 }
 

@@ -209,6 +209,7 @@ function StudentBehaviour({ setTermId, termId }: StudentBehaviourProps) {
             <td className="border border-gray-400 px-3 py-2">Kelakuan</td>
             <td className="border border-gray-400 px-3 py-2">Kerapian</td>
             <td className="border border-gray-400 px-3 py-2">Kerajinan</td>
+            <td className="border border-gray-400 px-3 py-2">Catatan</td>
             <td colSpan={2} className="border border-gray-400 px-3 py-2 min-w-[100px]">Ekstrakurikuler</td>
             <td className="border border-gray-400 px-3 py-2">Aksi</td>
           </tr>
@@ -229,6 +230,9 @@ function StudentBehaviour({ setTermId, termId }: StudentBehaviourProps) {
                   </td>
                   <td rowSpan={2} className="border border-gray-400 px-3 py-2">
                     {month === "Bulanan 1" ? studentBehaviour?.first_crafts : studentBehaviour?.second_crafts}
+                  </td>
+                  <td rowSpan={2} className="border border-gray-400 px-3 py-2">
+                    {month === "Bulanan 1" ? studentBehaviour?.first_notes : studentBehaviour?.second_notes}
                   </td>
                   <td className="border border-gray-400 px-3 py-2 h-9">
                     {month === "Bulanan 1" ? studentBehaviour?.first_month_extracurricular_first : studentBehaviour?.second_month_extracurricular_first}
