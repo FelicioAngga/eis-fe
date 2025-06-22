@@ -67,3 +67,17 @@ export const useDeleteTeacher = () => {
     },
   });
 }
+
+export const useGetTeacherByToken = () => {
+  const apiCall = useApiCall<{data: TeacherModel}>({
+    method: "GET",
+    url: `${BASE_URL}/teachers/my`,
+  });
+
+  return useQuery({
+    queryKey: ["teacher-my"],
+    queryFn: async () => {
+      return await apiCall();
+    },
+  });
+}

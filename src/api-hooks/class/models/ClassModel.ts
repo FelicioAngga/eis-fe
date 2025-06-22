@@ -98,6 +98,8 @@ export type ClassNoteDetailModel = {
 export type UniqueSubject = {
   subject_id: number;
   subject: string;
+  teacher: string;
+  teacher_id: number;
 }
 
 export type TermsModel = {

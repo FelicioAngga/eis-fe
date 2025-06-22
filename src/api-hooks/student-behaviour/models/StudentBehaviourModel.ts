@@ -4,6 +4,7 @@ export type StudentBehaviourModel = {
   term_id: number;
   student_id?: number;
   student_name?: string;
+  student_nis?: string;
   first_neatness?: string;
   first_crafts?: string;
   first_behaviour?: string;

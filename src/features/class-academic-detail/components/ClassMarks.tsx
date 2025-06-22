@@ -14,6 +14,8 @@ import { useParams } from "react-router-dom";
 import { useAlert } from "../../../contexts/AlertContext";
 import { useQueryClient } from "@tanstack/react-query";
 import { downloadStudentMarksExcel, handleImportStudentMarks } from "../helpers/student-marks.excel";
+import { useGetTeacherByToken } from "../../../api-hooks/teacher/api";
+import { useAuth } from "../../../hooks/useAuth";
 
 interface ClassMarksProps {
   termId: number;
@@ -25,16 +27,24 @@ function ClassMarks({ setTermId, termId }: ClassMarksProps) {
   const queryClient = useQueryClient();
   const dispatch = useDispatch();
   const { showAlert } = useAlert();
+  const { getUser } = useAuth();
   const { data: studentGradesData } = useGetStudentGrades(parseInt(id || "0"), termId);
-    const inputFileRef = useRef<HTMLInputElement>(null);
+  const { data: loggedInTeacher } = useGetTeacherByToken();
+  
+  const inputFileRef = useRef<HTMLInputElement>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { classDetail } = useSelector((state: RootState) => state.classAcademic);
   const [editData, setEditData] = useState<ClassMarksModalEditData | null>(null);
   const [studentMarks, setStudentMarks] = useState<StudentGradesDetailModel[]>([]);
 
   const uniqueSubjectList = useMemo(() => {
-    return getUniqueSubjects(classDetail?.subject_schedules || []);
-  }, [classDetail?.subject_schedules])
+    const uniqueSubject = getUniqueSubjects(classDetail?.subject_schedules || []);
+    if (!loggedInTeacher?.data?.id) return uniqueSubject;
+    if (getUser().role_name === "Teacher") {
+      return uniqueSubject.filter(subject => subject?.teacher_id === loggedInTeacher?.data?.id);
+    }
+    return uniqueSubject;
+  }, [classDetail?.subject_schedules, getUser, loggedInTeacher?.data?.id])
 
   const openModal = (subject: UniqueSubject, student: StudentModel, studentMark?: StudentGradesEntryModel | null) => {
     setEditData({

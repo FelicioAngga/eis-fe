@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { RootState } from '../../../store';
 import { useDispatch, useSelector } from 'react-redux';
 import Button from '../../../components/Button';
@@ -10,6 +10,7 @@ import { useCreateStudentBehaviour, useGetStudentBehaviour, useUpdateStudentBeha
 import { StudentBehaviourModel } from '../../../api-hooks/student-behaviour/models/StudentBehaviourModel';
 import { useAlert } from '../../../contexts/AlertContext';
 import { useQueryClient } from '@tanstack/react-query';
+import { downloadStudentBehaviourExcel, handleImportStudentBehaviourExcel } from '../helpers/student-behaviour.excel';
 
 interface StudentBehaviourProps {
   termId: number;
@@ -27,6 +28,7 @@ function StudentBehaviour({ setTermId, termId }: StudentBehaviourProps) {
   const [month, setMonth] = useState<string>("Bulanan 1");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { data: fetchedStudentBehaviour } = useGetStudentBehaviour(classDetail?.id || 0, termId);
+  const inputFileRef = useRef<HTMLInputElement>(null);
 
   const handleBack = () => {
     dispatch(changeActiveMenu(""));
@@ -84,6 +86,18 @@ function StudentBehaviour({ setTermId, termId }: StudentBehaviourProps) {
         type: "error",
       });
     }
+  }
+
+  const handleDownload = () => {
+    downloadStudentBehaviourExcel(studentBehaviourData, month);
+  }
+  
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = event.target.files?.[0];
+    if (!selectedFile) return;
+    inputFileRef.current!.value = "";
+    const result = await handleImportStudentBehaviourExcel(selectedFile, studentBehaviourData);
+    setStudentBehaviourData([...result]);
   }
 
   useEffect(() => {
@@ -153,7 +167,7 @@ function StudentBehaviour({ setTermId, termId }: StudentBehaviourProps) {
                     <select
                       className="w-full border border-gray-300 appearance-none rounded-md px-3 py-2 cursor-pointer"
                       onChange={(e) => setMonth(e.currentTarget.value)}
-                      value={termId}
+                      value={month}
                     >
                       <option value={"Bulanan 1"}>Bulanan 1</option>
                       <option value={"Bulanan 2"}>Bulanan 2</option>
@@ -173,6 +187,19 @@ function StudentBehaviour({ setTermId, termId }: StudentBehaviourProps) {
         </div>
       </div>
 
+      <div className="flex gap-4 justify-end">
+        <Button onClick={handleDownload}>Download</Button>
+        <Button onClick={() => inputFileRef.current?.click()}>Import</Button>
+        <input
+          multiple={false}
+          type="file"
+          accept=".xlsx, .xls"
+          hidden
+          ref={inputFileRef}
+          onChange={handleFileChange}
+        />
+      </div>
+
       <table className="mt-5 w-full min-w-max font-medium text-sm">
         <tbody>
           <tr>
@@ -187,7 +214,7 @@ function StudentBehaviour({ setTermId, termId }: StudentBehaviourProps) {
           </tr>
 
           {classDetail?.students?.map((student, index) => {
-            const studentBehaviour = studentBehaviourData.find(b => b.student_id === student.id);
+            const studentBehaviour = studentBehaviourData?.find(b => b.student_id === student.id);
             return (
               <React.Fragment key={student.id}>
                 <tr>

@@ -115,32 +115,35 @@ export default function ClassAcademicDetail() {
                 <td className="pr-8 pb-3">Jurusan</td>
                 <td className="pr-8 pb-3">:</td>
                 <td className="pr-8 pb-3">
-                  <div className="relative pr-3">
-                    <select
-                      value={major || ""}
-                      onChange={(e) => e.target.value ? setMajor(e.target.value) : null}
-                      className="w-full min-w-[240px] border border-gray-300 appearance-none rounded-md px-3 py-2.5 cursor-pointer"
-                    >
-                      <option value="">Pilih Jurusan</option>
-                      <option value="General">General</option>
-                      {classDetail?.data.level_name === "SMA" && (
-                        <>
-                          <option value="IPA">IPA</option>
-                          <option value="IPS">IPS</option>
-                        </>
-                      )}
-                    </select>
-                    <div className="absolute inset-y-0 right-5 flex items-center px-2 pointer-events-none">
-                      <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                  {getUser()?.role_name === "Admin" ? 
+                    <div className="relative pr-3">
+                      <select
+                        value={major || ""}
+                        onChange={(e) => e.target.value ? setMajor(e.target.value) : null}
+                        className="w-full min-w-[240px] border border-gray-300 appearance-none rounded-md px-3 py-2.5 cursor-pointer"
+                      >
+                        <option value="">Pilih Jurusan</option>
+                        <option value="General">General</option>
+                        {classDetail?.data.level_name === "SMA" && (
+                          <>
+                            <option value="IPA">IPA</option>
+                            <option value="IPS">IPS</option>
+                          </>
+                        )}
+                      </select>
+                      <div className="absolute inset-y-0 right-5 flex items-center px-2 pointer-events-none">
+                        <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                      </div>
                     </div>
-                  </div>
+                    : <p>{classDetail?.data?.major}</p>
+                  }
                 </td>
               </tr>
               <tr>
                 <td className="pr-8 pb-2">Semester</td>
                 <td className="pr-8 pb-2">:</td>
                 <td className="pr-8 pb-2">
-                  <div className="relative pr-3">
+                  <div className="relative pr-3 min-w-[180px]">
                     <select
                       className="w-full border border-gray-300 appearance-none rounded-md px-3 py-2 cursor-pointer"
                       onChange={(e) => setTermId(parseInt(e.currentTarget.value))}
@@ -156,11 +159,11 @@ export default function ClassAcademicDetail() {
                   </div>
                 </td>
               </tr>
-              {getUser()?.role_name !== "Homeroom Teacher" && (
-                <tr>
-                  <td className="pr-8 pb-3">Wali Kelas</td>
-                  <td className="pr-8 pb-3">:</td>
-                  <td className="pr-8 pb-3">
+              <tr>
+                <td className="pr-8 pb-3">Wali Kelas</td>
+                <td className="pr-8 pb-3">:</td>
+                <td className="pr-8 pb-3">
+                  {getUser()?.role_name === "Admin" ? 
                     <div className="relative pr-3">
                       <select
                         value={(homeRoomTeacherId || classDetail?.data.homeroom_teacher_id) || ""}
@@ -176,9 +179,10 @@ export default function ClassAcademicDetail() {
                         <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
                       </div>
                     </div>
-                  </td>
-                </tr>
-              )}
+                    : <p>{classDetail?.data?.homeroom_teacher}</p>
+                  }
+                </td>
+              </tr>
               <tr>
                 <td className="pr-8 pb-3">Jadwal Kelas</td>
                 <td className="pr-8 pb-3">:</td>
@@ -205,7 +209,7 @@ export default function ClassAcademicDetail() {
                   </div>
                 </td>
               </tr>
-              {getPermissionAccess("academic_score").read && getPermissionAccess("academic_score").write && (
+              {getUser()?.role_name === "Admin" ? <></> : (
                 <tr>
                   <td className="pr-8 pb-3">Nilai Kelas</td>
                   <td className="pr-8 pb-3">:</td>
@@ -220,32 +224,36 @@ export default function ClassAcademicDetail() {
                   </td>
                 </tr>
               )}
-              <tr>
-                <td className="pr-8 pb-3">Kepribadian dan Ekstrakurikuler</td>
-                <td className="pr-8 pb-3">:</td>
-                <td className="pr-8 pb-3">
-                  <div 
-                    onClick={() => dispatch(changeActiveMenu("student-behaviour"))} 
-                    className="flex gap-2 items-center rounded border border-gray-500 px-2 py-1 cursor-pointer w-fit"
-                  >
-                    <p>View</p>
-                    <FiEye className="text-lg" />
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td className="pr-8 pb-3">Catatan Kelas</td>
-                <td className="pr-8 pb-3">:</td>
-                <td className="pr-8 pb-3">
-                  <div 
-                    onClick={() => dispatch(changeActiveMenu("class-note"))} 
-                    className="flex gap-2 items-center rounded border border-gray-500 px-2 py-1 cursor-pointer w-fit"
-                  >
-                    <p>View</p>
-                    <FiEye className="text-lg" />
-                  </div>
-                </td>
-              </tr>
+              {getPermissionAccess("academic_score").read && getPermissionAccess("academic_score").write && (
+                <tr>
+                  <td className="pr-8 pb-3">Kepribadian dan Ekstrakurikuler</td>
+                  <td className="pr-8 pb-3">:</td>
+                  <td className="pr-8 pb-3">
+                    <div 
+                      onClick={() => dispatch(changeActiveMenu("student-behaviour"))} 
+                      className="flex gap-2 items-center rounded border border-gray-500 px-2 py-1 cursor-pointer w-fit"
+                    >
+                      <p>View</p>
+                      <FiEye className="text-lg" />
+                    </div>
+                  </td>
+                </tr>
+              )}
+              {getUser()?.role_name === "Teacher" ? <></> : (
+                <tr>
+                  <td className="pr-8 pb-3">Catatan Kelas</td>
+                  <td className="pr-8 pb-3">:</td>
+                  <td className="pr-8 pb-3">
+                    <div 
+                      onClick={() => dispatch(changeActiveMenu("class-note"))} 
+                      className="flex gap-2 items-center rounded border border-gray-500 px-2 py-1 cursor-pointer w-fit"
+                    >
+                      <p>View</p>
+                      <FiEye className="text-lg" />
+                    </div>
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

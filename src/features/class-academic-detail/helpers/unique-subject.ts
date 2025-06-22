@@ -43,6 +43,8 @@ export const getUniqueSubjects = (data: DaySchedule[]): UniqueSubject[] => {
         uniqueSubjectsMap.set(entry.subject_id, {
           subject_id: entry.subject_id,
           subject: entry.subject,
+          teacher: entry.teacher,
+          teacher_id: entry.teacher_id,
         });
       }
     });
