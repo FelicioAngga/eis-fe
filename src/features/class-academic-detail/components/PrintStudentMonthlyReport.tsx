@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-import { useGetStudentReport } from "../../../api-hooks/student-grades/api";
+import { useGetStudentMonthlyReport } from "../../../api-hooks/student-grades/api";
 
 import { jsPDF } from "jspdf";
 import { autoTable } from "jspdf-autotable";
@@ -10,9 +10,9 @@ function PrintStudentMonthlyReport() {
   const iframeRef = useRef(null);
   const doc = useRef<jsPDF | null>(null);
 
-  const { student_id, academic_id, term_id } = useParams();
+  const { student_id, academic_id } = useParams();
   const studentIds = student_id ? student_id.split(',').map((id) => parseInt(id)) : [];
-  const { data: reportDatas, isFetched: isReportFetched } = useGetStudentReport(parseInt(academic_id || "0"), parseInt(term_id || "0"), studentIds);
+  const { data: reportDatas, isFetched: isReportFetched } = useGetStudentMonthlyReport(parseInt(academic_id || "0"), studentIds);
 
   useEffect(() => {
     if (!isReportFetched || (reportDatas?.data?.length || 0) < 1) return;
@@ -51,13 +51,19 @@ function PrintStudentMonthlyReport() {
           doc.text(line.value, valueX + 2, yOffset);
         });
 
-        const academicData: { no: number; subject: string; score: number, description: string }[] = [];
+        const academicData: { no: number; subject: string; st_first_quiz: number, st_second_quiz: number, st_first_month: number, st_second_month: number, nd_first_quiz: number, nd_second_quiz: number, nd_first_month: number, nd_second_month: number }[] = [];
         reportData?.grades.forEach((grade, index) => {
           academicData.push({
             no: index + 1,
             subject: grade.subject,
-            score: grade.finals,
-            description: grade.remarks,
+            st_first_quiz: grade.st_first_quiz,
+            st_second_quiz: grade.st_second_quiz,
+            st_first_month: grade.st_first_month,
+            st_second_month: grade.st_second_month,
+            nd_first_quiz: grade.nd_first_quiz,
+            nd_second_quiz: grade.nd_second_quiz,
+            nd_first_month: grade.nd_first_month,
+            nd_second_month: grade.nd_second_month,
           })
         });
         const rowTotal = reportData?.grades.length || 1;
@@ -102,15 +108,15 @@ function PrintStudentMonthlyReport() {
           body: academicData.map((item) => [
             item.no,
             item.subject,
-            item.score,
-            item.score,
-            item.score,
-            item.score,
-            item.score,
-            item.score,
-            item.score,
-            item.score,
-            item.score,
+            70,
+            item.st_first_quiz,
+            item.st_second_quiz,
+            item.st_first_month,
+            item.st_second_month,
+            item.nd_first_quiz,
+            item.nd_second_quiz,
+            item.nd_first_month,
+            item.nd_second_month,
           ]),
           styles: {
             fillColor: "#fff",
@@ -145,16 +151,48 @@ function PrintStudentMonthlyReport() {
             [
               {content: "D\nA\nT\nA", rowSpan: 6},
               {content: "Kepribadian", rowSpan: 3},
-              "Kelakuan", "A", "A", "A", "A",
+              "Kelakuan",
+              reportData?.st_first_behavior,
+              reportData?.st_second_behavior,
+              reportData?.nd_first_behavior,
+              reportData?.nd_second_behavior,
             ],
-            ["Kerajian", "A", "A", "A", "A"],
-            ["Kerapian", "A", "A", "A", "A"],
+            [
+              "Kerajian",
+              reportData?.st_first_craft,
+              reportData?.st_second_craft,
+              reportData?.nd_first_craft,
+              reportData?.nd_second_craft
+            ],
+            [
+              "Kerapian",
+              reportData?.st_first_tidiness,
+              reportData?.st_second_tidiness,
+              reportData?.nd_first_tidiness,
+              reportData?.nd_second_tidiness
+            ],
             [
               {content: "Ketidakhadiran", rowSpan: 3},
-              "Sakit", "0", "0", "0", "0"
+              "Sakit",
+              `  ${reportData?.st_first_sick || '-'}   hari`,
+              `  ${reportData?.st_second_sick || '-'}   hari`,
+              `  ${reportData?.nd_first_sick || '-'}   hari`,
+              `  ${reportData?.nd_second_sick || '-'}   hari`,
             ],
-            ["Izin", "0", "0", "0", "0"],
-            ["Tanpa Keterangan", "0", "0", "0", "0"],
+            [
+              "Izin",
+              `  ${reportData?.st_first_permission || '-'}   hari`,
+              `  ${reportData?.st_second_permission || '-'}   hari`,
+              `  ${reportData?.nd_first_permission || '-'}   hari`,
+              `  ${reportData?.nd_second_permission || '-'}   hari`
+            ],
+            [
+              "Tanpa Keterangan",
+              `  ${reportData?.st_first_absent || '-'}   hari`,
+              `  ${reportData?.st_second_absent || '-'}   hari`,
+              `  ${reportData?.nd_first_absent || '-'}   hari`,
+              `  ${reportData?.nd_second_absent || '-'}   hari`
+            ]
           ],
           styles: {
             fillColor: "#fff",

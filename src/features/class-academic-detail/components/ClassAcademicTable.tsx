@@ -32,7 +32,7 @@ function ClassAcademicTable({ termId }: ClassAcademicTableProps) {
     window.open(`/class/student-report/${id}/${termId}/${studentId}`, "_blank");
   }
   function handlePrintMonthly(studentId: number) {
-    window.open(`/class/student-monthly-report/${id}/${termId}/${studentId}`, "_blank");
+    window.open(`/class/student-monthly-report/${id}/${studentId}`, "_blank");
   }
   function handleMultiplePrint() {
     if (!checkedStudents.length) {
@@ -56,7 +56,7 @@ function ClassAcademicTable({ termId }: ClassAcademicTableProps) {
       return;
     }
     const studentIds = checkedStudents.map(s => s.id).join(',');
-    window.open(`/class/student-monthly-report/${id}/${termId}/${studentIds}`, "_blank");
+    window.open(`/class/student-monthly-report/${id}/${studentIds}`, "_blank");
   }
 
   const { mutateAsync } = useUpdateAcademic();
