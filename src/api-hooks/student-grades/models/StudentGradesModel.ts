@@ -102,6 +102,10 @@ export type StudentPrintMonthlyReportModel = {
   st_first_extracurricular_score_first: string,
   st_first_extracurricular_second: string,
   st_first_extracurricular_score_second: string,
+  st_second_extracurricular_first: string,
+  st_second_extracurricular_score_first: string,
+  st_second_extracurricular_second: string,
+  st_second_extracurricular_score_second: string,
   st_first_notes: string,
   st_second_notes: string,
   st_first_sick: number,
@@ -120,6 +124,10 @@ export type StudentPrintMonthlyReportModel = {
   nd_first_extracurricular_score_first: string,
   nd_first_extracurricular_second: string,
   nd_first_extracurricular_score_second: string,
+  nd_second_extracurricular_first: string,
+  nd_second_extracurricular_score_first: string,
+  nd_second_extracurricular_second: string,
+  nd_second_extracurricular_score_second: string,
   nd_first_notes: string,
   nd_second_notes: string,
   nd_first_sick: number,
@@ -128,6 +136,10 @@ export type StudentPrintMonthlyReportModel = {
   nd_second_permission: number,
   nd_first_absent: number,
   nd_second_absent: number,
+  st_first_date: string,
+  st_second_date: string,
+  nd_first_date: string,
+  nd_second_date: string,
 }
 
 export type StudentAcademicModel = {
