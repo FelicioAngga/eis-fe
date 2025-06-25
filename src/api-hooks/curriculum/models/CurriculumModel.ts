@@ -10,8 +10,16 @@ export type CurriculumModel = {
   curriculum_subjects: CurriculumSubjectModel[];
 }
 
+export type CreateCurriculumModel = {
+  name: string;
+  level_id: number;
+  grade: string;
+  curriculum_subjects: CurriculumSubjectModel[];
+}
+
 export type CurriculumSubjectModel = {
   id: number;
+  subject?: string;
   subject_id: number;
   competence: string;
 }
