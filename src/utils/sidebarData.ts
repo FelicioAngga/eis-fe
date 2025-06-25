@@ -56,6 +56,7 @@ export const sideBarCategoryMenu: MenuCategory[] = [
           { title: "Grade", path: "/grade", iconName: "FaGraduationCap", permissionName: "grade" },
           { title: "Classes", path: "/config/class", iconName: "FaChalkboardUser", permissionName: "class" },
           { title: "Subject", path: "/subject", iconName: "MdListAlt", permissionName: "subject" },
+          { title: "Curriculum", path: "/curriculum", iconName: "BsCardText", permissionName: "curriculum" },
         ],
       },
     ],

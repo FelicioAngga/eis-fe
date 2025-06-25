@@ -311,6 +311,19 @@ function AccessRightModal({ isOpen, onClose, editId }: AccessRightModalProps) {
                     />
                   </div>
                 </div>
+                <div className="flex justify-between">
+                  <p className="font-medium">Curriculum</p>
+                  <div className="flex gap-3">
+                    <Checkbox label="Read" 
+                      checked={!!getPermissionByName("curriculum:read")?.name} 
+                      onChange={(e) => handleCheckboxChange("curriculum:read", e.target.checked)} 
+                    />
+                    <Checkbox label="Write" 
+                      checked={!!getPermissionByName("curriculum:write")?.name} 
+                      onChange={(e) => handleCheckboxChange("curriculum:write", e.target.checked)}
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </div>

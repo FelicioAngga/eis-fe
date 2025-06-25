@@ -46,6 +46,7 @@ import StudentSchedule from "./features/student-view/student-schedule";
 import StudentViewScore from "./features/student-view/student-score";
 import StudentAbsence from "./features/student-view/student-absence";
 import { useEffect } from "react";
+import Curriculum from "./features/curriculum";
 
 function App() {
   const queryClient = new QueryClient();
@@ -79,6 +80,7 @@ function App() {
                   <Route path="/grade" element={<Grade />} />
                   <Route path="/config/class" element={<ConfigClass />} />
                   <Route path="/student-schedule" element={<StudentSchedule />} />
+                  <Route path="/curriculum" element={<Curriculum />} />
                   <Route path="/score" element={<StudentViewScore />} />
                   <Route path="/config/class-schedule" element={<ConfigClassSchedule />} />
                   <Route path="/config/class-schedule/detail/:id" element={<ConfigClassScheduleDetail />} />
