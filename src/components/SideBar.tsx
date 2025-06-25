@@ -42,7 +42,7 @@ export const Sidebar: React.FC = () => {
         {sideBarCategoryMenu.map((categoryItem) => (
           <div key={categoryItem.category}>
             {categoryItem.children.filter(menu => isUserAuthorizedByName(menu.permissionName)).length === 0 && categoryItem.children.every(menu => !menu.children || menu.children.every(sub => !isUserAuthorizedByName(sub.permissionName)))
-            ? null : <p className="font-semibold text-sm mb-2">{categoryItem.category}</p>}
+            ? null : <p className="font-semibold text-[15px] mb-2">{categoryItem.category}</p>}
             {categoryItem.children.map((menu) => {
               const Icon = menuIconMap[menu.iconName as keyof typeof menuIconMap];
               return (
@@ -56,7 +56,7 @@ export const Sidebar: React.FC = () => {
                         >
                           <div className="flex items-center gap-1">
                             {Icon && <Icon className="text-2xl" />}
-                            <span>{menu.title}</span>
+                            <span className="text-[15px]">{menu.title}</span>
                           </div>
                           {openMenus.includes(menu.title + categoryItem.category) ? (
                             <ChevronDown className="size-4" />
@@ -82,7 +82,7 @@ export const Sidebar: React.FC = () => {
                               >
                                 <div className="flex items-center gap-2">
                                   {SubIcon && <SubIcon className="text-xl" />}
-                                  <p>{sub.title}</p>
+                                  <p className="text-[15px]">{sub.title}</p>
                                 </div>
                               </Link>
                             )
