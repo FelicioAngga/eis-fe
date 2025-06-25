@@ -124,11 +124,11 @@ function PrintStudentReport() {
           startY: 48,
           margin: { left: 10, right: 10 },
           head: [["No", "Kegiatan Ekstrakurikuler", "Predikat"]],
-          body: [
-            ["1", "", ""],
-            ["2", "", ""],
-            ["3", "", ""],
-          ],
+          body: reportData?.extracurriculars.map((item, index) => [
+            index + 1,
+            item.name,
+            item.score,
+          ]) || [],
           styles: {
             fontSize: 9,
             cellPadding: 1.5,

@@ -68,6 +68,10 @@ export type StudentPrintReportModel = {
     finals: number;
     remarks: string;
   }[],
+  extracurriculars: {
+    name: string;
+    score: string;
+  }[];
   sick: number;
   permission: number;
   absent: number;
