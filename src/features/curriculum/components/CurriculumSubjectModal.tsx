@@ -46,15 +46,24 @@ function CurriculumSubjectModal({ isOpen, onClose, curriculumSubjectList, setCur
       competence3: competence3.value,
       competence4: competence4.value,
     }
-    setCurriculumSubjectList((prev) => [
-      ...prev,
-      {
-        id: 0,
-        subject_id: parseInt(subject_id.value),
-        subject: subjectData?.data.find((subject) => subject.id.toString() === subject_id.value)?.name || "",
-        competence: JSON.stringify(competence),
-      },
-    ]);
+    if (editData) {
+      setCurriculumSubjectList((prev) => prev.map((item) => 
+        item.id === editData.id ? { 
+          ...item, 
+          subject_id: parseInt(subject_id.value),
+          subject: subjectData?.data.find((subject) => subject.id.toString() === subject_id.value)?.name || "", competence: JSON.stringify(competence) } : item
+      ));
+    } else {
+      setCurriculumSubjectList((prev) => [
+        ...prev,
+        {
+          id: 0,
+          subject_id: parseInt(subject_id.value),
+          subject: subjectData?.data.find((subject) => subject.id.toString() === subject_id.value)?.name || "",
+          competence: JSON.stringify(competence),
+        },
+      ]);
+    }
     handleClose();
   }
 

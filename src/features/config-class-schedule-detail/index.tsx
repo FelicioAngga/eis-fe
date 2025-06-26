@@ -8,6 +8,7 @@ import { useAlert } from "../../contexts/AlertContext";
 import { useCreateClassScheduleConfig, useUpdateClassScheduleConfig } from "../../api-hooks/config-class-schedule/api";
 import { DailyClassSchedule, resetClassSchedule } from "./configClassScheduleSlice";
 import { useEffect } from "react";
+import { changeClassDetail } from "../class-academic-detail/classAcademicSlice";
 
 export default function() {
   const { id } = useParams();
@@ -98,7 +99,12 @@ export default function() {
       })
     });
     dispatch(resetClassSchedule({ class_schedule_list: parsedScheduleArray, selected_day: 'Monday' }));
-  }, [academicDetail?.data?.subject_schedules])
+  }, [academicDetail?.data?.subject_schedules]);
+
+  useEffect(() => {
+    if (!academicDetail?.data) return;
+    dispatch(changeClassDetail(academicDetail.data));
+  }, [academicDetail]);
 
   return (
     <div>
@@ -121,6 +127,11 @@ export default function() {
                 <td className="pr-8 pb-2">Kelas</td>
                 <td>:</td>
                 <td className="pl-8">{academicDetail?.data?.classroom || "-"}</td>
+              </tr>
+              <tr>
+                <td className="pr-8 pb-2">Kurikulum</td>
+                <td>:</td>
+                <td className="pl-8">{academicDetail?.data?.curriculum || "-"}</td>
               </tr>
               <tr>
                 <td className="pr-8 pb-2">Wali Kelas</td>

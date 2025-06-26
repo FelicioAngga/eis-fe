@@ -45,6 +45,10 @@ function ClassTable({ paginationModel, search }: ClassTableProps) {
         header: () => "Jurusan",
       },
       {
+        accessorKey: "curriculum",
+        header: () => "Kurikulum",
+      },
+      {
         accessorKey: "homeroom_teacher",
         header: () => "Wali Kelas",
         cell: ({ row }) => row.original?.homeroom_teacher || "-",

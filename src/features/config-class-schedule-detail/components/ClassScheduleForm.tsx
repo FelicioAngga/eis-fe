@@ -6,6 +6,7 @@ import { useTeacherQuery } from '../../../api-hooks/teacher/api';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../store';
 import { addLessonByDay, deleteLessonByIndex, updateEndHourByIndex, updateStartHourByIndex, updateSubjectIdByIndex, updateTeacherIdByIndex } from '../configClassScheduleSlice';
+import { useMemo } from 'react';
 
 function ClassScheduleForm() {
   const dispatch = useDispatch();
@@ -13,6 +14,14 @@ function ClassScheduleForm() {
   const { data: teacherData } = useTeacherQuery({ pagination: { limit: 9999, page: 1 }, search: '' });
   const { class_schedule_list, selected_day } = useSelector((state: RootState) => state.configClassSched);
   const selectedDay = class_schedule_list.find(item => item.day === selected_day);
+  const { classDetail } = useSelector((state: RootState) => state.classAcademic);
+  const subjectList = useMemo(() => {
+    return subjectData?.data?.filter(x => classDetail?.curriculum_subjects?.some(cs => cs.subject_id === x.id))
+    ?.map(subject => ({
+      id: subject.id,
+      name: subject.name,
+    })) || [];
+  }, [subjectData, classDetail]);
 
   return (
     <div className="mt-8">
@@ -50,7 +59,7 @@ function ClassScheduleForm() {
               className="w-full border border-gray-300 appearance-none rounded-md px-3 py-2.5 cursor-pointer"
             >
               <option value="">Pilih Mata Pelajaran</option>
-              {subjectData?.data.map(subject => (
+              {subjectList.map(subject => (
                 <option value={subject.id} key={subject.id}>{subject.name}</option>
               ))}
             </select>

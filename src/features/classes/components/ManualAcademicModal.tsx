@@ -13,6 +13,7 @@ import { Input } from "../../../components/input/Input";
 import { useTeacherQuery } from "../../../api-hooks/teacher/api";
 import { useConfigClassQuery } from "../../../api-hooks/config-class/api";
 import { useMemo } from "react";
+import { useCurriculumQuery } from "../../../api-hooks/curriculum/api";
 
 interface ManualAcademicModalProps {
   isOpen: boolean;
@@ -24,12 +25,14 @@ function ManualAcademicModal({ isOpen, onClose }: ManualAcademicModalProps) {
   const queryClient = useQueryClient();
   const { data: teacherData } = useTeacherQuery({ pagination: { limit: 99999 }, search: "" });
   const { data: configClassData } = useConfigClassQuery({ pagination: { limit: 99999 }, search: "" });
+  const { data: curriculumData } = useCurriculumQuery({ pagination: { limit: 99999 }, search: "" });
 
   const yupSchema = Yup.object().shape({
     start_year: Yup.string().required("Tahun mulai tidak boleh kosong"),
     classroom_id: Yup.string().required("Kelas tidak boleh kosong"),
     homeroom_teacher_id: Yup.string().required("Wali kelas tidak boleh kosong"),
     major: Yup.string().required("Jurusan tidak boleh kosong"),
+    curriculum_id: Yup.string().required("Kurikulum tidak boleh kosong"),
   });
 
   const resolver = useYupValidationResolver(yupSchema);
@@ -39,10 +42,21 @@ function ManualAcademicModal({ isOpen, onClose }: ManualAcademicModalProps) {
       start_year: new Date().getFullYear().toString(),
       classroom_id: "",
       homeroom_teacher_id: "",
+      curriculum_id: "",
       major: "General",
     },
     resolver,
   });
+
+  const curriculumList = useMemo(() => {
+    if (!methods.getValues('classroom_id')) return [];
+    const selectedClassRoom = configClassData?.data.find(item => item.id === parseInt(methods.getValues('classroom_id')));
+    return curriculumData?.data?.filter(x => selectedClassRoom?.level_id == x.level_id && selectedClassRoom.grade == x.grade)
+    ?.map(item => ({
+      label: item.display_name,
+      value: item.id?.toString() || "",
+    }));
+  }, [methods.watch('classroom_id'), curriculumData]);
 
   const { mutateAsync } = useCreateAcademic();
   async function handleSubmit(data: CreateAcademicModel) {
@@ -51,6 +65,7 @@ function ManualAcademicModal({ isOpen, onClose }: ManualAcademicModalProps) {
       ...data,
       display_name: `T.A.${data.start_year}/${+data.start_year + 1} - ${configClassName}`,
       classroom_id: parseInt(data.classroom_id.toString()),
+      curriculum_id: parseInt(data.curriculum_id.toString()),
       homeroom_teacher_id: parseInt(data.homeroom_teacher_id.toString()),
       end_year: (+data.start_year + 1).toString(),
     });
@@ -120,6 +135,7 @@ function ManualAcademicModal({ isOpen, onClose }: ManualAcademicModalProps) {
               label: item.display_name,
               value: item.id?.toString() || "",
             })) || []}
+            required
           />
           <Input 
             type="select"
@@ -127,6 +143,7 @@ function ManualAcademicModal({ isOpen, onClose }: ManualAcademicModalProps) {
             label="Jurusan"
             placeholder="Pilih Jurusan"
             options={selectedLevel.toString() === "SMA" ? major : major.slice(0, 1)}
+            required
           />
           <Input
             type="select"
@@ -137,6 +154,15 @@ function ManualAcademicModal({ isOpen, onClose }: ManualAcademicModalProps) {
               label: item.name,
               value: item.id?.toString() || "",
             })) || []}
+            required
+          />
+          <Input
+            type="select"
+            name="curriculum_id"
+            label="Kurikulum"
+            placeholder="(Pilihan ini akan muncul jika kelas sudah dipilih)"
+            options={curriculumList}
+            required
           />
         </div>
         <div className="flex gap-5 mt-5">

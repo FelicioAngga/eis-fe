@@ -4,7 +4,7 @@ import ClassAcademicTable from "./components/ClassAcademicTable";
 import Button from "../../components/Button";
 import { FiEye } from "react-icons/fi";
 import { useTeacherQuery } from "../../api-hooks/teacher/api";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useAlert } from "../../contexts/AlertContext";
 import { useQueryClient } from "@tanstack/react-query";
 import { useDispatch, useSelector } from "react-redux";
@@ -16,6 +16,7 @@ import ClassMarks from "./components/ClassMarks";
 import { usePermissionAccess } from "../../hooks/useAccessRight";
 import { useAuth } from "../../hooks/useAuth";
 import StudentBehaviour from "./components/StudentBehaviour";
+import { useCurriculumQuery } from "../../api-hooks/curriculum/api";
 
 export default function ClassAcademicDetail() {
   const { id } = useParams();
@@ -28,10 +29,20 @@ export default function ClassAcademicDetail() {
   const { getPermissionAccess } = usePermissionAccess();
 
   const { data: classDetail } = useClassDetail(id ? parseInt(id) : 0);
+  const { data: curriculumData } = useCurriculumQuery({ pagination: { limit: 99999 }, search: "" });
   const [termId, setTermId] = useState<number>(classDetail?.data?.terms?.[0]?.id || 0);
   const { data: teacherData } = useTeacherQuery({ pagination: { limit: 99999 }, search: "" });
   const [homeRoomTeacherId, setHomeRoomTeacherId] = useState<number | null>(null);
+  const [curriculumId, setCurriculumId] = useState<number | null>(classDetail?.data?.curriculum_id || null);
   const [major, setMajor] = useState<string>("General");
+
+  const curriculumList = useMemo(() => {
+    return curriculumData?.data?.filter(x => classDetail?.data?.level_id == x.level_id && classDetail?.data?.grade == x.grade)
+    ?.map(item => ({
+      label: item.display_name,
+      value: item.id?.toString() || "",
+    }));
+  }, [classDetail?.data, curriculumData]);
 
   const { mutateAsync, isPending } = useUpdateAcademic();
   async function saveHomeRoomTeacher() {
@@ -47,6 +58,7 @@ export default function ClassAcademicDetail() {
     const studentIdArray = classDetail?.data.students?.map(student => student.id);
     const response = await mutateAsync({
       ...classDetail?.data,
+      curriculum_id: curriculumId || classDetail?.data.curriculum_id,
       students: studentIdArray as any,
       major: major,
       homeroom_teacher_id: homeRoomTeacherId,
@@ -157,6 +169,30 @@ export default function ClassAcademicDetail() {
                       <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
                     </div>
                   </div>
+                </td>
+              </tr>
+              <tr>
+                <td className="pr-8 pb-3">Kurikulum</td>
+                <td className="pr-8 pb-3">:</td>
+                <td className="pr-8 pb-3">
+                  {(getUser()?.role_name === "Admin" && classDetail?.data?.subject_schedules?.length === 0) ? 
+                    <div className="relative pr-3">
+                      <select
+                        value={(curriculumId || classDetail?.data?.curriculum_id) || ""}
+                        onChange={(e) => e.target.value ? setCurriculumId(e.target.value ? parseInt(e.target.value): null) : null}
+                        className="w-full min-w-[240px] border border-gray-300 appearance-none rounded-md px-3 py-2.5 cursor-pointer"
+                      >
+                        <option value="">Pilih Kurikulum</option>
+                        {curriculumList?.map(curriculum => (
+                          <option value={curriculum.value} key={curriculum.value}>{curriculum.label}</option>
+                        ))}
+                      </select>
+                      <div className="absolute inset-y-0 right-5 flex items-center px-2 pointer-events-none">
+                        <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                      </div>
+                    </div>
+                    : <p>{classDetail?.data?.curriculum}</p>
+                  }
                 </td>
               </tr>
               <tr>

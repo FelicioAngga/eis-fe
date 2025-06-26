@@ -9,7 +9,16 @@ export type ClassModel = {
   start_year: string;
   end_year: string;
   display_name: string;
+  curriculum: string;
+  curriculum_id: number;
+  curriculum_subjects: {
+    id: number;
+    subject_id: number;
+    subject_name: string;
+  }[];
+  level_id?: number;
   level_name: string;
+  grade: string;
   homeroom_teacher: string;
   homeroom_teacher_id: number;
   classroom: any;
@@ -76,6 +85,7 @@ export type CreateAcademicModel = {
   display_name: string;
   classroom_id: number;
   homeroom_teacher_id: number;
+  curriculum_id: number;
   major?: string;
 }
 
