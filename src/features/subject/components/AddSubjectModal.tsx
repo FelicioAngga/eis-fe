@@ -18,6 +18,7 @@ function AddSubjectModal({ isOpen, onClose }: AddSubjectModalProps) {
   const queryClient = useQueryClient();
   const { showAlert } = useAlert();
   const yupSchema = Yup.object().shape({
+    code: Yup.string().required("Kode Mata Pelajaran tidak boleh kosong"),
     name: Yup.string().required("Nama Mata Pelajaran tidak boleh kosong"),
   });
 
@@ -27,6 +28,7 @@ function AddSubjectModal({ isOpen, onClose }: AddSubjectModalProps) {
     resolver,
     defaultValues: {
       name: "",
+      code: "",
     },
   });
 
@@ -66,9 +68,10 @@ function AddSubjectModal({ isOpen, onClose }: AddSubjectModalProps) {
       title="Tambah Mata Pelajaran"
     >
       <Form methods={methods} onSubmit={handleSubmit}>
-        <div>
+        <div className="flex flex-col gap-4">
+          <Input type="text" name="code" placeholder="Kode" label="Kode" required />
           <Input type="text" name="name" placeholder="Nama" label="Nama" required />
-          <div className="flex gap-4 mt-8">
+          <div className="flex gap-4 mt-2">
             <Button type="button" onClick={onClose} className="w-full" variant="outline">Batal</Button>
             <Button className="w-full" disabled={isPending || !isValid}>Tambah</Button>
           </div>

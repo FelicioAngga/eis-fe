@@ -59,6 +59,11 @@ function SubjectTable({ paginationModel, search }: SubjectTableProps) {
         size: 10,
       },
       {
+        accessorKey: "code",
+        header: () => "Kode",
+        enableSorting: true,
+      },
+      {
         accessorKey: "name",
         header: () => "Nama",
         enableSorting: true,
