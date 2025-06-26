@@ -166,11 +166,21 @@ function GuardianFormData({ guardianFormData, studentFormData, setCurrentTab }: 
             label="Alamat"
             placeholder="Alamat"
           />
-          <Input
-            type="text"
+          <Input 
+            type="select"
             name="highest_education"
             label="Pendidikan Tertinggi"
-            placeholder="Pendidikan Tertinggi Wali"
+            placeholder="Pendidikan Tertinggi"
+            options={[
+              { value: 'Tidak Sekolah', label: 'Tidak Sekolah' },
+              { value: 'TK', label: 'TK' },
+              { value: 'SD', label: 'SD' },
+              { value: 'SMP', label: 'SMP' },
+              { value: 'SMA', label: 'SMA' },
+              { value: 'S1', label: 'S1' },
+              { value: 'S2', label: 'S2' },
+              { value: 'S3', label: 'S3' }
+            ]}
           />
           <Input
             type="text"
