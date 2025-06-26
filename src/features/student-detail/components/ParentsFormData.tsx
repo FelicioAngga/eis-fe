@@ -9,7 +9,7 @@ import { useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAlert } from '../../../contexts/AlertContext';
 import { useQueryClient } from '@tanstack/react-query';
-import { useUpdateGuardian } from '../../../api-hooks/students/api';
+import { useCreateGuardian, useUpdateGuardian } from '../../../api-hooks/students/api';
 import dayjs from 'dayjs';
 
 interface ParentsFormDataProps {
@@ -71,6 +71,7 @@ function ParentsFormData({ parentsFormData, setCurrentTab, setParentsFormData }:
   });
 
   const { mutateAsync: updateGuardian } = useUpdateGuardian();
+  const { mutateAsync: mutateGuardian } = useCreateGuardian();
 
   async function handleSubmit(data: any) {
     let guardians: GuardianModel[] = [];
@@ -78,24 +79,24 @@ function ParentsFormData({ parentsFormData, setCurrentTab, setParentsFormData }:
       id: data.id || undefined,
       name: data.name,
       place_of_birth: data.place_of_birth,
-      date_of_birth: data.date_of_birth,
+      date_of_birth: dayjs(data.date_of_birth).format('YYYY-MM-DD'),
       religion: data.religion,
       highest_education: data.highest_education,
       job: data.job,
       phone: data.phone,
-      address: '',
+      address: data.address,
       relation: 'father',
     });
     guardians.push({
       id: data.momId || undefined,
       name: data.momName,
       place_of_birth: data.momPlaceOfBirth,
-      date_of_birth: data.momDateOfBirth,
+      date_of_birth: dayjs(data.momDateOfBirth).format('YYYY-MM-DD'),
       religion: data.momReligion,
       highest_education: data.momHighestEducation,
       job: data.momJob,
       phone: data.momPhone,
-      address: '',
+      address: data.address,
       relation: 'mother',
     });
 
@@ -115,7 +116,21 @@ function ParentsFormData({ parentsFormData, setCurrentTab, setParentsFormData }:
       }
     } else {
       setParentsFormData(guardians);
-      setCurrentTab('guardian');
+      const responseGuard = await mutateGuardian(guardians);
+      if (responseGuard[0].status === 200) {
+        showAlert({
+          title: 'Berhasil',
+          message: "Data orang tua berhasil disimpan.",
+          type: 'success',
+        });
+        setCurrentTab('guardian');
+      } else {
+        showAlert({
+          title: 'Gagal',
+          message: responseGuard[0].message || "Gagal menyimpan data orang tua.",
+          type: 'error',
+        });
+      }
     }
   }
 
@@ -129,12 +144,14 @@ function ParentsFormData({ parentsFormData, setCurrentTab, setParentsFormData }:
             name="name"
             label="Nama Ayah"
             placeholder='Nama Ayah'
+            required
           />
           <Input 
             type="text"
             name="place_of_birth"
             label="Tempat Lahir"
             placeholder='Tempat Lahir Ayah'
+            required
           />
           <Input 
             type="date"
@@ -142,6 +159,7 @@ function ParentsFormData({ parentsFormData, setCurrentTab, setParentsFormData }:
             label="Tanggal Lahir"
             placeholder='Tanggal Lahir Ayah'
             maxDate={new Date()}
+            required
           />
           <Input 
             type="select"
@@ -156,6 +174,7 @@ function ParentsFormData({ parentsFormData, setCurrentTab, setParentsFormData }:
               { value: 'Buddha', label: 'Buddha' },
               { value: 'Konghucu', label: 'Konghucu' },
             ]}
+            required
           />
           <Input 
             type="select"
@@ -172,6 +191,14 @@ function ParentsFormData({ parentsFormData, setCurrentTab, setParentsFormData }:
               { value: 'S2', label: 'S2' },
               { value: 'S3', label: 'S3' }
             ]}
+            required
+          />
+          <Input 
+            type="text"
+            name="address"
+            label="Alamat"
+            placeholder="Alamat Ayah"
+            required
           />
           <Input 
             type="text"
@@ -184,6 +211,7 @@ function ParentsFormData({ parentsFormData, setCurrentTab, setParentsFormData }:
             name="phone"
             label="No Telepon"
             placeholder="No Telepon Ayah"
+            required
           />
         </div>
 
@@ -194,12 +222,14 @@ function ParentsFormData({ parentsFormData, setCurrentTab, setParentsFormData }:
             name="momName"
             label="Nama Ibu"
             placeholder='Nama Ibu'
+            required
           />
           <Input 
             type="text"
             name="momPlaceOfBirth"
             label="Tempat Lahir"
             placeholder='Tempat Lahir Ibu'
+            required
           />
           <Input 
             type="date"
@@ -207,6 +237,7 @@ function ParentsFormData({ parentsFormData, setCurrentTab, setParentsFormData }:
             label="Tanggal Lahir"
             placeholder='Tanggal Lahir Ibu'
             maxDate={new Date()}
+            required
           />
           <Input 
             type="select"
@@ -221,6 +252,7 @@ function ParentsFormData({ parentsFormData, setCurrentTab, setParentsFormData }:
               { value: "Buddha", label: "Buddha" },
               { value: "Konghucu", label: "Konghucu" },
             ]}
+            required
           />
           <Input 
             type="select"
@@ -237,6 +269,14 @@ function ParentsFormData({ parentsFormData, setCurrentTab, setParentsFormData }:
               { value: 'S2', label: 'S2' },
               { value: 'S3', label: 'S3' }
             ]}
+            required
+          />
+          <Input 
+            type="text"
+            name="momAddress"
+            label="Alamat"
+            placeholder="Alamat Ibu"
+            required
           />
           <Input 
             type="text"
@@ -249,6 +289,7 @@ function ParentsFormData({ parentsFormData, setCurrentTab, setParentsFormData }:
             name="momPhone"
             label="No Telepon"
             placeholder="No Telepon Ibu"
+            required
           />
         </div>
       </div>

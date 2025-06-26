@@ -11,7 +11,7 @@ import { FiEdit } from 'react-icons/fi';
 import { fileToBase64 } from '../../../utils/base64';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAlert } from '../../../contexts/AlertContext';
-import { useUpdateStudent } from '../../../api-hooks/students/api';
+import { useCreateStudent, useUpdateStudent } from '../../../api-hooks/students/api';
 import dayjs from 'dayjs';
 import { useQueryClient } from '@tanstack/react-query';
 
@@ -80,6 +80,7 @@ function StudentFormData({ studentFormData, setCurrentTab, setStudentFormData }:
   }
 
   const { mutateAsync: mutateUpdate } = useUpdateStudent();
+  const { mutateAsync: mutateStudent } = useCreateStudent();
 
   async function handleSubmit(data: StudentModel) {
     const file64 = file ? await fileToBase64(file) : "";
@@ -106,6 +107,18 @@ function StudentFormData({ studentFormData, setCurrentTab, setStudentFormData }:
         ...data,
         profile_pic: file64,
       });
+      const responseStudent = await mutateStudent({ 
+        ...data, 
+        profile_pic: file64,
+        date_of_birth: dayjs(data.date_of_birth).format('YYYY-MM-DD') }
+      );
+      if (responseStudent.status === 200) {
+        showAlert({
+          title: "Berhasil",
+          message: "Data siswa berhasil disimpan.",
+          type: "success",
+        });
+      }
       setCurrentTab('parents');
     }
   }
@@ -115,7 +128,7 @@ function StudentFormData({ studentFormData, setCurrentTab, setStudentFormData }:
     methods.reset({
       ...defaultValues,
       religion: studentFormData.religion || "",
-      email: (studentFormData as any)?.user?.email || "",
+      email: (studentFormData as any)?.user?.email || studentFormData?.email || "",
     });
     setPreview(studentFormData.profile_pic || null);
   }, [studentFormData]);
@@ -144,12 +157,14 @@ function StudentFormData({ studentFormData, setCurrentTab, setStudentFormData }:
             label="Email Siswa"
             placeholder='Email Siswa'
             disabled={!!id}
+            required
           />
           <Input 
             type="text"
             name="full_name"
             label="Nama Siswa"
             placeholder='Nama Siswa'
+            required
           />
           <Input 
             type="number"
@@ -168,6 +183,7 @@ function StudentFormData({ studentFormData, setCurrentTab, setStudentFormData }:
             name="place_of_birth"
             label="Tempat Lahir"
             placeholder='Tempat Lahir'
+            required
           />
           <Input 
             type="date"
@@ -175,6 +191,7 @@ function StudentFormData({ studentFormData, setCurrentTab, setStudentFormData }:
             label="Tanggal Lahir"
             placeholder='Tanggal Lahir'
             maxDate={new Date()}
+            required
           />
           <Input 
             type="select"
@@ -189,6 +206,7 @@ function StudentFormData({ studentFormData, setCurrentTab, setStudentFormData }:
               { value: 'Buddha', label: 'Buddha' },
               { value: 'Konghucu', label: 'Konghucu' },
             ]}
+            required
           />
           <div className="flex gap-8">
             <Input 
@@ -196,12 +214,14 @@ function StudentFormData({ studentFormData, setCurrentTab, setStudentFormData }:
               name="child_sequence"
               label="Anak ke"
               placeholder='Anak ke'
+              required
             />
             <Input 
               type="number"
               name="number_of_siblings"
               label="Jumlah Saudara"
               placeholder='Jumlah Saudara'
+              required
             />
           </div>
           <div className="flex gap-8">
@@ -210,12 +230,14 @@ function StudentFormData({ studentFormData, setCurrentTab, setStudentFormData }:
               name="child_status"
               label="Status Dalam Keluarga"
               placeholder='Status diri dalam keluarga'
+              required
             />
             <Input 
               type="text"
               name="living_with"
               label="Tinggal Bersama"
               placeholder='Tinggal Bersama'
+              required
             />
           </div>
           <Input 
@@ -223,6 +245,7 @@ function StudentFormData({ studentFormData, setCurrentTab, setStudentFormData }:
             name="address"
             label="Alamat Rumah"
             placeholder='Alamat Rumah'
+            required
           />
         </div>
         <Button className="mt-5 w-1/2">{id ? "Simpan" : "Berikutnya"}</Button>
