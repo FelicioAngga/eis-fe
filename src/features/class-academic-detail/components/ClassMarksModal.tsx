@@ -144,12 +144,6 @@ function ClassMarksModal({ isOpen, onClose, editData, handleSaveModal }: ClassMa
             placeholder="Masukkan nilai Ujian Akhir"
             max={100}
           />
-          <Input
-            type="text"
-            name="remarks"
-            label="Deskripsi"
-            placeholder="Masukkan deskripsi"
-          />
         </div>
         <div className="flex gap-5 mt-5">
           <Button onClick={handleClose} className="w-full" type="button" variant="outline">Batal</Button>

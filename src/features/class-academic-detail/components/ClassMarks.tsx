@@ -6,7 +6,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import ClassMarksModal, { ClassMarksModalEditData } from "./ClassMarksModal";
 import { RootState } from "../../../store";
 import { getUniqueSubjects, markTypes } from "../helpers/unique-subject";
-import { UniqueSubject } from "../../../api-hooks/class/models/ClassModel";
+import { UniqueSubject, UpdateAcademicStudentNoteModel } from "../../../api-hooks/class/models/ClassModel";
 import { StudentModel } from "../../../api-hooks/students/models/StudentModel";
 import { StudentGradesDetailModel, StudentGradesEntryModel } from "../../../api-hooks/student-grades/models/StudentGradesModel";
 import { useCreateStudentGrades, useGetStudentGrades, useUpdateStudentGrades } from "../../../api-hooks/student-grades/api";
@@ -17,6 +17,8 @@ import { downloadStudentMarksExcel, handleImportStudentMarks } from "../helpers/
 import { useGetTeacherByToken } from "../../../api-hooks/teacher/api";
 import { useAuth } from "../../../hooks/useAuth";
 import { usePermissionAccess } from "../../../hooks/useAccessRight";
+import ClassMarksNoteModal from "./ClassMarksNoteModal";
+import { useUpdateAcademicStudentNote } from "../../../api-hooks/class/api";
 
 interface ClassMarksProps {
   termId: number;
@@ -35,9 +37,13 @@ function ClassMarks({ setTermId, termId }: ClassMarksProps) {
   
   const inputFileRef = useRef<HTMLInputElement>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isNoteModalOpen, setIsNoteModalOpen] = useState(false);
   const { classDetail } = useSelector((state: RootState) => state.classAcademic);
   const [editData, setEditData] = useState<ClassMarksModalEditData | null>(null);
+  const [editStudentNoteData, setEditStudentNoteData] = useState<UpdateAcademicStudentNoteModel | null>(null);
   const [studentMarks, setStudentMarks] = useState<StudentGradesDetailModel[]>([]);
+  const [studentNotes, setStudentNotes] = useState<UpdateAcademicStudentNoteModel[]>([]);
+  const isFirstTerm = useMemo(() => classDetail?.terms?.find(term => term.id === termId)?.name === "Semester 1", [classDetail?.terms, termId]);
 
   const uniqueSubjectList = useMemo(() => {
     const uniqueSubject = getUniqueSubjects(classDetail?.subject_schedules || []);
@@ -58,6 +64,19 @@ function ClassMarks({ setTermId, termId }: ClassMarksProps) {
       subject_id: subject.subject_id,
     })
     setIsModalOpen(true);
+  }
+
+  const openNoteModal = (student: StudentModel) => {
+    const studentNote = studentNotes.find(note => note.student_id === student.id);
+    setEditStudentNoteData({
+      id: studentNote?.id || 0,
+      academic_id: parseInt(id || "0"),
+      student_name: student?.full_name,
+      student_id: student?.id || 0,
+      first_term_notes: studentNote?.first_term_notes || "",
+      second_term_notes: studentNote?.second_term_notes || "",
+    })
+    setIsNoteModalOpen(true);
   }
 
   const handleSaveModal = (data: StudentGradesEntryModel, subject_id: number) => {
@@ -82,6 +101,19 @@ function ClassMarks({ setTermId, termId }: ClassMarksProps) {
         } : detail
       ));
     }
+  }
+
+  const handleSaveNoteModal = async (data: UpdateAcademicStudentNoteModel) => {
+    setStudentNotes(prev => {
+      const existingNote = prev.find(note => note.student_id === data.student_id);
+      if (existingNote) {
+        return prev.map(note => 
+          note.student_id === data.student_id ? { ...note, ...data } : note
+        );
+      } else {
+        return [...prev, data];
+      }
+    });
   }
 
   const handleDownload = () => {
@@ -140,16 +172,27 @@ function ClassMarks({ setTermId, termId }: ClassMarksProps) {
 
   const { mutateAsync: mutateCreate } = useCreateStudentGrades();
   const { mutateAsync: mutateUpdate } = useUpdateStudentGrades();
+  const { mutateAsync: mutateUpdateStudent } = useUpdateAcademicStudentNote();
 
   const handleSubmit = async () => {
     const mutate = studentGradesData?.data.details?.length ? mutateUpdate : mutateCreate;
+    if (!studentMarks.length) {
+      showAlert({
+        title: "Peringatan",
+        type: "warning",
+        message: "Nilai siswa tidak boleh kosong.",
+      });
+      return;
+    }
     const response = await mutate({
       academic_id: id ? parseInt(id) : 0,
       term_id: termId,
       details: studentMarks,
     });
+
+    const responseNote = await mutateUpdateStudent(studentNotes.map(note => ({ ...note, is_first_term: isFirstTerm })));
     
-    if (response.status === 200) {
+    if (response.status === 200 && responseNote.status === 200) {
       showAlert({
         title: "Berhasil",
         type: "success",
@@ -174,7 +217,19 @@ function ClassMarks({ setTermId, termId }: ClassMarksProps) {
   useEffect(() => {
     if (!studentGradesData?.data) return;
     setStudentMarks(studentGradesData.data.details || []);
-  }, [studentGradesData?.data?.details]);
+    const studentNotes: UpdateAcademicStudentNoteModel[] = [];
+    studentGradesData?.data?.teacher_notes?.forEach(teacherNote => {
+      studentNotes.push({
+        id: teacherNote.id || 0,
+        academic_id: studentGradesData.data.academic_id,
+        student_id: teacherNote.student_id || 0,
+        student_name: teacherNote.student,
+        first_term_notes: isFirstTerm ? teacherNote.notes : "",
+        second_term_notes: isFirstTerm ? "" : teacherNote.notes,
+      })
+    })
+    setStudentNotes(studentNotes);
+  }, [studentGradesData?.data]);
 
   return (
     <div>
@@ -183,6 +238,13 @@ function ClassMarks({ setTermId, termId }: ClassMarksProps) {
         onClose={() => setIsModalOpen(false)}
         editData={editData}
         handleSaveModal={handleSaveModal}
+      />
+      <ClassMarksNoteModal 
+        isOpen={isNoteModalOpen}
+        onClose={() => setIsNoteModalOpen(false)}
+        editData={editStudentNoteData}
+        handleSaveNoteModal={handleSaveNoteModal}
+        isFirstTerm={isFirstTerm}
       />
       <div className="flex justify-between">
         <div>
@@ -279,13 +341,13 @@ function ClassMarks({ setTermId, termId }: ClassMarksProps) {
                     <tr key={`${student.id}-${markType.dataKey}`}>
                       {markIdx === 0 && (
                         <>
-                          <td rowSpan={markTypes.length} className="border border-gray-400 px-3 py-2 align-top">
+                          <td rowSpan={markTypes.length + 1} className="border border-gray-400 px-3 py-2 align-top">
                             {studentIdx + 1}
                           </td>
-                          <td rowSpan={markTypes.length} className="border border-gray-400 px-3 py-2 align-top">
+                          <td rowSpan={markTypes.length + 1} className="border border-gray-400 px-3 py-2 align-top">
                             {student.nis || "-"}
                           </td>
-                          <td rowSpan={markTypes.length} className="border border-gray-400 px-3 py-2 align-top">
+                          <td rowSpan={markTypes.length + 1} className="border border-gray-400 px-3 py-2 align-top">
                             {student.full_name}
                           </td>
                         </>
@@ -316,6 +378,20 @@ function ClassMarks({ setTermId, termId }: ClassMarksProps) {
                       })}
                     </tr>
                   ))}
+                  {getPermissionAccess("academic_all_score").write && (
+                    <tr>
+                      <td className="border border-gray-400 px-3 py-2 align-top">
+                        <div className="flex gap-2 items-center">
+                          <p>Catatan Wali Kelas</p>
+                          <FiEdit onClick={() => openNoteModal(student)} className="cursor-pointer size-4" />
+                        </div>
+                      </td>
+                      <td colSpan={uniqueSubjectList.length * 2} className="border border-gray-400 px-3 py-2 align-top overflow-hidden">
+                        {isFirstTerm ? studentNotes.find(note => note.student_id === student.id)?.first_term_notes 
+                        : studentNotes.find(note => note.student_id === student.id)?.second_term_notes || ""}
+                      </td>
+                    </tr>
+                  )}
                 </React.Fragment>
               );
             })}

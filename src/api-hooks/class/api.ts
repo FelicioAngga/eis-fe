@@ -2,7 +2,16 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useApiCall } from "../../hooks/useApiCall";
 import { BASE_URL } from "../../utils/base-url";
 import { ResponseModel, ResponsePaginationModel } from "../method";
-import { AcademicBatchModel, ClassModel, ClassNoteDetailModel, ClassParams, CreateAcademicModel, CreateClassNoteModel, UpdateClassNoteModel } from "./models/ClassModel";
+import {
+  AcademicBatchModel,
+  ClassModel,
+  ClassNoteDetailModel,
+  ClassParams,
+  CreateAcademicModel,
+  CreateClassNoteModel,
+  UpdateAcademicStudentNoteModel,
+  UpdateClassNoteModel,
+} from "./models/ClassModel";
 
 export const useClassQuery = (params: ClassParams) => {
   const apiCall = useApiCall<ResponsePaginationModel<ClassModel>>({
@@ -11,7 +20,7 @@ export const useClassQuery = (params: ClassParams) => {
     inputOptions: {
       ...params?.pagination,
       ...(params?.search ? { search: params.search } : {}),
-    }
+    },
   });
 
   return useQuery({
@@ -20,7 +29,7 @@ export const useClassQuery = (params: ClassParams) => {
       return await apiCall();
     },
   });
-}
+};
 
 export const useClassDetail = (id: number) => {
   const apiCall = useApiCall<{ data: ClassModel }>({
@@ -34,7 +43,7 @@ export const useClassDetail = (id: number) => {
       return await apiCall();
     },
   });
-}
+};
 
 export const useCreateAcademicBatch = () => {
   const apiCall = useApiCall<ResponseModel<any>>({
@@ -44,12 +53,12 @@ export const useCreateAcademicBatch = () => {
 
   return useMutation({
     mutationFn: async (data: AcademicBatchModel) => {
-      return await apiCall({ 
-        body: data
+      return await apiCall({
+        body: data,
       });
     },
   });
-}
+};
 
 export const useCreateAcademic = () => {
   const apiCall = useApiCall<ResponseModel<any>>({
@@ -59,12 +68,12 @@ export const useCreateAcademic = () => {
 
   return useMutation({
     mutationFn: async (data: CreateAcademicModel) => {
-      return await apiCall({ 
-        body: data
+      return await apiCall({
+        body: data,
       });
     },
   });
-}
+};
 
 export const useUpdateAcademic = () => {
   const apiCall = useApiCall<ResponseModel<any>>({
@@ -74,13 +83,13 @@ export const useUpdateAcademic = () => {
 
   return useMutation({
     mutationFn: async (data: ClassModel) => {
-      return await apiCall({ 
+      return await apiCall({
         url: `${BASE_URL}/academics/${data.id}`,
-        body: data
+        body: data,
       });
     },
   });
-}
+};
 
 export const useCreateClassNote = () => {
   const apiCall = useApiCall<ResponseModel<any>>({
@@ -90,12 +99,12 @@ export const useCreateClassNote = () => {
 
   return useMutation({
     mutationFn: async (data: CreateClassNoteModel) => {
-      return await apiCall({ 
-        body: data
+      return await apiCall({
+        body: data,
       });
     },
   });
-}
+};
 
 export const useUpdateClassNote = () => {
   const apiCall = useApiCall<ResponseModel<any>>({
@@ -105,13 +114,13 @@ export const useUpdateClassNote = () => {
 
   return useMutation({
     mutationFn: async (data: UpdateClassNoteModel) => {
-      return await apiCall({ 
+      return await apiCall({
         url: `${BASE_URL}/academics/classnotes/detail/${data.id}`,
-        body: data
+        body: data,
       });
     },
   });
-}
+};
 
 export const useDetailClassNote = (academic_id: number) => {
   const apiCall = useApiCall<{ data: ClassNoteDetailModel[] }>({
@@ -126,4 +135,20 @@ export const useDetailClassNote = (academic_id: number) => {
     },
     enabled: !!academic_id,
   });
-}
+};
+
+export const useUpdateAcademicStudentNote = () => {
+  const apiCall = useApiCall<ResponseModel<any>>({
+    method: "PUT",
+    url: `${BASE_URL}/academics/classnotes/detail/`,
+  });
+
+  return useMutation({
+    mutationFn: async (data: UpdateAcademicStudentNoteModel[]) => {
+      return await apiCall({
+        url: `${BASE_URL}/academics/notes`,
+        body: data,
+      });
+    },
+  });
+};

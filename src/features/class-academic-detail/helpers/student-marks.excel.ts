@@ -75,11 +75,11 @@ export const downloadStudentMarksExcel = (
     ]);
     const row6 = ws.addRow([
       ...Array(3).fill(undefined),
-      "Deskripsi",
-      ...studentMarkRemarks,
+      "Catatan Wali Kelas",
     ]);
 
     const untilRowNo = currentRow + 5;
+    ws.mergeCells(`E${untilRowNo}:${getExcelColumnLetter(studentMarks.length + 4)}7`)
     ws.mergeCells(`A${currentRow}:A${untilRowNo}`);
     ws.mergeCells(`B${currentRow}:B${untilRowNo}`);
     ws.mergeCells(`C${currentRow}:C${untilRowNo}`);
@@ -138,7 +138,7 @@ export const downloadStudentMarksExcel = (
     });
   }
 
-  const columnWidths = [5, 10, 25, 15, ...Array(studentMarks.length).fill(20)];
+  const columnWidths = [5, 10, 25, 20, ...Array(studentMarks.length).fill(25)];
   columnWidths.forEach((width, index) => {
     ws.getColumn(index + 1).width = width;
   });
@@ -184,4 +184,15 @@ export const handleImportStudentMarks = async (fileData: any, studentMarks: Stud
     }
   });
   return studentMarks;
+}
+
+function getExcelColumnLetter(colNum: number): string {
+  let temp: any = '', letter: any = '';
+  while (colNum > 0) {
+    temp = (colNum - 1) % 26;
+    letter = String.fromCharCode(temp + 65) + letter;
+    colNum = (colNum - temp - 1) / 26;
+  }
+  console.log(letter);
+  return letter;
 }
