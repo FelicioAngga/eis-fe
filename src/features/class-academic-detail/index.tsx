@@ -219,7 +219,7 @@ export default function ClassAcademicDetail() {
                   }
                 </td>
               </tr>
-              {(getPermissionAccess("subjsched:read").read && getPermissionAccess("subjsched:write").write) &&
+              {(getPermissionAccess("subjsched").read && getPermissionAccess("subjsched").write) &&
                 <tr>
                   <td className="pr-8 pb-3">Jadwal Kelas</td>
                   <td className="pr-8 pb-3">:</td>
