@@ -120,3 +120,13 @@ export type TermsModel = {
   second_start_date?: string;
   second_end_date?: string;
 }
+
+export type UpdateAcademicStudentNoteModel = {
+  id: number;
+  academic_id: number;
+  student_id: number;
+  student_name?: string;
+  first_term_notes?: string;
+  second_term_notes?: string;
+  is_first_term?: boolean;
+}

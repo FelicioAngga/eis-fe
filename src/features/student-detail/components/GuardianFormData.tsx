@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import Button from "../../../components/Button";
 import { GuardianModel } from "../../../api-hooks/registration/models/RegistrationModel";
 import { StudentModel } from "../../../api-hooks/students/models/StudentModel";
-import { useCreateGuardian, useCreateStudent, useUpdateGuardian } from "../../../api-hooks/students/api";
+import { useCreateGuardian, useUpdateGuardian } from "../../../api-hooks/students/api";
 import { useAlert } from "../../../contexts/AlertContext";
 import * as Yup from "yup";
 import useYupValidationResolver from "../../../hooks/useYupValidationResolver";
@@ -20,20 +20,21 @@ interface GuardianFormDataProps {
   studentFormData: StudentModel | null;
 }
 
-function GuardianFormData({ guardianFormData, studentFormData, setStudentFormData, setCurrentTab }: GuardianFormDataProps) {
+function GuardianFormData({ guardianFormData, studentFormData, setCurrentTab }: GuardianFormDataProps) {
   const { id } = useParams();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { showAlert } = useAlert();
 
   const yupSchema = Yup.object().shape({
-    name: Yup.string().required('Nama Wali tidak boleh kosong'),
-    place_of_birth: Yup.string().required('Tempat lahir Wali tidak boleh kosong'),
-    date_of_birth: Yup.date().required('Tanggal lahir Wali tidak boleh kosong').typeError('Tanggal lahir tidak valid'),
-    religion: Yup.string().required('Agama Wali tidak boleh kosong'),
-    highest_education: Yup.string().required('Pendidikan tertinggi Wali tidak boleh kosong'),
-    job: Yup.string().required('Pekerjaan Wali tidak boleh kosong'),
-    phone: Yup.string().required('No telepon Wali tidak boleh kosong'),
+    name: Yup.string(),
+    place_of_birth: Yup.string(),
+    date_of_birth: Yup.date(),
+    religion: Yup.string(),
+    highest_education: Yup.string(),
+    address: Yup.string(),
+    job: Yup.string(),
+    phone: Yup.string(),
   });
 
   const resolver = useYupValidationResolver(yupSchema);
@@ -47,6 +48,7 @@ function GuardianFormData({ guardianFormData, studentFormData, setStudentFormDat
       religion: guardianData?.religion,
       highest_education: guardianData?.highest_education,
       job: guardianData?.job,
+      address: guardianData?.address,
       phone: guardianData?.phone,
     }
   }, [guardianFormData])
@@ -58,7 +60,6 @@ function GuardianFormData({ guardianFormData, studentFormData, setStudentFormDat
   });
 
   const { mutateAsync: mutateGuardian, isPending: isGuardianPending } = useCreateGuardian();
-  const { mutateAsync: mutateStudent, isPending: isStudentPending} = useCreateStudent();
   const { mutateAsync: mutateUpdateGuardian } = useUpdateGuardian();
 
   async function updateGuardian(data: GuardianModel) {
@@ -75,39 +76,36 @@ function GuardianFormData({ guardianFormData, studentFormData, setStudentFormDat
       navigate(`/student-data`);
     }
   }
-
-  async function createStudentAndGuardian(data: GuardianModel) {
-    if (!studentFormData) return;
-    let updatedGuardianData = [...guardianFormData];
-    const existingGuardianIndex = updatedGuardianData.findIndex(g => g.relation === 'guardian');
-    if (existingGuardianIndex > -1) {
-      updatedGuardianData[existingGuardianIndex] = { ...updatedGuardianData[existingGuardianIndex], ...data };
-    } else updatedGuardianData.push({ ...data, relation: 'guardian' });
-    const responseStudent = await mutateStudent({ ...studentFormData, date_of_birth: dayjs(studentFormData.date_of_birth).format('YYYY-MM-DD') });
-
-    if (responseStudent.status === 200) {
-      setStudentFormData(prev => prev ? { ...prev, id: (responseStudent as any)?.created_id } : null)
-      updatedGuardianData = updatedGuardianData.map(g => ({ 
-        ...g, 
-        student_id: (responseStudent as any).created_id,
-        date_of_birth: dayjs(g.date_of_birth).format('YYYY-MM-DD'),
-        address: studentFormData?.address || ' ',
-      }));
-      const responseGuardian = await mutateGuardian(updatedGuardianData);
-      if (responseGuardian[2].status === 200) {
-        showAlert({
-          title: 'Success',
-          type: 'success',
-          message: 'Data berhasil disimpan.',
-        });
-        setCurrentTab('document');
-      } else {
+  
+  async function createGuardian(data: GuardianModel) {
+    if (!data.name) {
+      setCurrentTab('document');
+    }
+    const response = await mutateGuardian([{ ...data, date_of_birth: dayjs(data.date_of_birth).format('YYYY-MM-DD') }])
+    if (response[0]?.status === 200) {
+      showAlert({
+        title: 'Success',
+        type: 'success',
+        message: 'Data berhasil disimpan.',
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['students', id ? parseInt(id) : 0],
+      });
+      setCurrentTab('document');
+    } else {
+      if (!data.date_of_birth || !data.place_of_birth || !data.religion || !data.job || !data.highest_education || !data.address) {
         showAlert({
           title: 'Error',
           type: 'error',
-          message: 'Gagal menyimpan data.',
+          message: 'Mohon lengkapi data wali siswa.',
         });
+        return;
       }
+      showAlert({
+        title: 'Error',
+        type: 'error',
+        message: response[0]?.message || 'Gagal menyimpan data.',
+      });
     }
   }
 
@@ -121,7 +119,7 @@ function GuardianFormData({ guardianFormData, studentFormData, setStudentFormDat
       return;
     }
     if (id) await updateGuardian(data);
-    else await createStudentAndGuardian(data);
+    else await createGuardian(data);
   }
 
   return (
@@ -162,11 +160,27 @@ function GuardianFormData({ guardianFormData, studentFormData, setStudentFormDat
               { value: "Konghucu", label: "Konghucu" },
             ]}
           />
-          <Input
+          <Input 
             type="text"
+            name="address"
+            label="Alamat"
+            placeholder="Alamat"
+          />
+          <Input 
+            type="select"
             name="highest_education"
             label="Pendidikan Tertinggi"
-            placeholder="Pendidikan Tertinggi Wali"
+            placeholder="Pendidikan Tertinggi"
+            options={[
+              { value: 'Tidak Sekolah', label: 'Tidak Sekolah' },
+              { value: 'TK', label: 'TK' },
+              { value: 'SD', label: 'SD' },
+              { value: 'SMP', label: 'SMP' },
+              { value: 'SMA', label: 'SMA' },
+              { value: 'S1', label: 'S1' },
+              { value: 'S2', label: 'S2' },
+              { value: 'S3', label: 'S3' }
+            ]}
           />
           <Input
             type="text"
@@ -182,7 +196,7 @@ function GuardianFormData({ guardianFormData, studentFormData, setStudentFormDat
           />
         </div>
       </div>
-      <Button className="mt-10 w-1/2 mx-auto" disabled={isGuardianPending || isStudentPending}>Simpan</Button>
+      <Button className="mt-10 w-1/2 mx-auto" disabled={isGuardianPending}>Simpan</Button>
     </Form>
   );
 }

@@ -2,6 +2,12 @@ export type StudentGradesModel = {
   academic_id: number;
   term_id: number;
   details: StudentGradesDetailModel[];
+  teacher_notes?: {
+    id: number;
+    notes: string;
+    student: string;
+    student_id: number;
+  }[];
 }
 
 export type StudentGradesDetailModel = {
