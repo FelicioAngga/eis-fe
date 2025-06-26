@@ -110,9 +110,9 @@ function CurriculumSubjectModal({ isOpen, onClose, curriculumSubjectList, setCur
         required
         placeholder="Pilih Mata Pelajaran"
         options={subjectData?.data
-          .filter(x => !curriculumSubjectList.some(currSubj => currSubj.subject_id === x.id) || x.id == editData?.subject_id)
-          .map((subject) => ({
-          label: subject.name,
+          ?.filter(x => !curriculumSubjectList?.some(currSubj => currSubj.subject_id === x.id) || x.id == editData?.subject_id)
+          ?.map((subject) => ({
+          label: `${subject.name}`,
           value: subject.id.toString(),
         }))}
       />
