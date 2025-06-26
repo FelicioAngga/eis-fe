@@ -85,7 +85,7 @@ export const downloadStudentMarksExcel = (
     ]);
 
     const untilRowNo = currentRow + 5;
-    ws.mergeCells(`E${untilRowNo}:${getExcelColumnLetter(studentMarks.length + 4)}7`)
+    ws.mergeCells(`E${untilRowNo}:${getExcelColumnLetter(studentMarks.length + 4)}${untilRowNo}`)
     ws.mergeCells(`A${currentRow}:A${untilRowNo}`);
     ws.mergeCells(`B${currentRow}:B${untilRowNo}`);
     ws.mergeCells(`C${currentRow}:C${untilRowNo}`);
