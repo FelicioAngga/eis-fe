@@ -67,11 +67,24 @@ function PrintStudentReport() {
       const getPage1 = (doc: jsPDF) => {
         const academicData: { no: number; subject: string; score: number, description: string }[] = [];
         reportData?.grades.forEach((grade, index) => {
+          const competences = JSON.parse(grade.remarks);
+          let competence = "";
+          const finals = grade.finals || 0;
+          if (finals >= 90) {
+            competence = "competence1";
+          } else if (finals >= 80 && finals < 90) {
+            competence = "competence2";
+          }
+          else if (finals >= 70 && finals < 80) {
+            competence = "competence3";
+          } else {
+            competence = "competence4";
+          }
           academicData.push({
             no: index + 1,
             subject: grade.subject,
             score: grade.finals,
-            description: grade.remarks,
+            description: competences[competence] || "Tidak ada capaian kompetensi",
           })
         })
         const rowTotal = reportData?.grades.length || 1;
