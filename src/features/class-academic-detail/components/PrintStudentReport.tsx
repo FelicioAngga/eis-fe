@@ -215,6 +215,10 @@ function PrintStudentReport() {
         doc.setDrawColor(0);
         doc.setLineWidth(0.2);
         doc.rect(10, catatanY + 2, 190, 30);
+        doc.text(reportData?.teacher_notes, 11, catatanY + 6, {
+          maxWidth: 188,
+          lineHeightFactor: 1.2,
+        });
 
         const ttdY = catatanY + 40;
         const dateStr = new Date().toLocaleDateString('id-ID', {
