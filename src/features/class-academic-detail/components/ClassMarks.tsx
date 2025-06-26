@@ -135,7 +135,7 @@ function ClassMarks({ setTermId, termId }: ClassMarksProps) {
         }
       }) as StudentGradesEntryModel[],
     }));
-    downloadStudentMarksExcel(data);
+    downloadStudentMarksExcel(data, studentNotes, isFirstTerm);
   }
 
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -156,17 +156,16 @@ function ClassMarks({ setTermId, termId }: ClassMarksProps) {
           second_quiz: studentMark?.second_quiz || "",
           second_month: studentMark?.second_month || "",
           finals: studentMark?.finals || "",
-          remarks: studentMark?.remarks || "",
         }
       }) as StudentGradesEntryModel[],
     }));
     inputFileRef.current!.value = "";
-    const result = await handleImportStudentMarks(selectedFile, data);
-    setStudentMarks(result);
+    const result = await handleImportStudentMarks(selectedFile, data, studentNotes, isFirstTerm);
+    setStudentMarks(result.studentGrades);
   }
 
   const getStudentMark = (subjectId: number, studentId: number) => {
-    const subjectDetail = studentMarks.find(detail => detail.subject_id === subjectId);
+    const subjectDetail = studentMarks?.find(detail => detail.subject_id === subjectId);
     return subjectDetail?.students?.find(student => student.student_id === studentId) || null;
   }
 

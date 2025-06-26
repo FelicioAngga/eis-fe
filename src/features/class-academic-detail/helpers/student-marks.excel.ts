@@ -1,9 +1,12 @@
 import { StudentGradesDetailModel } from "../../../api-hooks/student-grades/models/StudentGradesModel";
 import { Workbook } from "exceljs";
 import fs from 'file-saver';
+import { UpdateAcademicStudentNoteModel } from "../../../api-hooks/class/models/ClassModel";
 
 export const downloadStudentMarksExcel = (
   studentMarks: StudentGradesDetailModel[],
+  teacherNotes: UpdateAcademicStudentNoteModel[],
+  isFirstTerm: boolean,
 ) => {
   const wb = new Workbook();
   const ws = wb.addWorksheet("sheet 1");
@@ -73,9 +76,12 @@ export const downloadStudentMarksExcel = (
       "Ujian Akhir",
       ...studentMarkFinals,
     ]);
+
+    const teacherNote = teacherNotes.find(note => note.student_id === student.student_id);
     const row6 = ws.addRow([
       ...Array(3).fill(undefined),
       "Catatan Wali Kelas",
+      isFirstTerm ? teacherNote?.first_term_notes || "" : teacherNote?.second_term_notes || "",
     ]);
 
     const untilRowNo = currentRow + 5;
@@ -151,7 +157,15 @@ export const downloadStudentMarksExcel = (
   });
 };
 
-export const handleImportStudentMarks = async (fileData: any, studentMarks: StudentGradesDetailModel[]): Promise<StudentGradesDetailModel[]> => {
+export const handleImportStudentMarks = async (
+  fileData: any,
+  studentMarks: StudentGradesDetailModel[],
+  studentNotes: UpdateAcademicStudentNoteModel[],
+  isFirstTerm: boolean,
+): Promise<{
+  studentGrades: StudentGradesDetailModel[];
+  studentNotes: UpdateAcademicStudentNoteModel[];
+}> => {
   const wb = new Workbook();
   await wb.xlsx.load(fileData);
   const workSheet = wb.getWorksheet(1);
@@ -161,7 +175,7 @@ export const handleImportStudentMarks = async (fileData: any, studentMarks: Stud
     if (rowNumber > 1) {
       const studentNis = rowValues[2]
       for (let i = 0; i < studentMarks.length; i++) {
-        const studentMark = studentMarks[i].students.find(s => s.nis === studentNis);
+        const studentMark = studentMarks[i].students?.find(s => s.nis === studentNis);
         if (studentMark && (rowNumber - 2) % 6 === 0 && rowNumber >= 2) {
           studentMark.first_quiz = rowValues[5 + i] || undefined;
         }
@@ -178,12 +192,20 @@ export const handleImportStudentMarks = async (fileData: any, studentMarks: Stud
           studentMark.finals = rowValues[5 + i] || undefined;
         }
         if (studentMark && (rowNumber - 7) % 6 === 0 && rowNumber >= 7) {
-          studentMark.remarks = rowValues[5 + i] || undefined;
+          const studentNote = studentNotes.find(note => note.student_id === studentMark.student_id)
+          if (studentNote) {
+            if (isFirstTerm) studentNote.first_term_notes = rowValues[5 + i] || undefined;
+            else studentNote.second_term_notes = rowValues[5 + i] || undefined;
+          }
         }
       }
     }
   });
-  return studentMarks;
+
+  return {
+    studentGrades: studentMarks,
+    studentNotes,
+  };
 }
 
 function getExcelColumnLetter(colNum: number): string {
@@ -193,6 +215,5 @@ function getExcelColumnLetter(colNum: number): string {
     letter = String.fromCharCode(temp + 65) + letter;
     colNum = (colNum - temp - 1) / 26;
   }
-  console.log(letter);
   return letter;
 }
