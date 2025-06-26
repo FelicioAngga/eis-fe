@@ -8,9 +8,11 @@ export type CurriculumModel = {
   level: string;
   grade: string;
   curriculum_subjects: CurriculumSubjectModel[];
+  deleted_at?: string | null;
 }
 
 export type CreateCurriculumModel = {
+  id?: number;
   name: string;
   level_id: number;
   grade: string;

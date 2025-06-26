@@ -6,20 +6,21 @@ import useYupValidationResolver from '../../../hooks/useYupValidationResolver';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 import { Input } from '../../../components/input/Input';
-import { useCreateCurriculum } from '../../../api-hooks/curriculum/api';
+import { useCreateCurriculum, useCurriculumDetailQuery, useUpdateCurriculum } from '../../../api-hooks/curriculum/api';
 import { useGradeQuery } from '../../../api-hooks/grade/api';
 import Button from '../../../components/Button';
 import { FiEdit, FiPlus } from 'react-icons/fi';
 import { MdDelete } from 'react-icons/md';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { CreateCurriculumModel, CurriculumSubjectModel } from '../../../api-hooks/curriculum/models/CurriculumModel';
 import CurriculumSubjectModal from './CurriculumSubjectModal';
 interface CurriculumModalProps {
   isOpen: boolean;
   onClose: () => void;
+  curriculumId: number | null;
 }
 
-function CurriculumModal({ isOpen, onClose }: CurriculumModalProps) {
+function CurriculumModal({ isOpen, curriculumId, onClose }: CurriculumModalProps) {
   const queryClient = useQueryClient();
   const { showAlert } = useAlert();
   const yupSchema = Yup.object().shape({
@@ -28,7 +29,7 @@ function CurriculumModal({ isOpen, onClose }: CurriculumModalProps) {
     grade: Yup.string().required("Tingkat tidak boleh kosong"),
   });
 
-  const [editData, setEditData] = useState<CurriculumSubjectModel | null>(null);
+  const [curriculumSubjectEditData, setCurriculumSubjectEditData] = useState<CurriculumSubjectModel | null>(null);
   const [isCurriculumSubjectModalOpen, setIsCurriculumSubjectModalOpen] = useState(false);
   const [curriculumSubjectList, setCurriculumSubjectList] = useState<CurriculumSubjectModel[]>([]);
 
@@ -39,7 +40,9 @@ function CurriculumModal({ isOpen, onClose }: CurriculumModalProps) {
     { value: "4", label: "4" },
     { value: "5", label: "5" },
     { value: "6", label: "6" },
-  ]
+  ];
+
+  const { data: curriculumDetail } = useCurriculumDetailQuery(curriculumId || 0);
   const { data: gradeData } = useGradeQuery({ pagination: { limit: 99999 }, search: "" });
 
   const resolver = useYupValidationResolver(yupSchema);
@@ -62,7 +65,9 @@ function CurriculumModal({ isOpen, onClose }: CurriculumModalProps) {
     setCurriculumSubjectList((prev) => prev.filter((curriculumSubj) => curriculumSubj.subject_id !== subject_id));
   }
 
-  const { mutateAsync } = useCreateCurriculum();
+  const { mutateAsync: mutateCreate } = useCreateCurriculum();
+  const { mutateAsync: mutateUpdate } = useUpdateCurriculum();
+  
   const handleSubmit = async (data: CreateCurriculumModel) => {
     if (curriculumSubjectList.length === 0) {
       showAlert({
@@ -72,8 +77,10 @@ function CurriculumModal({ isOpen, onClose }: CurriculumModalProps) {
       });
       return;
     }
-
+    
+    const mutateAsync = curriculumId ? mutateUpdate : mutateCreate;
     const response = await mutateAsync({
+      id: curriculumId || undefined,
       name: data.name,
       level_id: parseInt(data.level_id.toString()),
       grade: data.grade,
@@ -100,23 +107,45 @@ function CurriculumModal({ isOpen, onClose }: CurriculumModalProps) {
     }
   }
 
+  const handleClose = () => {
+    onClose();
+    methods.reset({
+      name: "",
+      level_id: "",
+      grade: "",
+    });
+    setCurriculumSubjectList([]);
+    setCurriculumSubjectEditData(null);
+    setIsCurriculumSubjectModalOpen(false);
+  }
+
+  useEffect(() => {
+    if (!curriculumDetail) return;
+    setCurriculumSubjectList(curriculumDetail.data.curriculum_subjects || []);
+    methods.reset({
+      name: curriculumDetail?.data?.name,
+      level_id: curriculumDetail.data?.level_id?.toString() || "",
+      grade: curriculumDetail?.data?.grade || "",
+    });
+  }, [curriculumDetail]);
+
   return (
     <Modal
       open={isOpen}
       footer={null}
-      onCancel={onClose}
+      onCancel={handleClose}
       maskClosable={false}
       centered
       width={600}
-      title="Tambah Kurikulum"
+      title={curriculumId ? "Edit Kurikulum" : "Tambah Kurikulum"}
     >
       <Form methods={methods} onSubmit={handleSubmit}>
         <CurriculumSubjectModal
           isOpen={isCurriculumSubjectModalOpen}
           curriculumSubjectList={curriculumSubjectList}
           setCurriculumSubjectList={setCurriculumSubjectList}
-          editData={editData}
-          onClose={() => {setIsCurriculumSubjectModalOpen(false); setEditData(null);} }
+          editData={curriculumSubjectEditData}
+          onClose={() => {setIsCurriculumSubjectModalOpen(false); setCurriculumSubjectEditData(null);} }
         />
         <div className="flex flex-col gap-5">
           <Input
@@ -161,7 +190,7 @@ function CurriculumModal({ isOpen, onClose }: CurriculumModalProps) {
               {curriculumSubjectList.map((subject, index) => (
                 <div key={index} className="border bg-blue-100 border-blue-400 w-fit px-3 py-1.5 rounded-full flex items-center gap-2">
                   <p>{subject?.subject}</p>
-                  <FiEdit onClick={() => { setEditData(subject); setIsCurriculumSubjectModalOpen(true) }} className='shrink-0 size-4 cursor-pointer' />
+                  <FiEdit onClick={() => { setCurriculumSubjectEditData(subject); setIsCurriculumSubjectModalOpen(true) }} className='shrink-0 size-4 cursor-pointer' />
                   <MdDelete onClick={() => handleDeleteCurriculumSubject(subject.subject_id)} className='text-danger shrink-0 size-4 cursor-pointer' />
                 </div>
               ))}
@@ -169,7 +198,7 @@ function CurriculumModal({ isOpen, onClose }: CurriculumModalProps) {
           </div>
 
           <div className="flex gap-6 justify-between">
-            <Button className="w-full" type="button" variant="outline" onClick={onClose}>Batal</Button>
+            <Button className="w-full" type="button" variant="outline" onClick={handleClose}>Batal</Button>
             <Button className="w-full">Simpan</Button>
           </div>
         </div>

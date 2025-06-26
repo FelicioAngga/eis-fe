@@ -1,16 +1,23 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { useCurriculumQuery } from "../../../api-hooks/curriculum/api";
+import { useCurriculumQuery, useDeleteCurriculum, useUnDeleteCurriculum } from "../../../api-hooks/curriculum/api";
 import { CurriculumModel } from "../../../api-hooks/curriculum/models/CurriculumModel";
 import Table, { PaginationModelProps } from "../../../components/Table";
 import { useMemo } from "react";
-import { FiTrash2 } from "react-icons/fi";
+import { FiEdit } from "react-icons/fi";
+import Swal from "sweetalert2";
+import { useAlert } from "../../../contexts/AlertContext";
+import { useQueryClient } from "@tanstack/react-query";
+import { MdArchive, MdUnarchive } from "react-icons/md";
 
 interface CurriculumTableProps {
   search: string;
   paginationModel: PaginationModelProps;
+  handleEditCurriculum: (id: number) => void;
 }
 
-function CurriculumTable({ paginationModel, search }: CurriculumTableProps) {
+function CurriculumTable({ paginationModel, search, handleEditCurriculum }: CurriculumTableProps) {
+  const { showAlert } = useAlert();
+  const queryClient = useQueryClient();
   const { data } = useCurriculumQuery({
     pagination: {
       limit: paginationModel.pageSize,
@@ -21,8 +28,58 @@ function CurriculumTable({ paginationModel, search }: CurriculumTableProps) {
     search: search || "",
   });
 
+  const { mutateAsync: mutateDelete } = useDeleteCurriculum();
   const handleDelete = async (id: number) => {
-    
+    const result = await Swal.fire({
+      title: "Konfirmasi",
+      text: "Apakah anda yakin untuk menonaktifkan kurikulum ini?",
+      icon: "warning",
+      confirmButtonText: "Ya",
+      showCancelButton: true,
+    });
+    if (!result.isConfirmed) return;
+    const response = await mutateDelete(id);
+    if (response.status === 200) {
+      showAlert({
+        title: "Berhasil",
+        message: "Kurikulum berhasil dinonaktifkan",
+        type: "success",
+      });
+      queryClient.invalidateQueries({queryKey: ["curriculums"]});
+    } else {
+      showAlert({
+        title: "Gagal",
+        message: response.error || "Gagal menghapus kurikulum",
+        type: "error",
+      });
+    }
+  }
+
+  const { mutateAsync: mutateUndelete } = useUnDeleteCurriculum();
+  const handleUnArchive = async (curriculum: CurriculumModel) => {
+    const result = await Swal.fire({
+      title: "Konfirmasi",
+      text: "Apakah anda yakin untuk mengaktifkan kembali kurikulum ini?",
+      icon: "warning",
+      confirmButtonText: "Ya",
+      showCancelButton: true,
+    });
+    if (!result.isConfirmed) return;
+    const response = await mutateUndelete(curriculum.id);
+    if (response.status === 200) {
+      showAlert({
+        title: "Berhasil",
+        message: "Kurikulum berhasil diaktifkan kembali",
+        type: "success",
+      });
+      queryClient.invalidateQueries({queryKey: ["curriculums"]});
+    } else {
+      showAlert({
+        title: "Gagal",
+        message: response.error || "Gagal mengaktifkan kurikulum",
+        type: "error",
+      });
+    }
   }
 
   const columns = useMemo<ColumnDef<CurriculumModel>[]>(
@@ -44,14 +101,39 @@ function CurriculumTable({ paginationModel, search }: CurriculumTableProps) {
         enableSorting: true,
       },
       {
+        accessorKey: "deleted_at",
+        header: () => "Status",
+        cell: ({ row }) => {
+          return row.original.deleted_at ? (
+            <div className="px-3 py-0.5 w-fit rounded-lg bg-danger text-center text-sm border text-white">Nonaktif</div>
+          ) : (
+            <div className="px-3 py-0.5 w-fit rounded-lg bg-success text-center text-sm border text-white">Aktif</div>
+          );
+        },
+      },
+      {
         accessorKey: "action",
         header: () => "Action",
         cell: ({ row }) => (
-          <div>
-            <FiTrash2
-              className="text-danger size-5 cursor-pointer"
-              onClick={() => handleDelete(row.original.id)}
-            />
+          <div className="flex gap-2">
+            {row.original.deleted_at ? (
+              <MdUnarchive
+                className="text-blue size-5 cursor-pointer"
+                onClick={() => handleUnArchive(row.original)}
+              />
+            ) : (
+              <>
+                <FiEdit
+                  className="size-5 cursor-pointer"
+                  onClick={() => handleEditCurriculum(row.original.id)}
+                />
+
+                <MdArchive
+                  className="text-danger size-5 cursor-pointer"
+                  onClick={() => handleDelete(row.original.id)}
+                />
+              </>
+            )}
           </div>
         ),
       },
