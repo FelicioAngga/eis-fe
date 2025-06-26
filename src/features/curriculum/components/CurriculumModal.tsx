@@ -160,6 +160,7 @@ function CurriculumModal({ isOpen, curriculumId, onClose }: CurriculumModalProps
             name="level_id"
             placeholder="Pilih Jenjang"
             label="Jenjang"
+            disabled={!!curriculumId}
             required
             options={gradeData?.data.map((grade) => ({
               label: grade.name,
@@ -171,6 +172,7 @@ function CurriculumModal({ isOpen, curriculumId, onClose }: CurriculumModalProps
             name="grade"
             placeholder="Tingkat"
             label="Tingkat"
+            disabled={!!curriculumId}
             options={methods.watch("level_id") == "2" ? tingkatArray : tingkatArray.slice(0, 3)}
             required
           />

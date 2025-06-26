@@ -10,7 +10,6 @@ import { StudentModel } from "../../../api-hooks/students/models/StudentModel";
 import Swal from "sweetalert2";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAlert } from "../../../contexts/AlertContext";
-import { useAuth } from "../../../hooks/useAuth";
 import { usePermissionAccess } from "../../../hooks/useAccessRight";
 
 interface ClassAcademicTableProps {
@@ -18,7 +17,6 @@ interface ClassAcademicTableProps {
 }
 
 function ClassAcademicTable({ termId }: ClassAcademicTableProps) {
-  const { getUser } = useAuth();
   const { id } = useParams();
   const { showAlert } = useAlert();
   const queryClient = useQueryClient();
