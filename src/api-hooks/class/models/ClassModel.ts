@@ -72,6 +72,7 @@ export type UpdateClassNoteModel = {
 export type ClassParams = {
   search: string;
   pagination: PaginationParams;
+  academic_year?: string;
 }
 
 export type AcademicBatchModel = {

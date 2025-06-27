@@ -9,9 +9,10 @@ import { useNavigate } from "react-router-dom";
 interface ClassTableProps {
   search: string;
   paginationModel: PaginationModelProps;
+  academicYear?: string;
 }
 
-function ClassTable({ paginationModel, search }: ClassTableProps) {
+function ClassTable({ paginationModel, search, academicYear }: ClassTableProps) {
   const navigate = useNavigate();
   const { data } = useClassQuery({
     pagination: {
@@ -20,6 +21,7 @@ function ClassTable({ paginationModel, search }: ClassTableProps) {
       sortColumn: paginationModel.sortColumn,
       sortOrder: paginationModel.sortOrder,
     },
+    academic_year: academicYear || "",
     search: search || "",
   });
 

@@ -20,6 +20,7 @@ export const useClassQuery = (params: ClassParams) => {
     inputOptions: {
       ...params?.pagination,
       ...(params?.search ? { search: params.search } : {}),
+      ...(params?.academic_year ? { academic_year: params.academic_year } : {}),
     },
   });
 

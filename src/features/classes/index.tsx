@@ -63,7 +63,7 @@ export default function Classes() {
           </>
         )}
       </div>
-      <ClassTable search={search} paginationModel={paginationModel} />
+      <ClassTable search={search} paginationModel={paginationModel} academicYear={`${startYear}/${parseInt(startYear) + 1}`} />
     </div>
   );
 }
