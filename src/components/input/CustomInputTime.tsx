@@ -40,6 +40,8 @@ export const CustomTimeInput: React.FC<CustomTimeInputProps> = ({ value, onChang
         type="time"
         value={value}
         onChange={onChange}
+        min="06:00"
+        max="18:00"
         className="absolute top-0 left-0 w-full h-full opacity-0 pointer-events-none"
         tabIndex={-1}
       />

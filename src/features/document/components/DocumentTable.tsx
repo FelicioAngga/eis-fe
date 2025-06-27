@@ -8,6 +8,7 @@ import { useDeleteDocument, useDocumentQuery } from '../../../api-hooks/document
 import { useQueryClient } from '@tanstack/react-query';
 import { useAlert } from '../../../contexts/AlertContext';
 import Swal from 'sweetalert2';
+import { useAuth } from '../../../hooks/useAuth';
 
 interface DocumentProps {
   search: string;
@@ -19,6 +20,7 @@ function DocumentTable({ handleEditDoc, paginationModel, search }: DocumentProps
   const { showAlert } = useAlert();
   const queryClient = useQueryClient();
   const { mutateAsync: mutateDeleteDocType } = useDeleteDocument();
+  const { getUser } = useAuth();
   
   const { data } = useDocumentQuery({
     pagination: {
@@ -75,6 +77,13 @@ function DocumentTable({ handleEditDoc, paginationModel, search }: DocumentProps
         cell: ({ row }) => (<div>{row.original.description || "-"}</div>)
       },
       {
+        accessorKey: "created_by",
+        header: () => "Dibuat Oleh",
+        cell: ({ row }) => {
+          return (row.original as any)?.student?.full_name || (getUser().role_name === "Admin" ? "Admin" : "Staff");
+        },
+      },
+      {
         accessorKey: "created_at",
         header: () => "Dibuat Pada",
         cell: ({ row }) => {
@@ -122,12 +131,14 @@ function DocumentTable({ handleEditDoc, paginationModel, search }: DocumentProps
   );
 
   return (
-    <Table
-      columns={columns}
-      totalRecords={data?.total || 0}
-      data={data?.data || []}
-      paginationModel={paginationModel}
-    />
+    <div className="overflow-auto">
+      <Table
+        columns={columns}
+        totalRecords={data?.total || 0}
+        data={data?.data || []}
+        paginationModel={paginationModel}
+      />
+    </div>
   );
 }
 

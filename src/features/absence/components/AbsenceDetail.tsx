@@ -144,72 +144,80 @@ function AbsenceDetail() {
             </tbody>
           </table>
         </div>
-        <div className="flex gap-5">
-          <Button onClick={() => navigate("/absence")} className="w-full" variant="outline">Batal</Button>
-          <Button onClick={handleSubmit} className="w-full">Simpan</Button>
-        </div>
-      </div>
-
-      <div>
-        <div className="mt-5 font-medium text-sm flex py-3 border border-gray-300 bg-gray-100">
-          <div className="w-1/12 text-center">No</div>
-          <div className="w-2/12">Nama Lengkap</div>
-          <div className="w-2/12">NISN</div>
-          <div className="w-2/12">NIS</div>
-          <div className="w-2/12 text-center">Hadir</div>
-          <div className="w-2/12 text-center">Sakit</div>
-          <div className="w-2/12 text-center">Izin</div>
-          <div className="w-2/12 text-center">Alpha</div>
-        </div>
-
-        {classDetail?.data.students?.map((student, index) => (
-          <div
-            key={index}
-            className="font-medium text-sm flex py-3 border-b border-r border-l border-gray-300"
-          >
-            <div className="w-1/12 text-center">{index + 1}</div>
-            <div className="w-2/12">{student.full_name}</div>
-            <div className="w-2/12">{student.nisn ||'-'}</div>
-            <div className="w-2/12">{student.nis}</div>
-            <div className="w-2/12 text-center">
-              <input
-                type="radio"
-                name={`status-${student.id}`}
-                value="Present"
-                checked={radioValues[student.id || 0] === "Present"}
-                onChange={() => handleRadioChange(student.id || 0, "Present")}
-              />
-            </div>
-            <div className="w-2/12 text-center">
-              <input
-                type="radio"
-                name={`status-${student.id}`}
-                value="Sick"
-                checked={radioValues[student.id || 0] === "Sick"}
-                onChange={() => handleRadioChange(student.id || 0, "Sick")}
-              />
-            </div>
-            <div className="w-2/12 text-center">
-              <input
-                type="radio"
-                name={`status-${student.id}`}
-                value="Permission"
-                checked={radioValues[student.id || 0] === "Permission"}
-                onChange={() => handleRadioChange(student.id || 0, "Permission")}
-              />
-            </div>
-            <div className="w-2/12 text-center">
-              <input
-                type="radio"
-                name={`status-${student.id}`}
-                value="Alpha"
-                checked={radioValues[student.id || 0] === "Alpha"}
-                onChange={() => handleRadioChange(student.id || 0, "Alpha")}
-              />
-            </div>
+        {(classDetail?.data?.subject_schedules?.length || 0) > 0 && 
+          <div className="flex gap-5">
+            <Button onClick={() => navigate("/absence")} className="w-full" variant="outline">Batal</Button>
+            <Button onClick={handleSubmit} className="w-full">Simpan</Button>
           </div>
-        ))}
+        }
       </div>
+
+      {(classDetail?.data?.subject_schedules?.length || 0) <= 0 ? (
+        <div className="mt-5 text-center text-gray-500">
+          Tidak ada jadwal pelajaran untuk kelas ini. Silakan atur jadwal terlebih dahulu.
+        </div>
+      ) : (
+        <div>
+          <div className="mt-5 font-medium text-sm flex py-3 border border-gray-300 bg-gray-100">
+            <div className="w-1/12 text-center">No</div>
+            <div className="w-2/12">Nama Lengkap</div>
+            <div className="w-2/12">NISN</div>
+            <div className="w-2/12">NIS</div>
+            <div className="w-2/12 text-center">Hadir</div>
+            <div className="w-2/12 text-center">Sakit</div>
+            <div className="w-2/12 text-center">Izin</div>
+            <div className="w-2/12 text-center">Alpha</div>
+          </div>
+
+          {classDetail?.data.students?.map((student, index) => (
+            <div
+              key={index}
+              className="font-medium text-sm flex py-3 border-b border-r border-l border-gray-300"
+            >
+              <div className="w-1/12 text-center">{index + 1}</div>
+              <div className="w-2/12">{student.full_name}</div>
+              <div className="w-2/12">{student.nisn ||'-'}</div>
+              <div className="w-2/12">{student.nis}</div>
+              <div className="w-2/12 text-center">
+                <input
+                  type="radio"
+                  name={`status-${student.id}`}
+                  value="Present"
+                  checked={radioValues[student.id || 0] === "Present"}
+                  onChange={() => handleRadioChange(student.id || 0, "Present")}
+                />
+              </div>
+              <div className="w-2/12 text-center">
+                <input
+                  type="radio"
+                  name={`status-${student.id}`}
+                  value="Sick"
+                  checked={radioValues[student.id || 0] === "Sick"}
+                  onChange={() => handleRadioChange(student.id || 0, "Sick")}
+                />
+              </div>
+              <div className="w-2/12 text-center">
+                <input
+                  type="radio"
+                  name={`status-${student.id}`}
+                  value="Permission"
+                  checked={radioValues[student.id || 0] === "Permission"}
+                  onChange={() => handleRadioChange(student.id || 0, "Permission")}
+                />
+              </div>
+              <div className="w-2/12 text-center">
+                <input
+                  type="radio"
+                  name={`status-${student.id}`}
+                  value="Alpha"
+                  checked={radioValues[student.id || 0] === "Alpha"}
+                  onChange={() => handleRadioChange(student.id || 0, "Alpha")}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }

@@ -22,7 +22,7 @@ export default function() {
   }
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-5 overflow-hidden">
       <DocumentModal editData={editData} isOpen={isModalOpen} onClose={() => {setIsModalOpen(false); setEditData(null)}} />
       <SearchTableLayout 
         onSearch={handleSubmit}

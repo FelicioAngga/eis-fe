@@ -103,16 +103,17 @@ function StudentFormData({ studentFormData, setCurrentTab, setStudentFormData }:
         navigate("/student-data")
       }
     } else {
-      setStudentFormData({
-        ...data,
-        profile_pic: file64,
-      });
       const responseStudent = await mutateStudent({ 
         ...data, 
         profile_pic: file64,
         date_of_birth: dayjs(data.date_of_birth).format('YYYY-MM-DD') }
       );
       if (responseStudent.status === 200) {
+        setStudentFormData({
+          ...data,
+          id: (responseStudent as any)?.created_id,
+          profile_pic: file64,
+        });
         showAlert({
           title: "Berhasil",
           message: "Data siswa berhasil disimpan.",

@@ -5,11 +5,13 @@ import { useSubjectsQuery } from '../../../api-hooks/subjects/api';
 import { useTeacherQuery } from '../../../api-hooks/teacher/api';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../store';
-import { addLessonByDay, deleteLessonByIndex, updateEndHourByIndex, updateStartHourByIndex, updateSubjectIdByIndex, updateTeacherIdByIndex } from '../configClassScheduleSlice';
+import { addLessonByDay, ClassScheduleEntry, deleteLessonByIndex, updateEndHourByIndex, updateStartHourByIndex, updateSubjectIdByIndex, updateTeacherIdByIndex } from '../configClassScheduleSlice';
 import { useMemo } from 'react';
+import { useAlert } from '../../../contexts/AlertContext';
 
 function ClassScheduleForm() {
   const dispatch = useDispatch();
+  const { showAlert } = useAlert();
   const { data: subjectData } = useSubjectsQuery({ pagination: { limit: 9999, page: 1 }, search: '' });
   const { data: teacherData } = useTeacherQuery({ pagination: { limit: 9999, page: 1 }, search: '' });
   const { class_schedule_list, selected_day } = useSelector((state: RootState) => state.configClassSched);
@@ -22,6 +24,32 @@ function ClassScheduleForm() {
       name: subject.name,
     })) || [];
   }, [subjectData, classDetail]);
+
+  const isValidTime = (value: string) => {return value >= "06:00" && value <= "18:00";};
+
+  function handleStartHourChange(e: React.ChangeEvent<HTMLInputElement>, entry: ClassScheduleEntry) {
+    if (!isValidTime(e.target.value)) {
+      showAlert({
+        title: "Waktu tidak valid",
+        type: "error",
+        message: "Waktu mulai harus antara 06:00 dan 18:00.",
+      })
+      return;
+    }
+    dispatch(updateStartHourByIndex({ index: entry.index, id: entry.id, start_hour: e.target.value }))
+  }
+
+  function handleEndHourChange(e: React.ChangeEvent<HTMLInputElement>, entry: ClassScheduleEntry) {
+    if (!isValidTime(e.target.value)) {
+      showAlert({
+        title: "Waktu tidak valid",
+        type: "error",
+        message: "Waktu selesai harus antara 06:00 dan 18:00.",
+      })
+      return;
+    }
+    dispatch(updateEndHourByIndex({ index: entry.index, id: entry.id, end_hour: e.target.value }))
+  }
 
   return (
     <div className="mt-8">
@@ -47,10 +75,16 @@ function ClassScheduleForm() {
             <button onClick={() => dispatch(deleteLessonByIndex({ id: entry.id, index: entry.index }))} className="cursor-pointer"><MdClose /></button>
           </div>
           <div className="w-2/12 pr-3">
-            <CustomTimeInput onChange={(e) => dispatch(updateStartHourByIndex({ index: entry.index, id: entry.id, start_hour: e.target.value }))} value={entry.start_hour} />
+            <CustomTimeInput 
+              onChange={(e) => handleStartHourChange(e, entry)}
+              value={entry.start_hour} 
+            />
           </div>
           <div className="w-2/12 pr-3">
-            <CustomTimeInput onChange={(e) => dispatch(updateEndHourByIndex({ index: entry.index, id: entry.id, end_hour: e.target.value }))} value={entry.end_hour} />
+            <CustomTimeInput 
+              onChange={(e) => handleEndHourChange(e, entry)} 
+              value={entry.end_hour} 
+            />
           </div>
           <div className="w-4/12 relative pr-3">
             <select

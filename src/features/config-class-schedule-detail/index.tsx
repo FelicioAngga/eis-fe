@@ -10,13 +10,14 @@ import { DailyClassSchedule, resetClassSchedule } from "./configClassScheduleSli
 import { useEffect } from "react";
 import { changeClassDetail } from "../class-academic-detail/classAcademicSlice";
 
-export default function() {
+export default function ConfigClassScheduleDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { showAlert } = useAlert();
   const dispatch = useDispatch();
   const { data: academicDetail } = useClassDetail(id ? parseInt(id) : 0);
   const { class_schedule_list } = useSelector((state: RootState) => state.configClassSched);
+  const requiredDays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 
   function isClassScheduleValid(): boolean {
     const isValid = class_schedule_list
@@ -27,6 +28,16 @@ export default function() {
         title: "Gagal menyimpan",
         type: "error",
         message: "Mohon lengkapi semua mata pelajaran dan pengajar.",
+      });
+      return false;
+    }
+    const missingDays = requiredDays.filter(day => !class_schedule_list.some(item => item.day === day));
+    if (missingDays.length > 0) {
+      const translatedMissingDays = missingDays.map(day => TranslatedDays[day] || day);
+      showAlert({
+        title: "Gagal menyimpan",
+        type: "error",
+        message: `Mohon lengkapi jadwal untuk hari: ${translatedMissingDays.join(", ")}`,
       });
       return false;
     }
@@ -151,4 +162,12 @@ export default function() {
       <ClassScheduleList />
     </div>
   )
+}
+
+const TranslatedDays: Record<string,string> = {
+  "Monday": "Senin",
+  "Tuesday": "Selasa",
+  "Wednesday": "Rabu",
+  "Thursday": "Kamis",
+  "Friday": "Jumat",
 }
