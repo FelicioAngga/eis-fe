@@ -377,7 +377,7 @@ function ClassMarks({ setTermId, termId }: ClassMarksProps) {
                       })}
                     </tr>
                   ))}
-                  {getPermissionAccess("academic_all_score").write && (
+                  {getPermissionAccess("academic_all_score").write ? (
                     <tr>
                       <td className="border border-gray-400 px-3 py-2 align-top">
                         <div className="flex gap-2 items-center">
@@ -390,7 +390,7 @@ function ClassMarks({ setTermId, termId }: ClassMarksProps) {
                         : studentNotes.find(note => note.student_id === student.id)?.second_term_notes || ""}
                       </td>
                     </tr>
-                  )}
+                  ) : <tr></tr>}
                 </React.Fragment>
               );
             })}
