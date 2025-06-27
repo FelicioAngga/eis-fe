@@ -30,8 +30,8 @@ function GradeModal({ isOpen, onClose, editData }: GradeModalProps) {
     curriculum: Yup.string(),
     email: Yup.string().email("Email tidak valid"),
     phone: Yup.string(),
-    principle_id: Yup.string(),
-    operator_id: Yup.string(),
+    principle_id: Yup.string().required("Kepala Sekolah harus diisi"),
+    operator_id: Yup.string().required("Operator harus diisi"),
   });
 
   const resolver = useYupValidationResolver(yupSchema);
@@ -90,7 +90,11 @@ function GradeModal({ isOpen, onClose, editData }: GradeModalProps) {
   };
 
   useEffect(() => {
-    if (defaultValues) methods.reset(defaultValues);
+    if (!defaultValues) return;
+      const timeoutId = setTimeout(() => {
+        methods.reset(defaultValues);
+      });
+    return () => clearTimeout(timeoutId);
   }, [defaultValues]);
 
   return (
@@ -151,14 +155,16 @@ function GradeModal({ isOpen, onClose, editData }: GradeModalProps) {
             name="principle_id"
             label="Kepala Sekolah"
             placeholder="Pilih Kepala Sekolah"
-            options={userList?.data?.map(user => ({ label: user.name, value: user?.id?.toString() || "" }))}
+            options={userList?.data?.filter(x => x.role?.name === "Principal").map(user => ({ label: user.name, value: user?.id?.toString() || "" }))}
           />
           <Input 
             type="select"
             name="operator_id"
             label="Operator"
             placeholder="Pilih Operator"
-            options={userList?.data?.map(user => ({ label: user.name, value: user?.id?.toString() || "" }))}
+            options={userList?.data?.
+              filter(x => x.role?.name !== "Applicant" && x.role?.name !== "Student")
+              .map(user => ({ label: user.name, value: user?.id?.toString() || "" }))}
           />
 
           <div className="flex gap-4 mt-4">

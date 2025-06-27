@@ -235,7 +235,7 @@ export default function ClassAcademicDetail() {
                   </td>
                 </tr>
               )}
-              {(getPermissionAccess("academic_behaviour").write && (classDetail?.data.homeroom_teacher_id == loggedInTeacher?.data.id || getUser().role_name === "Admin")) && (
+              {(getPermissionAccess("academic_behaviour").write && (classDetail?.data.homeroom_teacher_id == loggedInTeacher?.data?.id || getUser().role_name === "Admin")) && (
                 <tr>
                   <td className="pr-8 pb-3">Kepribadian dan Ekstrakurikuler</td>
                   <td className="pr-8 pb-3">:</td>
@@ -250,7 +250,7 @@ export default function ClassAcademicDetail() {
                   </td>
                 </tr>
               )}
-              {(getPermissionAccess("academic_classnote").write && (classDetail?.data.homeroom_teacher_id == loggedInTeacher?.data.id || getUser().role_name === "Admin")) && (
+              {(getPermissionAccess("academic_classnote").write && (classDetail?.data.homeroom_teacher_id == loggedInTeacher?.data?.id || getUser().role_name === "Admin")) && (
                 <tr>
                   <td className="pr-8 pb-3">Catatan Kelas</td>
                   <td className="pr-8 pb-3">:</td>
