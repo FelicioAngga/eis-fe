@@ -52,7 +52,7 @@ export default function Classes() {
         />
         <div className="w-full font-medium text-sm flex flex-col gap-4">
           <p>Tahun Ajaran Selesai</p>
-          <p>{startYear ? +startYear + 1 : "-"}</p>
+          <p className="mb-2.5">{startYear ? +startYear + 1 : "-"}</p>
         </div>
       </div>
       <div className="flex ml-auto gap-4">

@@ -108,7 +108,7 @@ function ClassScheduleForm() {
               className="w-full border border-gray-300 appearance-none rounded-md px-3 py-2.5 cursor-pointer"
             >
               <option value="">Pilih Guru</option>
-              {teacherData?.data.map(teacher => (
+              {teacherData?.data?.filter(x => !x.deleted_at)?.map(teacher => (
                 <option value={teacher.id} key={teacher.id}>{teacher.name}</option>
               ))}
             </select>

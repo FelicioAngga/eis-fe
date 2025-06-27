@@ -9,9 +9,10 @@ import { FiEye } from "react-icons/fi";
 interface ConfigClassSchedTableProps {
   search: string;
   paginationModel: PaginationModelProps;
+  academicYear?: string;
 }
 
-function ConfigClassScheduleTable({ paginationModel, search }: ConfigClassSchedTableProps) {
+function ConfigClassScheduleTable({ academicYear, paginationModel, search }: ConfigClassSchedTableProps) {
   const navigate = useNavigate();
   const { data } = useClassQuery({
     pagination: {
@@ -20,6 +21,7 @@ function ConfigClassScheduleTable({ paginationModel, search }: ConfigClassSchedT
       sortColumn: paginationModel.sortColumn,
       sortOrder: paginationModel.sortOrder,
     },
+    academic_year: academicYear || "",
     search: search || "",
   });
 

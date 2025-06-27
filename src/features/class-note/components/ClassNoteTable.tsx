@@ -9,10 +9,11 @@ import { FiEye } from 'react-icons/fi';
 interface ClassNoteTableProps {
   search: string;
   paginationModel: PaginationModelProps;
+  academicYear?: string;
 }
 
 
-function ClassNoteTable({ paginationModel, search }: ClassNoteTableProps) {
+function ClassNoteTable({ academicYear, paginationModel, search }: ClassNoteTableProps) {
   const navigate = useNavigate();
   const { data } = useClassQuery({
     pagination: {
@@ -21,6 +22,7 @@ function ClassNoteTable({ paginationModel, search }: ClassNoteTableProps) {
       sortColumn: paginationModel.sortColumn,
       sortOrder: paginationModel.sortOrder,
     },
+    academic_year: academicYear || "",
     search: search || "",
   });
 

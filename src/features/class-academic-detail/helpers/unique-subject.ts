@@ -50,6 +50,6 @@ export const getUniqueSubjects = (data: DaySchedule[]): UniqueSubject[] => {
   });
 
   return Array.from(uniqueSubjectsMap.values()).sort((a, b) =>
-    a.subject.localeCompare(b.subject)
+    a.subject_id - b.subject_id
   );
 };

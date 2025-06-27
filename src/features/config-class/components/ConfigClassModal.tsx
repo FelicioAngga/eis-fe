@@ -34,6 +34,11 @@ function ConfigClassModal({ isOpen, onClose, editData }: ConfigClassModalProps) 
     { value: "5", label: "5" },
     { value: "6", label: "6" },
   ];
+  const tkTingkatArray = [
+    { value: "A", label: "A" },
+    { value: "B", label: "B" },
+  ];
+    
 
   const yupSchema = Yup.object().shape({
     display_name: Yup.string(),
@@ -94,6 +99,7 @@ function ConfigClassModal({ isOpen, onClose, editData }: ConfigClassModalProps) 
     return () => clearTimeout(timeoutId)
   }, [defaultValues]);
 
+  const level_id = methods.watch("level_id");
   return (
     <Modal
       open={isOpen}
@@ -132,7 +138,7 @@ function ConfigClassModal({ isOpen, onClose, editData }: ConfigClassModalProps) 
             name="grade"
             placeholder="Tingkat"
             label="Tingkat"
-            options={methods.watch("level_id") == "2" ? tingkatArray : tingkatArray.slice(0, 3)}
+            options={level_id == "1" ? tkTingkatArray : level_id == "2" ? tingkatArray : tingkatArray.slice(0, 3)}
             required
           />
           <Input
