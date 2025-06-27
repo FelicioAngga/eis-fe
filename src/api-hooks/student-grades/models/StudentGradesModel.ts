@@ -83,6 +83,7 @@ export type StudentPrintReportModel = {
   absent: number;
   home_room_teacher: string;
   principal: string;
+  end_date: string;
   teacher_notes: string;
 }
 
