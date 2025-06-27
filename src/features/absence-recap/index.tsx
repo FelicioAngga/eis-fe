@@ -10,6 +10,7 @@ export default function () {
     level_id: "",
     academic_id: "",
     term_id: "",
+    status: "",
   });
 
   const { data: studentAbsenceReport } = useGetStudentAbsenceReport({
@@ -19,6 +20,7 @@ export default function () {
     level_id: search.level_id,
     academic_id: search.academic_id,
     term_id: search.term_id,
+    status: translatePermissionStatus(search.status),
   });
 
   function handleSearch(data: {
@@ -28,6 +30,7 @@ export default function () {
     level_id?: string;
     academic_id?: string;
     term_id?: string;
+    status?: string;
   }) {
     setSearch({
       name: data.name,
@@ -36,6 +39,7 @@ export default function () {
       level_id: data.level_id || "",
       academic_id: data.academic_id || "",
       term_id: data.term_id || "",
+      status: data.status || "",
     });
   }
 
@@ -97,4 +101,19 @@ export default function () {
       </div>
     </div>
   );
+}
+
+export const translatePermissionStatus = (status: string) => {
+  switch (status) {
+    case "Hadir":
+      return "Present";
+    case "Sakit":
+      return "Sick";
+    case "Izin":
+      return "Permission";
+    case "Alpha":
+      return "Alpha";
+    default:
+      return status;
+  }
 }

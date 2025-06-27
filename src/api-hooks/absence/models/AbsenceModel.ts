@@ -69,4 +69,5 @@ export type StudentAbsenceReportParams = {
   start_date: string;
   end_date: string;
   term_id: string;
+  status: string;
 }

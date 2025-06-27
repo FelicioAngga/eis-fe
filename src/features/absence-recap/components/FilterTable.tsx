@@ -107,7 +107,7 @@ function FilterTable({ onSearch }: Props) {
             value={status || ""}
             onChange={(e) => {
               setStatus(e.target.value);
-              onSearch({ name: search, startDate, endDate, level_id: levelId, academic_id: academicId, term_id: e.target.value, status: e.target.value });
+              onSearch({ name: search, startDate, endDate, level_id: levelId, academic_id: academicId, term_id: termId, status: e.target.value });
             }} 
             className="w-full border border-gray-300 appearance-none rounded-md px-3 py-2.5 cursor-pointer"
           >
