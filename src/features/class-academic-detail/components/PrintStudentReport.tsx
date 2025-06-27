@@ -221,11 +221,12 @@ function PrintStudentReport() {
         });
 
         const ttdY = catatanY + 40;
-        const dateStr = new Date().toLocaleDateString('id-ID', {
+        const date = new Date(reportData?.end_date || '');
+        const dateStr = new Intl.DateTimeFormat('id-ID', {
           year: 'numeric',
           month: 'long',
           day: 'numeric',
-        });
+        }).format(date);
 
         doc.text(`Medan, ${dateStr}`, 150, ttdY);
 
