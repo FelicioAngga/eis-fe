@@ -56,7 +56,7 @@ export const Sidebar: React.FC = () => {
                         >
                           <div className="flex items-center gap-1">
                             {Icon && <Icon className="text-2xl" />}
-                            <span className="text-[15px]">{menu.title}</span>
+                            <p className="text-[15px]">{menu.title}</p>
                           </div>
                           {openMenus.includes(menu.title + categoryItem.category) ? (
                             <ChevronDown className="size-4" />
@@ -102,7 +102,7 @@ export const Sidebar: React.FC = () => {
                     >
                       <div className="flex items-center gap-1">
                         {Icon && <Icon className="text-xl" />}
-                        <span>{menu.title}</span>
+                        <p className="text-[15px]">{menu.title}</p>
                       </div>
                     </Link>
                     : null
