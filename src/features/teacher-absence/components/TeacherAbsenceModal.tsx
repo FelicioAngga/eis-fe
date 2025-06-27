@@ -31,7 +31,7 @@ function TeacherAbsenceModal({ isOpen, onClose, editData }: TeacherAbsenceModalP
     date: Yup.date().required("Tanggal absensi wajib diisi").typeError("Tanggal absensi harus berupa tanggal yang valid"),
     log_in_time: Yup.string().required("Scan masuk wajib diisi"),
     log_out_time: Yup.string().required("Scan keluar wajib diisi"),
-    remark: Yup.string().optional(),
+    note: Yup.string().optional(),
   });
   
   const defaultValues = useMemo(() => {
@@ -40,7 +40,7 @@ function TeacherAbsenceModal({ isOpen, onClose, editData }: TeacherAbsenceModalP
       date: editData?.date ? dayjs(editData.date).format("YYYY-MM-DD") : '',
       log_in_time: formatDateToTime(editData?.log_in_time || '') || '',
       log_out_time: formatDateToTime(editData?.log_out_time || '') || '',
-      remark: editData?.remark || '',
+      note: editData?.note || '',
     }
   }, [editData])
 
@@ -129,9 +129,9 @@ function TeacherAbsenceModal({ isOpen, onClose, editData }: TeacherAbsenceModalP
           </div>
           <Input 
             type="text"
-            name="remark"
-            label="Keterangan"
-            placeholder="Keterangan (Opsional)"
+            name="note"
+            label="Catatan"
+            placeholder="Catatan (Opsional)"
           />
         </div>
 

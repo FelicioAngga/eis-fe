@@ -2,17 +2,19 @@ import { useState } from "react";
 import { useGetTeacherAbsenceReport } from "../../api-hooks/teacher-absence/api"
 import FilterTable from "./components/FilterTable";
 import { useAuth } from "../../hooks/useAuth";
+import { usePermissionAccess } from "../../hooks/useAccessRight";
 
 export default function TeacherAbsenceRecap() {
   const { getUser } = useAuth();
   const user = getUser();
+  const { getPermissionAccess } = usePermissionAccess();
 
   const [search, setSearch] = useState({ name: "", startDate: "", endDate: "" });
   const { data: teacherReportData } = useGetTeacherAbsenceReport({ 
     search: search.name,
     start_date: search.startDate,
     end_date: search.endDate,
-    ...(user.role_name === "Teacher" ? { userId: user.id } : {})
+    ...(!getPermissionAccess("teacheratt").write ? { userId: user.id } : {})
   });
 
   const handleSearch = (data: {name: string, startDate: string, endDate: string}) => {

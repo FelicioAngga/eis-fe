@@ -46,58 +46,65 @@ export default function () {
   return (
     <div>
       <FilterTable onSearch={handleSearch} />
-
       <div className={`mt-6 flex ${(studentAbsenceReport?.data?.levels?.length || 0) > 0 && "gap-4"}`}>
-        <div className="overflow-x-auto shrink-0">
-          {studentAbsenceReport?.data?.levels?.map((level, index) => (
-            <table key={index} className="w-full table-auto border-collapse border border-gray-300">
-              <thead>
-                <tr>
-                  <th colSpan={4} className="border border-gray-300 px-1.5 py-2 text-center">{level.level}</th>
-                </tr>
-                <tr>
-                  <th className="border border-gray-300 px-1.5 py-2">Hadir</th>
-                  <th className="border border-gray-300 px-1.5 py-2">Sakit</th>
-                  <th className="border border-gray-300 px-1.5 py-2">Izin</th>
-                  <th className="border border-gray-300 px-1.5 py-2">Alpha</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td className="border border-gray-300 px-1.5 py-2 text-center">{level.present_count}</td>
-                  <td className="border border-gray-300 px-1.5 py-2 text-center">{level.sick_count}</td>
-                  <td className="border border-gray-300 px-1.5 py-2 text-center">{level.permission_count}</td>
-                  <td className="border border-gray-300 px-1.5 py-2 text-center">{level.alpha_count}</td>
-                </tr>
-              </tbody>
-            </table>
-          ))}
-        </div>
-
-        <div className="overflow-x-auto w-full">
-          <table className="w-full table-auto border-collapse border border-gray-300">
-            <thead>
-              <tr>
-                <th className="border border-gray-300 px-1.5 py-2 text-left">Nama Siswa</th>
-                <th className="border border-gray-300 px-1.5 py-2">Kehadiran</th>
-                <th className="border border-gray-300 px-1.5 py-2">Sakit</th>
-                <th className="border border-gray-300 px-1.5 py-2">Izin</th>
-                <th className="border border-gray-300 px-1.5 py-2">Alpha</th>
-              </tr>
-            </thead>
-            <tbody>
-              {studentAbsenceReport?.data?.entries?.map((entry, index) => (
-                <tr key={index}>
-                  <td className="border border-gray-300 px-1.5 py-2">{entry.student}</td>
-                  <td className="border border-gray-300 px-1.5 py-2 text-center">{entry.present_count}</td>
-                  <td className="border border-gray-300 px-1.5 py-2 text-center">{entry.sick_count}</td>
-                  <td className="border border-gray-300 px-1.5 py-2 text-center">{entry.permission_count}</td>
-                  <td className="border border-gray-300 px-1.5 py-2 text-center">{entry.alpha_count}</td>
-                </tr>
+        {!search.startDate || !search.endDate ? (
+          <div>
+            <p className="text-gray-600">Silakan pilih tanggal mulai dan selesai untuk melihat rekap.</p>
+          </div>
+        ) : (
+          <>
+            <div className="overflow-x-auto shrink-0">
+              {studentAbsenceReport?.data?.levels?.map((level, index) => (
+                <table key={index} className="w-full table-auto border-collapse border border-gray-300">
+                  <thead>
+                    <tr>
+                      <th colSpan={4} className="border border-gray-300 px-1.5 py-2 text-center">{level.level}</th>
+                    </tr>
+                    <tr>
+                      <th className="border border-gray-300 px-1.5 py-2">Hadir</th>
+                      <th className="border border-gray-300 px-1.5 py-2">Sakit</th>
+                      <th className="border border-gray-300 px-1.5 py-2">Izin</th>
+                      <th className="border border-gray-300 px-1.5 py-2">Alpha</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td className="border border-gray-300 px-1.5 py-2 text-center">{level.present_count}</td>
+                      <td className="border border-gray-300 px-1.5 py-2 text-center">{level.sick_count}</td>
+                      <td className="border border-gray-300 px-1.5 py-2 text-center">{level.permission_count}</td>
+                      <td className="border border-gray-300 px-1.5 py-2 text-center">{level.alpha_count}</td>
+                    </tr>
+                  </tbody>
+                </table>
               ))}
-            </tbody>
-          </table>
-        </div>
+            </div>
+
+            <div className="overflow-x-auto w-full">
+              <table className="w-full table-auto border-collapse border border-gray-300">
+                <thead>
+                  <tr>
+                    <th className="border border-gray-300 px-1.5 py-2 text-left">Nama Siswa</th>
+                    <th className="border border-gray-300 px-1.5 py-2">Kehadiran</th>
+                    <th className="border border-gray-300 px-1.5 py-2">Sakit</th>
+                    <th className="border border-gray-300 px-1.5 py-2">Izin</th>
+                    <th className="border border-gray-300 px-1.5 py-2">Alpha</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {studentAbsenceReport?.data?.entries?.map((entry, index) => (
+                    <tr key={index}>
+                      <td className="border border-gray-300 px-1.5 py-2">{entry.student}</td>
+                      <td className="border border-gray-300 px-1.5 py-2 text-center">{entry.present_count}</td>
+                      <td className="border border-gray-300 px-1.5 py-2 text-center">{entry.sick_count}</td>
+                      <td className="border border-gray-300 px-1.5 py-2 text-center">{entry.permission_count}</td>
+                      <td className="border border-gray-300 px-1.5 py-2 text-center">{entry.alpha_count}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

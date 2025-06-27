@@ -33,7 +33,7 @@ function ClassTable({ paginationModel, search }: ClassTableProps) {
       },
       {
         accessorKey: "display_name",
-        header: () => "Nama Kelas",
+        header: () => "Nama Akademik",
       },
       {
         accessorKey: "level_name",

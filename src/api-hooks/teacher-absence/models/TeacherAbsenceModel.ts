@@ -23,6 +23,7 @@ export type TeacherAbsenceCreateModel = {
   log_out_time?: string;
   remark?: string;
   working_schedule_id?: number;
+  note?: string;
 }
 
 export type TeacherAbsenceReportModel = {

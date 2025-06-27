@@ -91,6 +91,11 @@ function TeacherAbsenceTable({ paginationModel, search, handleEdit }: TeacherAbs
         cell: ({ row }) => formatDateToTime(row.original.log_out_time || "") || "-"
       },
       {
+        accessorKey: "note",
+        header: () => "Catatan",
+        cell: ({ row }) => row.original.note || "-",
+      },
+      {
         accessorKey: "remark",
         header: () => "Keterangan",
         cell: ({ row }) => row.original.remark || "-",

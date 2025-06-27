@@ -6,10 +6,12 @@ import { FiSearch } from "react-icons/fi";
 import ManualAcademicModal from "./components/ManualAcademicModal";
 import Button from "../../components/Button";
 import { useAuth } from "../../hooks/useAuth";
+import { YearPicker } from "../../components/YearPicker";
 
 export default function Classes() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isManualModalOpen, setIsManualModalOpen] = useState(false);
+  const [startYear, setStartYear] = useState<string>(new Date().getFullYear().toString());
   const [search, setSearch] = useState("");
   const paginationModel = usePaginationModel({});
   const { getUser } = useAuth();
@@ -26,6 +28,7 @@ export default function Classes() {
       <div className="flex gap-3 items-center justify-between">
         <div className="flex gap-2">
           <div className="relative">
+            <p>Nama Akademik</p>
             <input
               type="text"
               placeholder="Enter untuk mencari"
@@ -36,18 +39,29 @@ export default function Classes() {
                 if (e.key === "Enter") handleSubmit(search);
               }}
             />
-            <FiSearch className="absolute top-2.5 left-2 text-xl text-gray-400" />
+            <FiSearch className="absolute top-[34px] left-2 text-xl text-gray-400" />
           </div>
-          <Button onClick={() => handleSubmit(search)}>Cari</Button>
+          <Button className="mt-auto" onClick={() => handleSubmit(search)}>Cari</Button>
         </div>
-        <div className="flex gap-4">
-          {getUser()?.role_name === "Admin" && (
-            <>
-              <Button onClick={() => setIsManualModalOpen(true)} className="h-full">Tambah Tahun Ajar Kelas</Button>
-              <Button onClick={() => setIsAddModalOpen(true)} className="h-full">Tambah Batch Tahun Ajar</Button>
-            </>
-          )}
+        <YearPicker
+          name="start_year"
+          label="Tahun Ajaran Mulai"
+          value={startYear}
+          onChange={(year) => setStartYear(year)}
+          
+        />
+        <div className="w-full font-medium text-sm flex flex-col gap-4">
+          <p>Tahun Ajaran Selesai</p>
+          <p>{startYear ? +startYear + 1 : "-"}</p>
         </div>
+      </div>
+      <div className="flex ml-auto gap-4">
+        {getUser()?.role_name === "Admin" && (
+          <>
+            <Button onClick={() => setIsManualModalOpen(true)} className="h-full">Tambah Tahun Ajar Kelas</Button>
+            <Button onClick={() => setIsAddModalOpen(true)} className="h-full">Tambah Batch Tahun Ajar</Button>
+          </>
+        )}
       </div>
       <ClassTable search={search} paginationModel={paginationModel} />
     </div>
