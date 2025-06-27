@@ -135,7 +135,7 @@ function ClassMarks({ setTermId, termId }: ClassMarksProps) {
         }
       }) as StudentGradesEntryModel[],
     }));
-    downloadStudentMarksExcel(data, studentNotes, isFirstTerm);
+    downloadStudentMarksExcel(data, studentNotes, isFirstTerm, classDetail?.homeroom_teacher_id == loggedInTeacher?.data?.id);
   }
 
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -377,7 +377,7 @@ function ClassMarks({ setTermId, termId }: ClassMarksProps) {
                       })}
                     </tr>
                   ))}
-                  {getPermissionAccess("academic_all_score").write ? (
+                  {(getPermissionAccess("academic_all_score").write && classDetail.homeroom_teacher_id == loggedInTeacher?.data?.id) ? (
                     <tr>
                       <td className="border border-gray-400 px-3 py-2 align-top">
                         <div className="flex gap-2 items-center">

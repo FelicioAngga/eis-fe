@@ -7,6 +7,7 @@ export const downloadStudentMarksExcel = (
   studentMarks: StudentGradesDetailModel[],
   teacherNotes: UpdateAcademicStudentNoteModel[],
   isFirstTerm: boolean,
+  showStudentClassNote: boolean
 ) => {
   const wb = new Workbook();
   const ws = wb.addWorksheet("sheet 1");
@@ -80,7 +81,7 @@ export const downloadStudentMarksExcel = (
     const teacherNote = teacherNotes.find(note => note.student_id === student.student_id);
     const row6 = ws.addRow([
       ...Array(3).fill(undefined),
-      "Catatan Wali Kelas",
+      showStudentClassNote ? "Catatan Wali Kelas" : "",
       isFirstTerm ? teacherNote?.first_term_notes || "" : teacherNote?.second_term_notes || "",
     ]);
 
@@ -142,6 +143,17 @@ export const downloadStudentMarksExcel = (
         right: { style: "thin" },
       };
     });
+    if (!showStudentClassNote) {
+      row6.eachCell((cell: any, colNum) => {
+        if (colNum >= 4) {
+          cell.fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: { argb: 'D3D3D3' }
+          }
+        }
+      })
+    }
   }
 
   const columnWidths = [5, 10, 25, 20, ...Array(studentMarks.length).fill(25)];

@@ -3,7 +3,7 @@ import { useClassDetail, useUpdateAcademic } from "../../api-hooks/class/api";
 import ClassAcademicTable from "./components/ClassAcademicTable";
 import Button from "../../components/Button";
 import { FiEye } from "react-icons/fi";
-import { useTeacherQuery } from "../../api-hooks/teacher/api";
+import { useGetTeacherByToken, useTeacherQuery } from "../../api-hooks/teacher/api";
 import { useEffect, useMemo, useState } from "react";
 import { useAlert } from "../../contexts/AlertContext";
 import { useQueryClient } from "@tanstack/react-query";
@@ -28,6 +28,7 @@ export default function ClassAcademicDetail() {
   const { getUser } = useAuth();
   const { getPermissionAccess } = usePermissionAccess();
 
+  const { data: loggedInTeacher } = useGetTeacherByToken();
   const { data: classDetail } = useClassDetail(id ? parseInt(id) : 0);
   const { data: curriculumData } = useCurriculumQuery({ pagination: { limit: 99999 }, search: "" });
   const [termId, setTermId] = useState<number>(classDetail?.data?.terms?.[0]?.id || 0);
@@ -234,7 +235,7 @@ export default function ClassAcademicDetail() {
                   </td>
                 </tr>
               )}
-              {getPermissionAccess("academic_behaviour").write && (
+              {(getPermissionAccess("academic_behaviour").write && (classDetail?.data.homeroom_teacher_id == loggedInTeacher?.data.id || getUser().role_name === "Admin")) && (
                 <tr>
                   <td className="pr-8 pb-3">Kepribadian dan Ekstrakurikuler</td>
                   <td className="pr-8 pb-3">:</td>
@@ -249,7 +250,7 @@ export default function ClassAcademicDetail() {
                   </td>
                 </tr>
               )}
-              {getPermissionAccess("academic_classnote").write && (
+              {(getPermissionAccess("academic_classnote").write && (classDetail?.data.homeroom_teacher_id == loggedInTeacher?.data.id || getUser().role_name === "Admin")) && (
                 <tr>
                   <td className="pr-8 pb-3">Catatan Kelas</td>
                   <td className="pr-8 pb-3">:</td>
