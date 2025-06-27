@@ -28,6 +28,7 @@ export default function() {
         onSearch={handleSubmit}
         buttonText="Tambah Dokumen"
         buttonOnClick={() => setIsModalOpen(true)}
+        placeholder="Enter nama atau deskripsi"
       />
       <DocumentTable handleEditDoc={handleEditDocument} paginationModel={paginationModel} search={search} />
     </div>

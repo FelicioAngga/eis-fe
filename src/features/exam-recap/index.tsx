@@ -4,6 +4,7 @@ import { YearPicker } from "../../components/YearPicker";
 import { useGradeQuery } from "../../api-hooks/grade/api";
 import { useClassQuery } from "../../api-hooks/class/api";
 import ExamRecapTable from "./components/ExamRecapTable";
+import { Select } from "antd";
 
 export default function ExamRecap() {
   const [startYear, setStartYear] = useState<string>(new Date().getFullYear().toString());
@@ -43,7 +44,7 @@ export default function ExamRecap() {
           <select 
             value={selectedGrade || ""}
             onChange={(e) => setSelectedGrade(Number(e.target.value))} 
-            className="w-full border border-gray-300 appearance-none rounded-md px-3 py-2.5 cursor-pointer"
+            className="w-full border border-gray-300 appearance-none rounded-md px-3 py-2 cursor-pointer"
           >
             <option value="">Pilih Jenjang</option>
             {gradeData?.data.map(grade => (<option value={grade.id} key={grade.id}>{grade.name}</option>))}
@@ -55,17 +56,25 @@ export default function ExamRecap() {
 
         <div className="relative w-full pr-3">
           <p className="font-medium mb-2 text-sm">Akademik</p>
-          <select 
-            value={selectedAcademicId || ""}
-            onChange={(e) => setSelectedAcademicId(Number(e.target.value))} 
-            className="w-full border border-gray-300 appearance-none rounded-md px-3 py-2.5 cursor-pointer"
-          >
-            <option value="">Pilih Akademik</option>
-            {academicData?.data.map(academic => (<option value={academic.id} key={academic.id}>{academic.display_name}</option>))}
-          </select>
-          <div className="absolute top-11 right-5 flex items-center px-2 pointer-events-none">
-            <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
-          </div>
+          <Select 
+            placeholder="Pilih Akademik"
+            options={academicData?.data.map(academic => ({
+              label: academic.display_name,
+              value: academic?.id?.toString() || "",
+            })) || []}
+            allowClear
+            showSearch
+            value={selectedAcademicId?.toString() || null}
+            onChange={(value) => {
+              setSelectedAcademicId(value ? Number(value) : null);
+            }}
+            optionFilterProp="label"
+            filterSort={(optionA, optionB) =>
+              (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
+            }
+            size='large'
+            className="w-full border border-gray-300 appearance-none rounded-md px-3 py-3 cursor-pointer"  
+          />
         </div>
 
         <div className="relative w-full pr-3">
@@ -73,7 +82,7 @@ export default function ExamRecap() {
           <select 
             value={termId || ""}
             onChange={(e) => setTermId(Number(e.target.value))} 
-            className="w-full border border-gray-300 appearance-none rounded-md px-3 py-2.5 cursor-pointer"
+            className="w-full border border-gray-300 appearance-none rounded-md px-3 py-2 cursor-pointer"
           >
             <option value="">{selectedAcademicId ? "Pilih Semester" : "Pilih Akademik Dulu"}</option>
             {selectedAcademic?.terms.map(term => (<option value={term.id} key={term.id}>{term.name}</option>))}

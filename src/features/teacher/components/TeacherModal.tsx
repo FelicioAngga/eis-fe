@@ -175,6 +175,7 @@ function TeacherModal({ isOpen, onClose, editData }: TeacherModalProps) {
                 label="Jabatan" 
                 placeholder="Pilih Jabatan" 
                 options={[
+                  { value: "Koordinator", label: "Koordinator" },
                   { value: "Kepala Sekolah", label: "Kepala Sekolah" },
                   { value: "Wakil Kepala Sekolah", label: "Wakil Kepala Sekolah" },
                   { value: "Guru BP", label: "Guru BP" },

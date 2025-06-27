@@ -54,9 +54,8 @@ function AbsenceDetail() {
         type: "success",
         message: "Absensi berhasil disimpan.",
       })
-      queryClient.invalidateQueries({
-        queryKey: ["class", id ? parseInt(id) : 0],
-      });
+      queryClient.invalidateQueries({ queryKey: ["class", id ? parseInt(id) : 0] });
+      queryClient.invalidateQueries({ queryKey: ["student-attendances", selectedDate, termId, { pagination: { limit: 99999 }, search: "" }] });
     } else {
       showAlert({
         title: "Gagal",
