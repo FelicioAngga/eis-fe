@@ -7,6 +7,7 @@ import { useMemo } from "react";
 import { useDeleteUser, useUnArchiveUser, useUserQuery } from "../../../api-hooks/users/api";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAlert } from "../../../contexts/AlertContext";
+import { TranslateRoleObject } from "../../teacher/components/TeacherModal";
 
 interface UserTableProps {
   search: string;
@@ -80,7 +81,7 @@ function UserTable({ handleEditUser, paginationModel, search }: UserTableProps) 
       {
         accessorKey: "role",
         header: () => "Role",
-        cell: ({ row }) => <p>{row.original.role?.name || "-"}</p>
+        cell: ({ row }) => <p>{TranslateRoleObject(row.original.role?.name || "") || "-"}</p>
       },
       {
         accessorKey: "deleted_at",

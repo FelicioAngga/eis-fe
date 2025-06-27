@@ -169,7 +169,21 @@ function TeacherModal({ isOpen, onClose, editData }: TeacherModalProps) {
             </div>
             <div className="flex flex-col gap-4 w-full">
               <Input type="number" name="phone" label="No Telepon" placeholder="Masukkan No Telepon" required />
-              <Input type="text" name="job_title" label="Jabatan" placeholder="Masukkan Jabatan" required />
+              <Input 
+                type="select" 
+                name="job_title" 
+                label="Jabatan" 
+                placeholder="Pilih Jabatan" 
+                options={[
+                  { value: "Kepala Sekolah", label: "Kepala Sekolah" },
+                  { value: "Wakil Kepala Sekolah", label: "Wakil Kepala Sekolah" },
+                  { value: "Guru BP", label: "Guru BP" },
+                  { value: "Wali Kelas", label: "Wali Kelas" },
+                  { value: "Guru", label: "Guru" },
+                  { value: "Tata Usaha", label: "Tata Usaha" },
+                ]}
+                required 
+              />
               <Input 
                 type="select" 
                 name="level_id" 
@@ -201,7 +215,7 @@ function TeacherModal({ isOpen, onClose, editData }: TeacherModalProps) {
             placeholder="Pilih Role"
             options={accessRightData?.data.filter(x => x.name.toLowerCase() !== "student" && x.name.toLowerCase() !== "applicant").map((role) => ({
               value: (role?.id || 0).toString(),
-              label: role.name,
+              label: TranslateRoleObject(role.name),
             }))}
             required
           />
@@ -217,3 +231,22 @@ function TeacherModal({ isOpen, onClose, editData }: TeacherModalProps) {
 }
 
 export default TeacherModal;
+
+export const TranslateRoleObject = (role: string) => {
+  switch (role) {
+    case "Admin":
+      return "Admin";
+    case "Teacher":
+      return "Guru";
+    case "Homeroom Teacher":
+      return "Wali Kelas";
+    case "Principal":
+      return "Kepala Sekolah";
+    case "Student":
+      return "Siswa";
+    case "Applicant":
+      return "Calon Siswa";
+    default:
+      return role;
+  }
+}

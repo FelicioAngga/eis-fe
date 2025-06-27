@@ -7,9 +7,10 @@ interface Props {
   buttonText?: string;
   buttonOnClick?: () => void;
   hideButton?: boolean;
+  placeholder?: string;
 }
 
-function SearchTableLayout({ hideButton, buttonText, onSearch, buttonOnClick }: Props) {
+function SearchTableLayout({ hideButton, buttonText, placeholder, onSearch, buttonOnClick }: Props) {
   const [search, setSearch] = useState("");
   return (
     <div className="flex gap-3 items-center justify-between">
@@ -17,7 +18,7 @@ function SearchTableLayout({ hideButton, buttonText, onSearch, buttonOnClick }: 
         <div className="relative">
           <input
             type="text"
-            placeholder="Enter untuk mencari"
+            placeholder={placeholder ? placeholder : "Enter nama untuk mencari"}
             className="border border-gray-400 rounded-md pl-8 py-2 w-xs"
             value={search}
             onChange={(e) => setSearch(e.target.value)}

@@ -28,6 +28,7 @@ export default function() {
         onSearch={handleSubmit}
         buttonText="Tambah User"
         buttonOnClick={() => setIsModalOpen(true)}
+        hideButton
       />
       <UserTable handleEditUser={handleEditUser} paginationModel={paginationModel} search={search} />
     </div>

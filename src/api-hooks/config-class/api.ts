@@ -67,3 +67,18 @@ export const useDeleteConfigClass = () => {
     },
   });
 }
+
+export const useUnDeleteConfigClass = () => {
+  const apiCall = useApiCall<ResponseModel<any>>({
+    method: "PUT",
+    url: `${BASE_URL}/classrooms`,
+  });
+
+  return useMutation({
+    mutationFn: async (id: number) => {
+      return await apiCall({ 
+        url: `${BASE_URL}/classrooms/undelete/${id}`,
+      });
+    },
+  });
+}

@@ -26,6 +26,15 @@ function ConfigClassModal({ isOpen, onClose, editData }: ConfigClassModalProps) 
     search: "",
   });
 
+  const tingkatArray = [
+    { value: "1", label: "1" },
+    { value: "2", label: "2" },
+    { value: "3", label: "3" },
+    { value: "4", label: "4" },
+    { value: "5", label: "5" },
+    { value: "6", label: "6" },
+  ];
+
   const yupSchema = Yup.object().shape({
     display_name: Yup.string(),
     level_id: Yup.string().required("Jenjang tidak boleh kosong"),
@@ -123,14 +132,7 @@ function ConfigClassModal({ isOpen, onClose, editData }: ConfigClassModalProps) 
             name="grade"
             placeholder="Tingkat"
             label="Tingkat"
-            options={[
-              { value: "1", label: "1" },
-              { value: "2", label: "2" },
-              { value: "3", label: "3" },
-              { value: "4", label: "4" },
-              { value: "5", label: "5" },
-              { value: "6", label: "6" },
-            ]}
+            options={methods.watch("level_id") == "2" ? tingkatArray : tingkatArray.slice(0, 3)}
             required
           />
           <Input

@@ -31,7 +31,7 @@ function FilterTable({ hideButton, buttonText, onSearch, importButtonOnClick, bu
           <div className="relative">
             <input
               type="text"
-              placeholder="Enter untuk mencari"
+              placeholder="Enter nama untuk mencari"
               className="border border-gray-400 rounded-md pl-8 py-2 w-xs"
               value={search}
               onChange={(e) => setSearch(e.target.value)}

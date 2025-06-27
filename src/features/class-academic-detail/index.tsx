@@ -219,34 +219,6 @@ export default function ClassAcademicDetail() {
                   }
                 </td>
               </tr>
-              {(getPermissionAccess("subjsched").read && getPermissionAccess("subjsched").write) &&
-                <tr>
-                  <td className="pr-8 pb-3">Jadwal Kelas</td>
-                  <td className="pr-8 pb-3">:</td>
-                  <td className="pr-8 pb-3">
-                    <div 
-                      onClick={() => (navigate(`/config/class-schedule/detail/${id}`))}
-                      className="flex gap-2 items-center rounded border border-gray-500 px-2 py-1 cursor-pointer w-fit"
-                    >
-                      <p>View</p>
-                      <FiEye className="text-lg" />
-                    </div>
-                  </td>
-                </tr>
-              }
-              <tr>
-                <td className="pr-8 pb-3">Kehadiran Kelas</td>
-                <td className="pr-8 pb-3">:</td>
-                <td className="pr-8 pb-3">
-                  <div 
-                    onClick={() => (navigate(`/absence/detail/${id}`))}
-                    className="flex gap-2 items-center rounded border border-gray-500 px-2 py-1 cursor-pointer w-fit"
-                  >
-                    <p>View</p>
-                    <FiEye className="text-lg" />
-                  </div>
-                </td>
-              </tr>
               {getUser()?.role_name === "Admin" ? <></> : (
                 <tr>
                   <td className="pr-8 pb-3">Nilai Kelas</td>

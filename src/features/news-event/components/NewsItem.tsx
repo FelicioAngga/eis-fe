@@ -1,16 +1,19 @@
 import { useNavigate } from "react-router-dom";
 import parse, { domToReact } from "html-react-parser";
+import { formatDateTime } from "../../../utils/formatDate";
 
 function NewsItem({
   id,
   title,
   content,
   thumbnail,
+  created_at
 }: {
   id?: number;
   title: string;
   content: string;
   thumbnail: string;
+  created_at?: string;
 }) {
   const navigate = useNavigate();
 
@@ -39,6 +42,7 @@ function NewsItem({
         <div className="text-xs text-[#878787] w-56 truncate">
           {parse(content, options)}
         </div>
+        <div className="text-xs">Diposting, {formatDateTime(created_at || "")}</div>
       </div>
     </div>
   );

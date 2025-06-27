@@ -14,6 +14,7 @@ import { fileToBase64 } from '../../../utils/base64';
 import { useAlert } from '../../../contexts/AlertContext';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAccessRightQuery } from '../../../api-hooks/access-rights/api';
+import { TranslateRoleObject } from '../../teacher/components/TeacherModal';
 
 interface UserModalProps {
   isOpen: boolean;
@@ -103,8 +104,11 @@ function UserModal({ isOpen, onClose, setEditData, editData }: UserModalProps) {
 
   useEffect(() => {
     if (!defaultValues) return;
-    methods.reset(defaultValues);
+    const timeoutId = setTimeout(() => {
+      methods.reset(defaultValues);
+    })
     setPreview(defaultValues?.profile_pic || null);
+    return () => clearTimeout(timeoutId);
   }, [defaultValues])
 
   return (
@@ -161,7 +165,7 @@ function UserModal({ isOpen, onClose, setEditData, editData }: UserModalProps) {
             placeholder="Pilih Role"
             required
             options={roleData?.data.map(role => ({
-              label: role.name,
+              label: TranslateRoleObject(role.name),
               value: role?.id?.toString() || "",
             })) || []}
           />

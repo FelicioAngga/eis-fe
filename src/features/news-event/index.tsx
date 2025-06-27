@@ -23,6 +23,7 @@ export default function() {
         buttonOnClick={() => navigate("/news-event/create")}
         buttonText="Tambah Berita & Acara"
         hideButton={!getPermissionAccess("news").write}
+        placeholder="Enter judul berita untuk mencari"
       />
       <NewsList paginationModel={paginationModel} search={search} />
     </>

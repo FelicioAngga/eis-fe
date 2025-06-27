@@ -8,6 +8,7 @@ export type ConfigClassModel = {
 	grade: string;
 	name: string;
   level: GradeModel;
+  deleted_at?: string | null;
 }
 
 export type ConfigClassParams = {
