@@ -49,5 +49,7 @@ export const getUniqueSubjects = (data: DaySchedule[]): UniqueSubject[] => {
     });
   });
 
-  return Array.from(uniqueSubjectsMap.values());
+  return Array.from(uniqueSubjectsMap.values()).sort((a, b) =>
+    a.subject.localeCompare(b.subject)
+  );
 };

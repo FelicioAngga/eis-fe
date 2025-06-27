@@ -117,7 +117,7 @@ export default function ClassAcademicDetail() {
               <tr>
                 <td className="pr-8 pb-3">Kelas</td>
                 <td className="pr-8 pb-3">:</td>
-                <td className="pr-8 pb-3">{classDetail?.data.classroom}</td>
+                <td className="pr-8 pb-3">{classDetail?.data?.display_name}</td>
               </tr>
               <tr>
                 <td className="pr-8 pb-3">Jenjang</td>
