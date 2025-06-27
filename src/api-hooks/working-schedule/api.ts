@@ -22,6 +22,21 @@ export const useWorkingScheduleQuery = (params: WorkingScheduleParams) => {
   });
 }
 
+export const useWorkingScheduleDetailQuery = (id: number | null) => {
+  const apiCall = useApiCall<{data: WorkingScheduleModel}>({
+    method: "GET",
+    url: `${BASE_URL}/workscheds/${id}`,
+  });
+
+  return useQuery({
+    queryKey: ["workscheds", id],
+    queryFn: async () => {
+      return await apiCall();
+    },
+    enabled: !!id
+  });
+}
+
 export const useCreateWorkingSchedule = () => {
   const apiCall = useApiCall<ResponseModel<any>>({
     method: "POST",

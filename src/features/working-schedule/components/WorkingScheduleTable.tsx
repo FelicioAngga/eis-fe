@@ -1,13 +1,16 @@
 import { FiEdit } from "react-icons/fi";
 import { WorkingScheduleModel } from "../../../api-hooks/working-schedule/models/WorkingScheduleModel";
 import Table, { PaginationModelProps } from "../../../components/Table";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
-import { useDeleteWorkingSchedule, useUnArchiveWorkingSchedule, useWorkingScheduleQuery } from "../../../api-hooks/working-schedule/api";
+import { useDeleteWorkingSchedule, useUnArchiveWorkingSchedule, useWorkingScheduleDetailQuery, useWorkingScheduleQuery } from "../../../api-hooks/working-schedule/api";
 import { MdArchive, MdUnarchive } from "react-icons/md";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAlert } from "../../../contexts/AlertContext";
 import { usePermissionAccess } from "../../../hooks/useAccessRight";
+import { useAuth } from "../../../hooks/useAuth";
+import { useTeacherQuery } from "../../../api-hooks/teacher/api";
+import { TranslatedDays } from "../../config-class-schedule-detail";
 
 interface WorkingScheduleProps {
   search: string;
@@ -17,7 +20,9 @@ interface WorkingScheduleProps {
 
 function WorkingScheduleTable({ handleEditWorkScheds, paginationModel, search }: WorkingScheduleProps) {
   const { showAlert } = useAlert();
+  const { getUser } = useAuth();
   const queryClient = useQueryClient();
+  const [workSchedId, setWorkSchedId] = useState<number | null>(null);
   const { data } = useWorkingScheduleQuery({
     pagination: {
       limit: paginationModel.pageSize,
@@ -27,6 +32,8 @@ function WorkingScheduleTable({ handleEditWorkScheds, paginationModel, search }:
     },
     search: search || "",
   });
+  const { data: teacherData } = useTeacherQuery({ pagination: { limit: 9999999 }, search: "" })
+  const { data: workSchedDetail } = useWorkingScheduleDetailQuery(workSchedId)
 
   const { mutateAsync: deleteMutate } = useDeleteWorkingSchedule();
   const { mutateAsync: unArchiveMutate } = useUnArchiveWorkingSchedule();
@@ -117,6 +124,29 @@ function WorkingScheduleTable({ handleEditWorkScheds, paginationModel, search }:
     ],
     [paginationModel]
   );
+
+  useEffect(() => {
+    if (!getPermissionAccess("worksched").write) {
+      const foundedWorkSchedId = teacherData?.data.find(teacher => teacher.user_id === getUser()?.id)?.work_sched_id;
+      setWorkSchedId(foundedWorkSchedId || null);
+    }
+  }, [getPermissionAccess("worksched").write, teacherData]);
+
+  if (workSchedDetail?.data && !getPermissionAccess("worksched").write) {
+    return (
+      <div>
+        <p className="font-semibold">{workSchedDetail.data.name}</p>
+        <div className="flex flex-col gap-6 mt-5">
+          {workSchedDetail.data?.details?.map((detail, index) => (
+            <div key={index}>
+              <p className="font-medium">{TranslatedDays[detail.day]}</p>
+              <p className="stext-gray-700">Masuk: {detail.work_start} - Keluar: {detail.work_end}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    )
+  }
 
   return (
     <Table

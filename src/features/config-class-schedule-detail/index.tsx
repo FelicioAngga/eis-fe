@@ -164,10 +164,11 @@ export default function ConfigClassScheduleDetail() {
   )
 }
 
-const TranslatedDays: Record<string,string> = {
+export const TranslatedDays: Record<string,string> = {
   "Monday": "Senin",
   "Tuesday": "Selasa",
   "Wednesday": "Rabu",
   "Thursday": "Kamis",
   "Friday": "Jumat",
+  "Saturday": "Sabtu",
 }

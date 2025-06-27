@@ -7,6 +7,7 @@ import { useAccessRightQuery, useDeleteRole } from "../../../api-hooks/access-ri
 import { useAlert } from "../../../contexts/AlertContext";
 import { useQueryClient } from "@tanstack/react-query";
 import Swal from "sweetalert2";
+import { TranslateRoleObject } from "../../teacher/components/TeacherModal";
 
 interface AccessRightTableProps {
   search: string;
@@ -65,6 +66,7 @@ function AccessRightTable({ paginationModel, search, handleEdit }: AccessRightTa
       {
         accessorKey: "name",
         header: () => "Nama Role",
+        cell: ({ row }) => TranslateRoleObject(row.original.name) || "-",
       },
       {
         accessorKey: "action",

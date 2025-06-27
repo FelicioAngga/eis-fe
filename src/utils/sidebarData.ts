@@ -119,7 +119,7 @@ export const sideBarCategoryMenu: MenuCategory[] = [
     category: "Pengaturan",
     children: [
       {
-        title: "Users (Pengguna)",
+        title: "Akun Pengguna",
         path: "/users",
         iconName: "SiAdGuard",
         permissionName: "users",

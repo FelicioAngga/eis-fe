@@ -8,6 +8,9 @@ import { useAlert } from "../../contexts/AlertContext";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import Swal from "sweetalert2";
+import { usePermissionAccess } from "../../hooks/useAccessRight";
+import parse from "html-react-parser";
+import { BiChevronLeft } from "react-icons/bi";
 
 export default function NewsForm() {
   const { id } = useParams();
@@ -19,6 +22,7 @@ export default function NewsForm() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const { data: newsDetail } = useNewsDetailQuery(id || "")
+  const { getPermissionAccess } = usePermissionAccess();
 
   const { mutateAsync: addNews, isPending: isCreating } = useCreateNews();
   const { mutateAsync: updateNews, isPending: isUpdating } = useUpdateNews();
@@ -100,26 +104,48 @@ export default function NewsForm() {
 
   return (
     <div>
+      <div
+        onClick={() => navigate("/news-event")}
+        className="mb-2 transition-all duration-[400ms] flex items-center gap-1 hover:gap-3 text-primary cursor-pointer"
+      >
+        <BiChevronLeft className="text-2xl" />
+        <p className="font-semibold text-sm">Kembali</p>
+      </div>
       <div className="flex gap-4 justify-between">
         <div className="w-full">
           <p className="text-sm font-medium mb-2">Judul</p>
-          <input
-            className="border border-gray-300 rounded-lg px-3 py-2 w-full mb-5"
-            value={title}
-            placeholder="Judul Berita"
-            onChange={(e) => setTitle(e.target.value)}
-          />
-          <TextEditor value={value} setValue={setValue} />
+          {getPermissionAccess("news").write ? (
+            <input
+              className="border border-gray-300 rounded-lg px-3 py-2 w-full mb-5"
+              value={title}
+              placeholder="Judul Berita"
+              onChange={(e) => setTitle(e.target.value)}
+            />
+          ) : (
+            <p className="text-lg font-semibold mb-5">{title}</p>
+          )}
+          {getPermissionAccess("news").write ? (
+            <TextEditor value={value} setValue={setValue} />
+          ) : (
+            <div className="text-sm font-medium mb-2">{parse(value)}</div>
+          )}
         </div>
-        <FileUploader selectedFile={selectedFile} setSelectedFile={setSelectedFile} previewUrl={previewUrl} setPreviewUrl={setPreviewUrl} />
+        {getPermissionAccess("news").write ? <FileUploader selectedFile={selectedFile} setSelectedFile={setSelectedFile} previewUrl={previewUrl} setPreviewUrl={setPreviewUrl} />
+          : (
+            <div className="w-80 h-80 rounded-lg flex items-center justify-center overflow-hidden">
+              <img src={previewUrl || ""} className="object-cover w-full" />
+            </div>
+        )}
       </div>
-      <div className="flex justify-between mt-20">
-        {id ? <Button onClick={handleDelete} variant="primary" className="bg-danger hover:border-danger">Hapus</Button> : <div></div>}
-        <div className="flex gap-4 justify-end">
-          <Button onClick={() => navigate("/news-event")} variant="outline">Batal</Button>
-          <Button onClick={handleSubmit} disabled={isCreating || isUpdating}>Simpan</Button>
+      {getPermissionAccess("news").write && (
+        <div className="flex justify-between mt-20">
+          {id ? <Button onClick={handleDelete} variant="primary" className="bg-danger hover:border-danger">Hapus</Button> : <div></div>}
+          <div className="flex gap-4 justify-end">
+            <Button onClick={() => navigate("/news-event")} variant="outline">Batal</Button>
+            <Button onClick={handleSubmit} disabled={isCreating || isUpdating}>Simpan</Button>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

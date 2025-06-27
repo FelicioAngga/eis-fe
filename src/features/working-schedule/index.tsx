@@ -31,6 +31,7 @@ export default function() {
         hideButton={!getPermissionAccess("worksched").write}
         buttonText="Tambah Jadwal"
         buttonOnClick={() => setIsModalOpen(true)}
+        hideInput={!getPermissionAccess("worksched").write}
       />
       <WorkingScheduleTable handleEditWorkScheds={handleEditWorkScheds} paginationModel={paginationModel} search={search} />
     </div>

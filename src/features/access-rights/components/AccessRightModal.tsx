@@ -110,12 +110,12 @@ function AccessRightModal({ isOpen, onClose, editId }: AccessRightModalProps) {
         
         <div className="mt-3 max-h-[500px] overflow-y-auto border border-gray-400 p-2 rounded">
           <div>
-            <p className="font-medium">Academic</p>
+            <p className="font-medium">Akademik</p>
             <div className="pl-6">
-              <p className="font-medium mt-2">Student Management</p>
+              <p className="font-medium mt-2">Pengelolaan Akademik</p>
               <div className="pl-6 mt-2 flex flex-col gap-2">
                 <div className="flex justify-between">
-                  <p className="font-medium">Registration</p>
+                  <p className="font-medium">Pendaftaran</p>
                   <div className="flex gap-3">
                     <Checkbox label="Read" 
                       checked={!!getPermissionByName("registration:read")?.name} 
@@ -128,20 +128,7 @@ function AccessRightModal({ isOpen, onClose, editId }: AccessRightModalProps) {
                   </div>
                 </div>
                 <div className="flex justify-between">
-                  <p className="font-medium">Student Data</p>
-                  <div className="flex gap-3">
-                    <Checkbox label="Read" 
-                      checked={!!getPermissionByName("student:read")?.name} 
-                      onChange={(e) => handleCheckboxChange("student:read", e.target.checked)} 
-                    />
-                    <Checkbox label="Write" 
-                      checked={!!getPermissionByName("student:write")?.name} 
-                      onChange={(e) => handleCheckboxChange("student:write", e.target.checked)}
-                    />
-                  </div>
-                </div>
-                <div className="flex justify-between">
-                  <p className="font-medium">Absence</p>
+                  <p className="font-medium">Absensi Siswa</p>
                   <div className="flex gap-3">
                     <Checkbox label="Read" 
                       checked={!!getPermissionByName("studentatt:read")?.name} 
@@ -153,11 +140,8 @@ function AccessRightModal({ isOpen, onClose, editId }: AccessRightModalProps) {
                     />
                   </div>
                 </div>
-              </div>
-              <p className="font-medium mt-2">Curriculum</p>
-              <div className="pl-6 mt-2 flex flex-col gap-2">
                 <div className="flex justify-between">
-                  <p className="font-medium">Academic</p>
+                  <p className="font-medium">Akademik</p>
                   <div className="flex gap-3">
                     <Checkbox label="Read" 
                       checked={!!getPermissionByName("academic:read")?.name} 
@@ -170,7 +154,7 @@ function AccessRightModal({ isOpen, onClose, editId }: AccessRightModalProps) {
                   </div>
                 </div>
                 <div className="flex justify-between">
-                  <p className="font-medium">Academic Classnote</p>
+                  <p className="font-medium">Catatan Kelas di menu akademik</p>
                   <div className="flex gap-3">
                     <Checkbox label="Write" 
                       checked={!!getPermissionByName("academic_classnote:write")?.name} 
@@ -179,7 +163,7 @@ function AccessRightModal({ isOpen, onClose, editId }: AccessRightModalProps) {
                   </div>
                 </div>
                 <div className="flex justify-between">
-                  <p className="font-medium">Academic All Score</p>
+                  <p className="font-medium">Semua Nilai di menu akademik</p>
                   <div className="flex gap-3">
                     <Checkbox label="Write" 
                       checked={!!getPermissionByName("academic_all_score:write")?.name} 
@@ -188,7 +172,7 @@ function AccessRightModal({ isOpen, onClose, editId }: AccessRightModalProps) {
                   </div>
                 </div>
                 <div className="flex justify-between">
-                  <p className="font-medium">Academic Print</p>
+                  <p className="font-medium">Cetak di menu akademik</p>
                   <div className="flex gap-3">
                     <Checkbox label="Read" 
                       checked={!!getPermissionByName("academic_print:read")?.name} 
@@ -197,7 +181,7 @@ function AccessRightModal({ isOpen, onClose, editId }: AccessRightModalProps) {
                   </div>
                 </div>
                 <div className="flex justify-between">
-                  <p className="font-medium">Academic Behaviour</p>
+                  <p className="font-medium">Kelakuan di menu akademik</p>
                   <div className="flex gap-3">
                     <Checkbox label="Write" 
                       checked={!!getPermissionByName("academic_behaviour:write")?.name} 
@@ -206,7 +190,7 @@ function AccessRightModal({ isOpen, onClose, editId }: AccessRightModalProps) {
                   </div>
                 </div>
                 <div className="flex justify-between">
-                  <p className="font-medium">Academic Transfer</p>
+                  <p className="font-medium">Transfer siswa di menu akademik</p>
                   <div className="flex gap-3">
                     <Checkbox label="Write" 
                       checked={!!getPermissionByName("academic_transfer:write")?.name} 
@@ -215,7 +199,7 @@ function AccessRightModal({ isOpen, onClose, editId }: AccessRightModalProps) {
                   </div>
                 </div>
                 <div className="flex justify-between">
-                  <p className="font-medium">Class Note</p>
+                  <p className="font-medium">Catatan Kelas</p>
                   <div className="flex gap-3">
                     <Checkbox label="Read" 
                       checked={!!getPermissionByName("classnote:read")?.name} 
@@ -228,7 +212,7 @@ function AccessRightModal({ isOpen, onClose, editId }: AccessRightModalProps) {
                   </div>
                 </div>
                 <div className="flex justify-between">
-                  <p className="font-medium">Class Schedule</p>
+                  <p className="font-medium">Jadwal Mata Pelajaran</p>
                   <div className="flex gap-3">
                     <Checkbox label="Read" 
                       checked={!!getPermissionByName("subjsched:read")?.name} 
@@ -241,10 +225,10 @@ function AccessRightModal({ isOpen, onClose, editId }: AccessRightModalProps) {
                   </div>
                 </div>
               </div>
-              <p className="font-medium mt-2">Reporting</p>
+              <p className="font-medium mt-2">Laporan</p>
               <div className="pl-6 mt-2 flex flex-col gap-2">
                 <div className="flex justify-between">
-                  <p className="font-medium">Absence Recap</p>
+                  <p className="font-medium">Rekap Absensi</p>
                   <div className="flex gap-3">
                     <Checkbox label="Read" 
                       checked={!!getPermissionByName("studentattrep:read")?.name} 
@@ -257,7 +241,7 @@ function AccessRightModal({ isOpen, onClose, editId }: AccessRightModalProps) {
                   </div>
                 </div>
                 <div className="flex justify-between">
-                  <p className="font-medium">Exam Recap</p>
+                  <p className="font-medium">Rekap Ujian</p>
                   <div className="flex gap-3">
                     <Checkbox label="Read" 
                       checked={!!getPermissionByName("examrecap:read")?.name} 
@@ -270,10 +254,10 @@ function AccessRightModal({ isOpen, onClose, editId }: AccessRightModalProps) {
                   </div>
                 </div>
               </div>
-              <p className="font-medium mt-2">Configuration</p>
+              <p className="font-medium mt-2">Konfigurasi</p>
               <div className="pl-6 mt-2 flex flex-col gap-2">
                 <div className="flex justify-between">
-                  <p className="font-medium">Grade</p>
+                  <p className="font-medium">Jenjang</p>
                   <div className="flex gap-3">
                     <Checkbox label="Read" 
                       checked={!!getPermissionByName("grade:read")?.name} 
@@ -286,7 +270,7 @@ function AccessRightModal({ isOpen, onClose, editId }: AccessRightModalProps) {
                   </div>
                 </div>
                 <div className="flex justify-between">
-                  <p className="font-medium">Classes</p>
+                  <p className="font-medium">Kelas</p>
                   <div className="flex gap-3">
                     <Checkbox label="Read" 
                       checked={!!getPermissionByName("class:read")?.name} 
@@ -299,7 +283,7 @@ function AccessRightModal({ isOpen, onClose, editId }: AccessRightModalProps) {
                   </div>
                 </div>
                 <div className="flex justify-between">
-                  <p className="font-medium">Subject</p>
+                  <p className="font-medium">Mata Pelajaran</p>
                   <div className="flex gap-3">
                     <Checkbox label="Read" 
                       checked={!!getPermissionByName("subject:read")?.name} 
@@ -312,7 +296,7 @@ function AccessRightModal({ isOpen, onClose, editId }: AccessRightModalProps) {
                   </div>
                 </div>
                 <div className="flex justify-between">
-                  <p className="font-medium">Curriculum</p>
+                  <p className="font-medium">Kurikulum</p>
                   <div className="flex gap-3">
                     <Checkbox label="Read" 
                       checked={!!getPermissionByName("curriculum:read")?.name} 
@@ -324,15 +308,28 @@ function AccessRightModal({ isOpen, onClose, editId }: AccessRightModalProps) {
                     />
                   </div>
                 </div>
+                <div className="flex justify-between">
+                  <p className="font-medium">Data Siswa</p>
+                  <div className="flex gap-3">
+                    <Checkbox label="Read" 
+                      checked={!!getPermissionByName("student:read")?.name} 
+                      onChange={(e) => handleCheckboxChange("student:read", e.target.checked)} 
+                    />
+                    <Checkbox label="Write" 
+                      checked={!!getPermissionByName("student:write")?.name} 
+                      onChange={(e) => handleCheckboxChange("student:write", e.target.checked)}
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
           <div className="mt-3">
-            <p className="font-medium">Archive</p>
+            <p className="font-medium">Arsip</p>
             <div className="pl-6 mt-2 flex flex-col gap-2">
               <div className="flex justify-between">
-                <p className="font-medium">Document</p>
+                <p className="font-medium">Dokumen</p>
                 <div className="flex gap-3">
                   <Checkbox label="Read" 
                     checked={!!getPermissionByName("document:read")?.name} 
@@ -345,7 +342,7 @@ function AccessRightModal({ isOpen, onClose, editId }: AccessRightModalProps) {
                 </div>
               </div>
               <div className="flex justify-between">
-                <p className="font-medium">Document Type</p>
+                <p className="font-medium">Tipe Dokumen</p>
                 <div className="flex gap-3">
                   <Checkbox label="Read" 
                     checked={!!getPermissionByName("doctype:read")?.name} 
@@ -361,10 +358,10 @@ function AccessRightModal({ isOpen, onClose, editId }: AccessRightModalProps) {
           </div>
 
           <div className="mt-3">
-            <p className="font-medium">Human Resource</p>
+            <p className="font-medium">Manajemen SDM</p>
             <div className="pl-6 mt-2 flex flex-col gap-2">
               <div className="flex justify-between">
-                <p className="font-medium">Teacher</p>
+                <p className="font-medium">Guru</p>
                 <div className="flex gap-3">
                   <Checkbox label="Read" 
                     checked={!!getPermissionByName("teacher:read")?.name} 
@@ -377,7 +374,7 @@ function AccessRightModal({ isOpen, onClose, editId }: AccessRightModalProps) {
                 </div>
               </div>
               <div className="flex justify-between">
-                <p className="font-medium">Absence</p>
+                <p className="font-medium">Absensi Guru</p>
                 <div className="flex gap-3">
                   <Checkbox label="Read" 
                     checked={!!getPermissionByName("teacheratt:read")?.name} 
@@ -390,7 +387,7 @@ function AccessRightModal({ isOpen, onClose, editId }: AccessRightModalProps) {
                 </div>
               </div>
               <div className="flex justify-between">
-                <p className="font-medium">Absence Recap</p>
+                <p className="font-medium">Rekap Absensi Guru</p>
                 <div className="flex gap-3">
                   <Checkbox label="Read" 
                       checked={!!getPermissionByName("teacherattrep:read")?.name} 
@@ -403,7 +400,7 @@ function AccessRightModal({ isOpen, onClose, editId }: AccessRightModalProps) {
                 </div>
               </div>
               <div className="flex justify-between">
-                <p className="font-medium">Working Schedule</p>
+                <p className="font-medium">Jadwal Kerja</p>
                 <div className="flex gap-3">
                   <Checkbox label="Read" 
                       checked={!!getPermissionByName("worksched:read")?.name} 
@@ -419,10 +416,10 @@ function AccessRightModal({ isOpen, onClose, editId }: AccessRightModalProps) {
           </div>
 
           <div className="mt-3">
-            <p className="font-medium">Website Management</p>
+            <p className="font-medium">Pengelolaan Berita</p>
             <div className="pl-6 mt-2 flex flex-col gap-2">
               <div className="flex justify-between">
-                <p className="font-medium">News & Event</p>
+                <p className="font-medium">Berita</p>
                 <div className="flex gap-3">
                   <Checkbox label="Read" 
                       checked={!!getPermissionByName("news:read")?.name} 
@@ -438,10 +435,10 @@ function AccessRightModal({ isOpen, onClose, editId }: AccessRightModalProps) {
           </div>
 
           <div className="mt-3">
-            <p className="font-medium">Settings</p>
+            <p className="font-medium">Pengaturan</p>
             <div className="pl-6 mt-2 flex flex-col gap-2">
               <div className="flex justify-between">
-                <p className="font-medium">Users</p>
+                <p className="font-medium">Akun Pengguna</p>
                 <div className="flex gap-3">
                   <Checkbox label="Read" 
                       checked={!!getPermissionByName("users:read")?.name} 
@@ -454,7 +451,7 @@ function AccessRightModal({ isOpen, onClose, editId }: AccessRightModalProps) {
                 </div>
               </div>
               <div className="flex justify-between">
-                <p className="font-medium">Access Rights</p>
+                <p className="font-medium">Hak Akses</p>
                 <div className="flex gap-3">
                   <Checkbox label="Read" 
                       checked={!!getPermissionByName("accessrights:read")?.name} 

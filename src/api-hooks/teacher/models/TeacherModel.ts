@@ -2,6 +2,7 @@ import { PaginationParams } from "../../method";
 
 export type TeacherModel = {
 	id: number;
+	user_id?: number;
   identity_no: string;
 	name: string;
 	nuptk: string | null;
