@@ -14,7 +14,7 @@ export default function TeacherAbsenceRecap() {
     search: search.name,
     start_date: search.startDate,
     end_date: search.endDate,
-    ...(!getPermissionAccess("teacheratt").write ? { userId: user.id } : {})
+    ...((!getPermissionAccess("teacheratt").write && user.role_name !== "Principal") ? { userId: user.id } : {})
   });
 
   const handleSearch = (data: {name: string, startDate: string, endDate: string}) => {

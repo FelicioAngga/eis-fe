@@ -220,7 +220,7 @@ export default function ClassAcademicDetail() {
                   }
                 </td>
               </tr>
-              {getUser()?.role_name === "Admin" ? <></> : (
+              {(getUser()?.role_name === "Admin" || getUser()?.role_name === "Principal") ? <></> : (
                 <tr>
                   <td className="pr-8 pb-3">Nilai Kelas</td>
                   <td className="pr-8 pb-3">:</td>
@@ -268,7 +268,9 @@ export default function ClassAcademicDetail() {
             </tbody>
           </table>
         </div>
-        <Button disabled={isPending} onClick={saveHomeRoomTeacher}>Simpan</Button>
+        {getUser()?.role_name !== "Principal" &&
+          <Button disabled={isPending} onClick={saveHomeRoomTeacher}>Simpan</Button>
+        }
       </div>
 
       <div className="my-5 bg-gray-400 h-[1px]"></div>

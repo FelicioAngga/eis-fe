@@ -3,11 +3,13 @@ import { usePaginationModel } from "../../hooks/use-pagination-model";
 import SearchTableLayout from "../../components/SearchTableLayout";
 import DocumentTypeTable from "./components/DocumentTypeTable";
 import AddDocTypeModal from "./components/AddDocTypeModal";
+import { usePermissionAccess } from "../../hooks/useAccessRight";
 
 export default function DocumentType() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [search, setSearch] = useState("");
   const paginationModel = usePaginationModel({});
+  const { getPermissionAccess } = usePermissionAccess();
 
   function handleSubmit(search: string) {
     setSearch(search);
@@ -21,6 +23,7 @@ export default function DocumentType() {
         onSearch={handleSubmit}
         buttonText="Tambah Tipe"
         buttonOnClick={() => setIsAddModalOpen(true)}
+        hideButton={!getPermissionAccess("doctype").write}
       />
       <DocumentTypeTable paginationModel={paginationModel} search={search} />
     </div>

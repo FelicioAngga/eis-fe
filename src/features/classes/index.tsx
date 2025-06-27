@@ -28,7 +28,7 @@ export default function Classes() {
       <div className="flex gap-3 items-center justify-between">
         <div className="flex gap-2">
           <div className="relative">
-            <p>Nama Akademik</p>
+            <p className="font-medium text-sm mb-1">Nama Akademik</p>
             <input
               type="text"
               placeholder="Enter untuk mencari"

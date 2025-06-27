@@ -11,6 +11,7 @@ import Swal from "sweetalert2";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAlert } from "../../../contexts/AlertContext";
 import { usePermissionAccess } from "../../../hooks/useAccessRight";
+import { useAuth } from "../../../hooks/useAuth";
 
 interface ClassAcademicTableProps {
   termId: number;
@@ -24,6 +25,7 @@ function ClassAcademicTable({ termId }: ClassAcademicTableProps) {
   const [isAddStudentModalOpen, setIsAddStudentModalOpen] = useState(false);
   const { data: classDetail } = useClassDetail(id ? parseInt(id) : 0);
   const [checkedStudents, setCheckedStudents] = useState<StudentModel[]>([]);
+  const { getUser } = useAuth();
   const { getPermissionAccess } = usePermissionAccess();
 
   function handlePrint(studentId: number) {
@@ -144,16 +146,18 @@ function ClassAcademicTable({ termId }: ClassAcademicTableProps) {
       </div>
 
       <div className="mt-5 font-medium text-sm flex py-3 border border-gray-300 bg-gray-100">
-        <div className="w-1/12 flex justify-center">
-          <Checkbox
-            checked={checkedStudents.length === classDetail?.data.students?.length}
-            onChange={(e) => {
-              const isChecked = e.target.checked;
-              setCheckedStudents(isChecked ? classDetail?.data.students || [] : []);
-            }} 
-          />
-        </div>
-        <div className="w-1/12">No</div>
+        {getUser().role_name !== "Principal" &&
+          <div className="w-1/12 flex justify-center">
+            <Checkbox
+              checked={checkedStudents.length === classDetail?.data.students?.length}
+              onChange={(e) => {
+                const isChecked = e.target.checked;
+                setCheckedStudents(isChecked ? classDetail?.data.students || [] : []);
+              }} 
+            />
+          </div>
+        }
+        <div className="w-1/12 flex justify-center">No</div>
         <div className="w-5/12">Nama Lengkap</div>
         <div className="w-2/12">NISN</div>
         <div className="w-2/12">NIS</div>
@@ -167,18 +171,20 @@ function ClassAcademicTable({ termId }: ClassAcademicTableProps) {
 
       {classDetail?.data.students?.map((student, idx) => (
         <div key={idx} className="font-medium text-sm flex py-3 border-b border-r border-l border-gray-300">
-          <div className="w-1/12 flex justify-center">
-            <Checkbox
-              checked={checkedStudents.some(s => s.id === student.id)}
-              onChange={(e) => {
-                const isChecked = e.target.checked;
-                setCheckedStudents(prev => 
-                  isChecked ? [...prev, student] : prev.filter(s => s.id !== student.id)
-                );
-              }} 
-            />
-          </div>
-          <div className="w-1/12">{idx + 1}</div>
+          {getUser().role_name !== "Principal" && 
+            <div className="w-1/12 flex justify-center">
+              <Checkbox
+                checked={checkedStudents.some(s => s.id === student.id)}
+                onChange={(e) => {
+                  const isChecked = e.target.checked;
+                  setCheckedStudents(prev => 
+                    isChecked ? [...prev, student] : prev.filter(s => s.id !== student.id)
+                  );
+                }} 
+              />
+            </div>
+          }
+          <div className="w-1/12 flex justify-center">{idx + 1}</div>
           <div className="w-5/12">{student.full_name}</div>
           <div className="w-2/12">{student.nisn || '-'}</div>
           <div className="w-2/12">{student.nis || '-'}</div>

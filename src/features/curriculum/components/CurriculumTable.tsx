@@ -8,6 +8,7 @@ import Swal from "sweetalert2";
 import { useAlert } from "../../../contexts/AlertContext";
 import { useQueryClient } from "@tanstack/react-query";
 import { MdArchive, MdUnarchive } from "react-icons/md";
+import { usePermissionAccess } from "../../../hooks/useAccessRight";
 
 interface CurriculumTableProps {
   search: string;
@@ -18,6 +19,7 @@ interface CurriculumTableProps {
 function CurriculumTable({ paginationModel, search, handleEditCurriculum }: CurriculumTableProps) {
   const { showAlert } = useAlert();
   const queryClient = useQueryClient();
+  const { getPermissionAccess } = usePermissionAccess();
   const { data } = useCurriculumQuery({
     pagination: {
       limit: paginationModel.pageSize,
@@ -82,7 +84,7 @@ function CurriculumTable({ paginationModel, search, handleEditCurriculum }: Curr
     }
   }
 
-  const columns = useMemo<ColumnDef<CurriculumModel>[]>(
+  let columns = useMemo<ColumnDef<CurriculumModel>[]>(
     () => [
       {
         accessorKey: "no",
@@ -141,6 +143,7 @@ function CurriculumTable({ paginationModel, search, handleEditCurriculum }: Curr
     [paginationModel]
   );
 
+  if (!getPermissionAccess("curriculum").write) columns.splice(4, 1);
   return (
     <Table
       columns={columns}

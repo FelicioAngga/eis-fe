@@ -39,7 +39,7 @@ function StudentSideBar() {
         </Popover>
       </div>
       <aside className="hidden md:block h-full overflow-y-auto bg-white border-r border-gray-300 px-4 py-6 space-y-4 shadow-sm print:hidden min-w-64">
-        <p className="font-semibold text-sm mb-2">Personal</p>
+        <p className="font-semibold text-sm mb-2">Data Diri</p>
         <Link
           to={"/student-data"}
           className={`block p-3 rounded font-medium ${
@@ -50,10 +50,10 @@ function StudentSideBar() {
         >
           <div className="flex items-center gap-2">
             <FaRegUser />
-            <span>Student Data</span>
+            <span>Data Siswa</span>
           </div>
         </Link>
-        <p className="font-semibold text-sm mb-2">Academic</p>
+        <p className="font-semibold text-sm mb-2">Akademik</p>
         <Link
           to={"/student-schedule"}
           className={`block p-3 rounded font-medium ${
@@ -64,10 +64,10 @@ function StudentSideBar() {
         >
           <div className="flex items-center gap-2">
             <TbCalendarClock />
-            <span>Class Schedule</span>
+            <span>Jadwal Mata Pelajaran</span>
           </div>
         </Link>
-        <p className="font-semibold text-sm mb-2">Reporting</p>
+        <p className="font-semibold text-sm mb-2">Laporan</p>
         <Link
           to={"/student-absence"}
           className={`block p-3 rounded font-medium ${
@@ -78,7 +78,7 @@ function StudentSideBar() {
         >
           <div className="flex items-center gap-2">
             <MdOutlineDocumentScanner />
-            <span>Absence</span>
+            <span>Absensi</span>
           </div>
         </Link>
         <Link
@@ -91,7 +91,7 @@ function StudentSideBar() {
         >
           <div className="flex items-center gap-2">
             <FaRegFileAlt />
-            <span>Score</span>
+            <span>Nilai</span>
           </div>
         </Link>
       </aside>

@@ -162,6 +162,7 @@ function StudentTable({ paginationModel, search }: StudentTableProps) {
     [paginationModel]
   );
 
+  if (!getPermissionAccess("student").write) columns.splice(8, 1);
   return (
     <Table
       columns={columns}

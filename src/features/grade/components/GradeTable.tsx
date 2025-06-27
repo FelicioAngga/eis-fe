@@ -4,6 +4,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { GradeModel } from "../../../api-hooks/grade/models/GradeModel";
 import { FiEdit } from "react-icons/fi";
 import { useGradeQuery } from "../../../api-hooks/grade/api";
+import { usePermissionAccess } from "../../../hooks/useAccessRight";
 
 interface GradeTableProps {
   search: string;
@@ -12,6 +13,7 @@ interface GradeTableProps {
 }
 
 function GradeTable({ paginationModel, search, handleEdit }: GradeTableProps) {
+  const { getPermissionAccess } = usePermissionAccess();
   const { data } = useGradeQuery({
     pagination: {
       limit: paginationModel.pageSize,
@@ -102,6 +104,7 @@ function GradeTable({ paginationModel, search, handleEdit }: GradeTableProps) {
     return sorted;
   }, [data]);
 
+  if (!getPermissionAccess("grade").write) columns.splice(columns.length - 1, 1);
   return (
     <Table
       columns={columns}

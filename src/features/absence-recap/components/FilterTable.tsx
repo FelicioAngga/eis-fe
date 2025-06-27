@@ -79,7 +79,7 @@ function FilterTable({ onSearch }: Props) {
               (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
             }
             size='large'
-            className="w-full border border-gray-300 appearance-none rounded-md px-3 py-3 cursor-pointer"  
+            className="w-full border border-gray-300 appearance-none rounded-lg px-3 py-3 cursor-pointer"  
           />
         </div>
 

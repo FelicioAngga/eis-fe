@@ -8,6 +8,7 @@ import { useAlert } from "../../../contexts/AlertContext";
 import { useDeleteDocumentType, useDocumentTypeQuery } from "../../../api-hooks/document-type/api";
 import { formatDateTime } from "../../../utils/formatDate";
 import { DocumentTypeModel } from "../../../api-hooks/document-type/models/DocumentTypeModel";
+import { usePermissionAccess } from "../../../hooks/useAccessRight";
 
 interface DocumentTypeProps {
   search: string;
@@ -18,6 +19,7 @@ function DocumentTypeTable({ paginationModel, search }: DocumentTypeProps) {
   const { showAlert } = useAlert();
   const queryClient = useQueryClient();
   const { mutateAsync: mutateDeleteDocType } = useDeleteDocumentType();
+  const { getPermissionAccess } = usePermissionAccess();
   
   const { data } = useDocumentTypeQuery({
     pagination: {
@@ -92,6 +94,8 @@ function DocumentTypeTable({ paginationModel, search }: DocumentTypeProps) {
     ],
     [paginationModel]
   );
+
+if (!getPermissionAccess("doctype").write) columns.splice(4, 1);
 
   return (
     <Table

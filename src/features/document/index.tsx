@@ -4,12 +4,14 @@ import DocumentModal from "./components/DocumentModal";
 import SearchTableLayout from "../../components/SearchTableLayout";
 import DocumentTable from "./components/DocumentTable";
 import { DocumentModel } from "../../api-hooks/documents/models/DocumentModel";
+import { usePermissionAccess } from "../../hooks/useAccessRight";
 
 export default function() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editData, setEditData] = useState<DocumentModel | null>(null);
   const [search, setSearch] = useState("");
   const paginationModel = usePaginationModel({});
+  const { getPermissionAccess } = usePermissionAccess();
 
   function handleSubmit(search: string) {
     setSearch(search);
@@ -29,6 +31,7 @@ export default function() {
         buttonText="Tambah Dokumen"
         buttonOnClick={() => setIsModalOpen(true)}
         placeholder="Enter nama atau deskripsi"
+        hideButton={!getPermissionAccess("document").write}
       />
       <DocumentTable handleEditDoc={handleEditDocument} paginationModel={paginationModel} search={search} />
     </div>

@@ -3,12 +3,14 @@ import { usePaginationModel } from "../../hooks/use-pagination-model";
 import SearchTableLayout from "../../components/SearchTableLayout";
 import CurriculumModal from "./components/CurriculumModal";
 import CurriculumTable from "./components/CurriculumTable";
+import { usePermissionAccess } from "../../hooks/useAccessRight";
 
 function Curriculum() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [search, setSearch] = useState("");
   const paginationModel = usePaginationModel({});
   const [curriculumId, setCurriculumId] = useState<number | null>(null);
+  const { getPermissionAccess } = usePermissionAccess();
 
   function handleSubmit(search: string) {
     setSearch(search);
@@ -27,6 +29,7 @@ function Curriculum() {
         onSearch={handleSubmit}
         buttonText="Tambah Kurikulum"
         buttonOnClick={() => setIsModalOpen(true)}
+        hideButton={!getPermissionAccess("curriculum").write}
       />
       <CurriculumTable handleEditCurriculum={handleEditCurriculum} search={search} paginationModel={paginationModel} />
     </div>

@@ -9,6 +9,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useAlert } from '../../../contexts/AlertContext';
 import Swal from 'sweetalert2';
 import { useAuth } from '../../../hooks/useAuth';
+import { usePermissionAccess } from '../../../hooks/useAccessRight';
 
 interface DocumentProps {
   search: string;
@@ -21,6 +22,7 @@ function DocumentTable({ handleEditDoc, paginationModel, search }: DocumentProps
   const queryClient = useQueryClient();
   const { mutateAsync: mutateDeleteDocType } = useDeleteDocument();
   const { getUser } = useAuth();
+  const { getPermissionAccess } = usePermissionAccess();
   
   const { data } = useDocumentQuery({
     pagination: {
@@ -95,10 +97,6 @@ function DocumentTable({ handleEditDoc, paginationModel, search }: DocumentProps
         header: () => "Action",
         cell: ({ row }) => (
           <div className="flex gap-2">
-            <FiEdit
-              className="size-5 cursor-pointer"
-              onClick={() => handleEditDoc(row.original)}
-            />
             <FiDownload 
               className='size-5 cursor-pointer'
               onClick={() => {
@@ -119,10 +117,18 @@ function DocumentTable({ handleEditDoc, paginationModel, search }: DocumentProps
                 }
               }}
             />
-            <FiTrash2
-              className="text-danger size-5 cursor-pointer"
-              onClick={() => handleDelete(row.original.id)}
-            />
+            {getPermissionAccess("document").write && (
+              <>
+                <FiEdit
+                  className="size-5 cursor-pointer"
+                  onClick={() => handleEditDoc(row.original)}
+                />
+                <FiTrash2
+                  className="text-danger size-5 cursor-pointer"
+                  onClick={() => handleDelete(row.original.id)}
+                />
+              </>
+            )}
           </div>
         ),
       },

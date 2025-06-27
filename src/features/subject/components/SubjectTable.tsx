@@ -7,6 +7,7 @@ import { FiTrash2 } from "react-icons/fi";
 import Swal from 'sweetalert2'
 import { useAlert } from "../../../contexts/AlertContext";
 import { useQueryClient } from "@tanstack/react-query";
+import { usePermissionAccess } from "../../../hooks/useAccessRight";
 
 interface SubjectTableProps {
   search: string;
@@ -17,6 +18,7 @@ function SubjectTable({ paginationModel, search }: SubjectTableProps) {
   const { showAlert } = useAlert();
   const queryClient = useQueryClient();
   const { mutateAsync: mutateDeleteSubject } = useDeleteSubject();
+  const { getPermissionAccess } = usePermissionAccess();  
   
   const { data } = useSubjectsQuery({
     pagination: {
@@ -78,6 +80,8 @@ function SubjectTable({ paginationModel, search }: SubjectTableProps) {
     ],
     [paginationModel]
   );
+
+  if (!getPermissionAccess("subject").write) columns.splice(2, 1);
 
   return (
     <Table

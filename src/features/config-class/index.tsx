@@ -4,12 +4,14 @@ import ConfigClassModal from "./components/ConfigClassModal";
 import SearchTableLayout from "../../components/SearchTableLayout";
 import ConfigClassTable from "./components/ConfigClassTable";
 import { ConfigClassModel } from "../../api-hooks/config-class/models/ConfigClassModel";
+import { usePermissionAccess } from "../../hooks/useAccessRight";
 
 export default function() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [editData, setEditData] = useState<ConfigClassModel | null>(null);
   const paginationModel = usePaginationModel({});
+  const { getPermissionAccess } = usePermissionAccess();
 
   function handleSubmit(search: string) {
     setSearch(search);
@@ -28,6 +30,7 @@ export default function() {
         onSearch={handleSubmit}
         buttonText="Tambah Kelas"
         buttonOnClick={() => setIsModalOpen(true)}
+        hideButton={!getPermissionAccess("class").write}
       />
       <ConfigClassTable search={search} paginationModel={paginationModel} handleEdit={handleEdit} />
     </div>

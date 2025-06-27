@@ -8,6 +8,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { useMemo } from "react";
 import { FiEdit } from "react-icons/fi";
 import { MdArchive, MdUnarchive } from "react-icons/md";
+import { usePermissionAccess } from "../../../hooks/useAccessRight";
 
 interface ConfigClassTableProps {
   search: string;
@@ -18,6 +19,7 @@ interface ConfigClassTableProps {
 function ConfigClassTable({ paginationModel, search, handleEdit }: ConfigClassTableProps) {
   const { showAlert } = useAlert();
   const queryClient = useQueryClient();
+  const { getPermissionAccess } = usePermissionAccess();
   
   const { data } = useConfigClassQuery({
     pagination: {
@@ -143,6 +145,7 @@ function ConfigClassTable({ paginationModel, search, handleEdit }: ConfigClassTa
     [paginationModel]
   );
 
+  if (!getPermissionAccess("class").write) columns.splice(6, 1);
   return (
     <Table
       columns={columns}
