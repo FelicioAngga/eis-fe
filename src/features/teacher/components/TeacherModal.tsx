@@ -182,6 +182,7 @@ function TeacherModal({ isOpen, onClose, editData }: TeacherModalProps) {
                   { value: "Wali Kelas", label: "Wali Kelas" },
                   { value: "Guru", label: "Guru" },
                   { value: "Tata Usaha", label: "Tata Usaha" },
+                  { value: "Staff", label: "Staff" },
                 ]}
                 required 
               />
