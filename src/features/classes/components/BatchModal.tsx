@@ -10,6 +10,7 @@ import { CreateAcademicModel } from "../../../api-hooks/class/models/ClassModel"
 import { useAlert } from "../../../contexts/AlertContext";
 import { useQueryClient } from "@tanstack/react-query";
 import { Input } from "../../../components/input/Input";
+import dayjs from "dayjs";
 
 interface BatchModalProps {
   isOpen: boolean;
@@ -37,6 +38,10 @@ function BatchModal({ isOpen, onClose }: BatchModalProps) {
     const response = await mutateAsync({
       ...data,
       end_year: (+data.start_year + 1).toString(),
+      first_term_start_date: dayjs(data.first_term_start_date).format("YYYY-MM-DD"),
+      first_term_end_date: dayjs(data.first_term_end_date).format("YYYY-MM-DD"),
+      second_term_start_date: dayjs(data.second_term_start_date).format("YYYY-MM-DD"),
+      second_term_end_date: dayjs(data.second_term_end_date).format("YYYY-MM-DD"),
     });
     if (response.status === 200) {
       queryClient.invalidateQueries({

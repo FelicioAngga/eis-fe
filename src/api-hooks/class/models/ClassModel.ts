@@ -78,6 +78,10 @@ export type ClassParams = {
 export type AcademicBatchModel = {
   start_year: string;
   end_year: string;
+  first_term_start_date: string;
+  first_term_end_date: string;
+  second_term_start_date: string;
+  second_term_end_date: string;
 }
 
 export type CreateAcademicModel = {

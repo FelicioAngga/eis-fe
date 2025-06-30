@@ -14,6 +14,7 @@ import { useTeacherQuery } from "../../../api-hooks/teacher/api";
 import { useConfigClassQuery } from "../../../api-hooks/config-class/api";
 import { useMemo } from "react";
 import { useCurriculumQuery } from "../../../api-hooks/curriculum/api";
+import dayjs from "dayjs";
 
 interface ManualAcademicModalProps {
   isOpen: boolean;
@@ -68,6 +69,10 @@ function ManualAcademicModal({ isOpen, onClose }: ManualAcademicModalProps) {
       curriculum_id: parseInt(data.curriculum_id.toString()),
       homeroom_teacher_id: parseInt(data.homeroom_teacher_id.toString()),
       end_year: (+data.start_year + 1).toString(),
+      first_term_start_date: dayjs(data.first_term_start_date).format("YYYY-MM-DD"),
+      first_term_end_date: dayjs(data.first_term_end_date).format("YYYY-MM-DD"),
+      second_term_start_date: dayjs(data.second_term_start_date).format("YYYY-MM-DD"),
+      second_term_end_date: dayjs(data.second_term_end_date).format("YYYY-MM-DD"),
     });
     if (response.status === 200) {
       queryClient.invalidateQueries({
