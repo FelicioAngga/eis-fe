@@ -1,7 +1,7 @@
 import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import React from "react";
+import React, { useState } from "react";
 import { Calendar } from "../ui/calendar";
 import { useController, useFormContext } from "react-hook-form";
 
@@ -9,11 +9,14 @@ type InputDateProps = React.InputHTMLAttributes<HTMLInputElement> & {
   error?: string;
   label?: string;
   maxDate?: Date;
+  minDate?: Date;
+  defaultDateValue?: string;
 };
 
-export function InputDate({ error, label, maxDate, ...props }: InputDateProps) {
+export function InputDate({ error, label, minDate, maxDate, defaultDateValue, ...props }: InputDateProps) {
   const { control } = useFormContext();
   const { field } = useController({ control, name: props.name || "" });
+  const [openPopOver, setOpenPopOver] = useState(false);
 
   return (
     <div className={`w-full ${props.className}`}>
@@ -25,7 +28,7 @@ export function InputDate({ error, label, maxDate, ...props }: InputDateProps) {
           )}
         </label>
       )}
-      <Popover>
+      <Popover open={openPopOver} onOpenChange={setOpenPopOver}>
         <PopoverTrigger asChild>
           <div
             className={`flex justify-between items-center border ${
@@ -45,10 +48,13 @@ export function InputDate({ error, label, maxDate, ...props }: InputDateProps) {
         <PopoverContent className="w-auto p-0 bg-white" align="start">
           <Calendar
             mode="single"
+            defaultDateValue={defaultDateValue}
             selected={field.value}
             onSelect={field.onChange}
             initialFocus
             maxDate={maxDate}
+            minDate={minDate}
+            closePopOver={() => setOpenPopOver(false)}
           />
         </PopoverContent>
       </Popover>

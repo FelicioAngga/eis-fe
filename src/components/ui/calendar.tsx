@@ -21,14 +21,19 @@ function Calendar({
   className,
   classNames,
   showOutsideDays = true,
+  closePopOver,
   maxDate,
+  minDate,
+  defaultDateValue,
   ...props
 }: React.ComponentProps<typeof DayPicker | any>) {
   return (
     <DayPicker
-      disabled={{ after: maxDate }}
+      disabled={{ after: maxDate, before: minDate }}
       showOutsideDays={showOutsideDays}
       className={cn("p-3", className)}
+      onDayClick={() => closePopOver()}
+      defaultMonth={defaultDateValue}
       classNames={{
         months: "flex flex-col sm:flex-row gap-2",
         month: "flex flex-col gap-4 w-full",
@@ -132,7 +137,7 @@ function CustomCaption({ displayMonth }: { displayMonth: Date }) {
         </button>
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 relative z-50">
         <span className="text-sm font-medium">
           {format(displayMonth, "MMMM")}
         </span>
@@ -174,7 +179,10 @@ function YearNavigation({
   displayedYear: number;
   currentMonth: number;
 }) {
-  const currentYear = new Date().getFullYear();
+  let currentYear = new Date().getFullYear();
+  if (displayedYear > currentYear) {
+    currentYear = displayedYear;
+  }
   const { goToMonth } = useNavigation();
 
   const years = Array.from(

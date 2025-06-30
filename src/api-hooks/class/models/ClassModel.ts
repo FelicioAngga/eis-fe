@@ -88,6 +88,10 @@ export type CreateAcademicModel = {
   homeroom_teacher_id: number;
   curriculum_id: number;
   major?: string;
+  first_term_start_date: string;
+  first_term_end_date: string;
+  second_term_start_date: string;
+  second_term_end_date: string;
 }
 
 export type ClassNoteDetailModel = {

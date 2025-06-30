@@ -25,6 +25,8 @@ type InputProps = {
   showEyeIcon?: boolean;
   onValueChange?: (value: string) => void;
   maxDate?: Date;
+  minDate?: Date;
+  defaultDateValue?: string;
   ref?: any;
 } & React.InputHTMLAttributes<HTMLInputElement> &
   React.TextareaHTMLAttributes<HTMLTextAreaElement> &
@@ -77,6 +79,8 @@ export function Input(props: InputProps) {
           error={error?.message}
           label={label}
           maxDate={restProps.maxDate}
+          minDate={restProps.minDate}
+          defaultDateValue={restProps.defaultDateValue}
         />
       );
     case "textarea":

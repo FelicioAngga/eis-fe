@@ -111,6 +111,7 @@ function ManualAcademicModal({ isOpen, onClose }: ManualAcademicModalProps) {
       onCancel={onCloseModal}
       maskClosable={false}
       centered
+      width={750}
       title="Tambah Kelas Berdasarkan Tahun Ajaran"
     >
       <Form methods={methods} onSubmit={handleSubmit}>
@@ -164,6 +165,50 @@ function ManualAcademicModal({ isOpen, onClose }: ManualAcademicModalProps) {
             options={curriculumList}
             required
           />
+          <div className="flex gap-4">
+            <Input
+              type="date"
+              name="first_term_start_date"
+              label="Tanggal Mulai Semester 1"
+              defaultDateValue={`${methods.getValues('start_year')}-01-01`}
+              minDate={new Date(`${methods.getValues('start_year')}-01-01`)}
+              maxDate={new Date(`${methods.getValues('start_year')}-12-31`)}
+              placeholder="Pilih Tanggal"
+              required
+            />
+            <Input
+              type="date"
+              name="first_term_end_date"
+              label="Tanggal Selesai Semester 1"
+              defaultDateValue={`${methods.getValues('start_year')}-07-01`}
+              minDate={new Date(`${methods.getValues('start_year')}-01-01`)}
+              maxDate={new Date(`${methods.getValues('start_year')}-12-31`)}
+              placeholder="Pilih Tanggal"
+              required
+            />
+          </div>
+          <div className="flex gap-4">
+            <Input
+              type="date"
+              name="second_term_start_date"
+              label="Tanggal Mulai Semester 2"
+              placeholder="Pilih Tanggal"
+              defaultDateValue={`${+methods.getValues('start_year') + 1}-01-01`}
+              minDate={new Date(`${+methods.getValues('start_year') + 1}-01-01`)}
+              maxDate={new Date(`${+methods.getValues('start_year') + 1}-12-31`)}
+              required
+            />
+            <Input
+              type="date"
+              name="second_term_end_date"
+              label="Tanggal Selesai Semester 2"
+              defaultDateValue={`${+methods.getValues('start_year') + 1}-07-01`}
+              minDate={new Date(`${+methods.getValues('start_year') + 1}-01-01`)}
+              maxDate={new Date(`${+methods.getValues('start_year') + 1}-12-31`)}
+              placeholder="Pilih Tanggal"
+              required
+            />
+          </div>
         </div>
         <div className="flex gap-5 mt-5">
           <Button onClick={onCloseModal} type="button" variant="outline" className="w-full">Batal</Button>
