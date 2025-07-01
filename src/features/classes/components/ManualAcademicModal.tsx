@@ -34,6 +34,14 @@ function ManualAcademicModal({ isOpen, onClose }: ManualAcademicModalProps) {
     homeroom_teacher_id: Yup.string().required("Wali kelas tidak boleh kosong"),
     major: Yup.string().required("Jurusan tidak boleh kosong"),
     curriculum_id: Yup.string().required("Kurikulum tidak boleh kosong"),
+    first_term_start_date: Yup.date().required("Tanggal mulai semester 1 tidak boleh kosong"),
+    first_term_end_date: Yup.date()
+      .required("Tanggal selesai semester 1 tidak boleh kosong").min(Yup.ref("first_term_start_date"), "Tanggal selesai semester 1 harus setelah tanggal mulai"),
+    second_term_start_date: Yup.date()
+      .required("Tanggal mulai semester 2 tidak boleh kosong").min(Yup.ref("first_term_end_date"), "Tanggal mulai semester 2 harus setelah tanggal selesai semester 1"),
+    second_term_end_date: Yup.date()
+      .required("Tanggal selesai semester 2 tidak boleh kosong")
+      .min(Yup.ref("second_term_start_date"), "Tanggal selesai semester 2 harus setelah tanggal mulai semester 2"),
   });
 
   const resolver = useYupValidationResolver(yupSchema);
@@ -175,7 +183,8 @@ function ManualAcademicModal({ isOpen, onClose }: ManualAcademicModalProps) {
               type="date"
               name="first_term_start_date"
               label="Tanggal Mulai Semester 1"
-              defaultDateValue={`${methods.getValues('start_year')}-01-01`}
+              defaultDateValue={methods.watch("first_term_start_date") 
+                ? dayjs(methods.getValues("first_term_start_date")).format("YYYY-MM-DD") : `${methods.getValues('start_year')}-01-01`}
               minDate={new Date(`${methods.getValues('start_year')}-01-01`)}
               maxDate={new Date(`${methods.getValues('start_year')}-12-31`)}
               placeholder="Pilih Tanggal"
@@ -185,7 +194,8 @@ function ManualAcademicModal({ isOpen, onClose }: ManualAcademicModalProps) {
               type="date"
               name="first_term_end_date"
               label="Tanggal Selesai Semester 1"
-              defaultDateValue={`${methods.getValues('start_year')}-07-01`}
+              defaultDateValue={methods.watch("first_term_end_date") 
+                ? dayjs(methods.getValues("first_term_end_date")).format("YYYY-MM-DD") : `${methods.getValues('start_year')}-07-01`}
               minDate={new Date(`${methods.getValues('start_year')}-01-01`)}
               maxDate={new Date(`${methods.getValues('start_year')}-12-31`)}
               placeholder="Pilih Tanggal"
@@ -198,7 +208,8 @@ function ManualAcademicModal({ isOpen, onClose }: ManualAcademicModalProps) {
               name="second_term_start_date"
               label="Tanggal Mulai Semester 2"
               placeholder="Pilih Tanggal"
-              defaultDateValue={`${+methods.getValues('start_year') + 1}-01-01`}
+              defaultDateValue={methods.watch("second_term_start_date") 
+                ? dayjs(methods.getValues("second_term_start_date")).format("YYYY-MM-DD") : `${+methods.getValues('start_year') + 1}-01-01`}
               minDate={new Date(`${+methods.getValues('start_year') + 1}-01-01`)}
               maxDate={new Date(`${+methods.getValues('start_year') + 1}-12-31`)}
               required
@@ -207,7 +218,8 @@ function ManualAcademicModal({ isOpen, onClose }: ManualAcademicModalProps) {
               type="date"
               name="second_term_end_date"
               label="Tanggal Selesai Semester 2"
-              defaultDateValue={`${+methods.getValues('start_year') + 1}-07-01`}
+              defaultDateValue={methods.watch("second_term_end_date") 
+                ? dayjs(methods.getValues("second_term_end_date")).format("YYYY-MM-DD") : `${+methods.getValues('start_year') + 1}-07-01`}
               minDate={new Date(`${+methods.getValues('start_year') + 1}-01-01`)}
               maxDate={new Date(`${+methods.getValues('start_year') + 1}-12-31`)}
               placeholder="Pilih Tanggal"

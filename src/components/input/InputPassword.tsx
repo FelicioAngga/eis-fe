@@ -39,7 +39,7 @@ export function InputPassword({ showEyeIcon = true, error, label, ...props }: In
         }
       </div>
 
-      {error && error.includes("tidak boleh kosong") && <p className="text-danger text-xs font-medium mt-0.5">{error}</p>}
+      {error && <p className="text-danger text-xs font-medium mt-0.5">{error}</p>}
     </div>
   );
 }

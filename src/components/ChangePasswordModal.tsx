@@ -19,8 +19,8 @@ function ChangePasswordModal({ isOpen, onClose }: ChangePasswordModalProps) {
 	const { getUser } = useAuth();
   const { showAlert } = useAlert();
   const yupSchema = Yup.object().shape({
-		password: Yup.string().required("Password tidak boleh kosong"),
-		confirmPassword: Yup.string().required("Konfirmasi Password tidak boleh kosong")
+		password: Yup.string().required("Password tidak boleh kosong").min(6, "Password minimal 6 karakter"),
+		confirmPassword: Yup.string().required("Konfirmasi Password tidak boleh kosong").min(6, "Password minimal 6 karakter"),
 	});
 
 	const resolver = useYupValidationResolver(yupSchema);
