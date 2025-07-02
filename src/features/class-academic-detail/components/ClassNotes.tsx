@@ -41,11 +41,13 @@ function ClassNotes({ parentTermId }: { parentTermId: number }) {
         date: note.date,
       }))
     ) || [];
-    allNoteEntries = allNoteEntries.filter(entry =>{
+    allNoteEntries = allNoteEntries.filter(entry => {
       let isExists = false;
-      classNoteDetail?.data[0]?.details?.forEach(detail => {
-        if (detail.id === entry.id) isExists = true;
-      })
+      classNoteDetail?.data?.forEach(item => {
+        item.details?.forEach(detail => {
+          if (detail.id === entry.id) isExists = true;
+        });
+      });
       return isExists;
     });
 
