@@ -56,6 +56,8 @@ function ClassNotes({ parentTermId }: { parentTermId: number }) {
       return {
         ...entry,
         class_note_id: matchedNote?.id || 0,
+        teacher_act_id: matchedNote?.teacher_act_id,
+        teacher_act: matchedNote?.teacher_act || "",
         materials: matchedNote?.materials || "",
       };
     }) || [];
@@ -124,8 +126,8 @@ function ClassNotes({ parentTermId }: { parentTermId: number }) {
         <div className="mt-5 font-medium text-sm flex py-3 border border-gray-300 bg-gray-100">
           <div className="w-1/12 text-center">Les</div>
           <div className="w-2/12">Nama Guru</div>
-          <div className="w-2/12">Mata Pelajaran</div>
-          <div className="w-6/12">Materi yang disajikan</div>
+          <div className="w-3/12">Mata Pelajaran</div>
+          <div className="w-5/12 pr-1">Materi yang disajikan</div>
           <div className="w-1/12">Aksi</div>
         </div>
 
@@ -136,8 +138,8 @@ function ClassNotes({ parentTermId }: { parentTermId: number }) {
           >
             <div className="w-1/12 text-center">{index + 1}</div>
             <div className="w-2/12">{lesson.teacher}</div>
-            <div className="w-2/12">{lesson.subject}</div>
-            <div className="w-6/12">{lesson.materials || "-"}</div>
+            <div className="w-3/12 pr-1">{lesson.subject} {(lesson.teacher_act_id != lesson.teacher_id && lesson?.teacher_act) && `(${lesson.teacher_act})`}</div>
+            <div className="w-5/12">{lesson.materials || "-"}</div>
             <div className="w-1/12 text-lg">
               <FiEdit className="cursor-pointer" onClick={() => {
                 setEditData({ ...lesson, academic_id: id ? parseInt(id) : 0 });

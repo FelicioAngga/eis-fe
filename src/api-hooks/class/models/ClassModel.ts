@@ -43,6 +43,7 @@ export type ClassNoteModel = {
     materials?: string;
     notes?: string;
     teacher: string;
+    teacher_act?: string;
     teacher_act_id?: number;
   }[];
 }

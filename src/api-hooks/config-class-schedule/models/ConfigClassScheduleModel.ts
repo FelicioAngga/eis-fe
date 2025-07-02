@@ -6,6 +6,8 @@ export type ConfigClassSchedModel = {
   subject: string;
   teacher_id: number;
   teacher: string;
+  teacher_act?: string;
+  teacher_act_id?: number;
   day: string;
   start_hour: string;
   end_hour: string;

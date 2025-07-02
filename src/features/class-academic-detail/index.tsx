@@ -3,7 +3,7 @@ import { useClassDetail, useUpdateAcademic } from "../../api-hooks/class/api";
 import ClassAcademicTable from "./components/ClassAcademicTable";
 import Button from "../../components/Button";
 import { FiEye } from "react-icons/fi";
-import { useGetTeacherByToken, useTeacherQuery } from "../../api-hooks/teacher/api";
+import { useAvailableHomeroomTeacherQuery, useGetTeacherByToken } from "../../api-hooks/teacher/api";
 import { useEffect, useMemo, useState } from "react";
 import { useAlert } from "../../contexts/AlertContext";
 import { useQueryClient } from "@tanstack/react-query";
@@ -32,7 +32,12 @@ export default function ClassAcademicDetail() {
   const { data: classDetail } = useClassDetail(id ? parseInt(id) : 0);
   const { data: curriculumData } = useCurriculumQuery({ pagination: { limit: 99999 }, search: "" });
   const [termId, setTermId] = useState<number>(classDetail?.data?.terms?.[0]?.id || 0);
-  const { data: teacherData } = useTeacherQuery({ pagination: { limit: 99999 }, search: "" });
+  const { data: homeroomTeacherList } = useAvailableHomeroomTeacherQuery({
+    startYear: classDetail?.data?.start_year || "",
+    endYear: classDetail?.data?.end_year || "",
+    academicId: classDetail?.data?.id || 0,
+  });
+
   const [homeRoomTeacherId, setHomeRoomTeacherId] = useState<number | null>(null);
   const [curriculumId, setCurriculumId] = useState<number | null>(classDetail?.data?.curriculum_id || null);
   const [major, setMajor] = useState<string>("General");
@@ -208,7 +213,7 @@ export default function ClassAcademicDetail() {
                         className="w-full min-w-[240px] border border-gray-300 appearance-none rounded-md px-3 py-2.5 cursor-pointer"
                       >
                         <option value="">Pilih Wali Kelas</option>
-                        {teacherData?.data.map(teacher => (
+                        {homeroomTeacherList?.data?.map(teacher => (
                           <option value={teacher.id} key={teacher.id}>{teacher.name} - {teacher.nuptk}</option>
                         ))}
                       </select>

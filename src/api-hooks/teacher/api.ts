@@ -22,6 +22,20 @@ export const useTeacherQuery = (params: TeacherParams) => {
   });
 }
 
+export const useAvailableHomeroomTeacherQuery = (data: { startYear: string, endYear: string, academicId: number }) => {
+  const apiCall = useApiCall<ResponsePaginationModel<TeacherModel>>({
+    method: "GET",
+    url: `${BASE_URL}/teachers/available-homeroom?start_year=${data.startYear}&end_year=${data.endYear}&academic_id=${data.academicId}`,
+  });
+
+  return useQuery({
+    queryKey: ["homeroom_teachers", data],
+    queryFn: async () => {
+      return await apiCall();
+    },
+  });
+}
+
 export const useCreateTeacher = () => {
   const apiCall = useApiCall<ResponseModel<any>>({
     method: "POST",

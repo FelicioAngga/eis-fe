@@ -184,7 +184,7 @@ function ManualAcademicModal({ isOpen, onClose }: ManualAcademicModalProps) {
               name="first_term_start_date"
               label="Tanggal Mulai Semester 1"
               defaultDateValue={methods.watch("first_term_start_date") 
-                ? dayjs(methods.getValues("first_term_start_date")).format("YYYY-MM-DD") : `${methods.getValues('start_year')}-01-01`}
+                ? dayjs(methods.getValues("first_term_start_date")).format("YYYY-MM-DD") : `${methods.getValues('start_year')}-06-01`}
               minDate={new Date(`${methods.getValues('start_year')}-01-01`)}
               maxDate={new Date(`${methods.getValues('start_year')}-12-31`)}
               placeholder="Pilih Tanggal"
@@ -195,7 +195,7 @@ function ManualAcademicModal({ isOpen, onClose }: ManualAcademicModalProps) {
               name="first_term_end_date"
               label="Tanggal Selesai Semester 1"
               defaultDateValue={methods.watch("first_term_end_date") 
-                ? dayjs(methods.getValues("first_term_end_date")).format("YYYY-MM-DD") : `${methods.getValues('start_year')}-07-01`}
+                ? dayjs(methods.getValues("first_term_end_date")).format("YYYY-MM-DD") : `${methods.getValues('start_year')}-12-01`}
               minDate={new Date(`${methods.getValues('start_year')}-01-01`)}
               maxDate={new Date(`${methods.getValues('start_year')}-12-31`)}
               placeholder="Pilih Tanggal"
@@ -219,7 +219,7 @@ function ManualAcademicModal({ isOpen, onClose }: ManualAcademicModalProps) {
               name="second_term_end_date"
               label="Tanggal Selesai Semester 2"
               defaultDateValue={methods.watch("second_term_end_date") 
-                ? dayjs(methods.getValues("second_term_end_date")).format("YYYY-MM-DD") : `${+methods.getValues('start_year') + 1}-07-01`}
+                ? dayjs(methods.getValues("second_term_end_date")).format("YYYY-MM-DD") : `${+methods.getValues('start_year') + 1}-06-01`}
               minDate={new Date(`${+methods.getValues('start_year') + 1}-01-01`)}
               maxDate={new Date(`${+methods.getValues('start_year') + 1}-12-31`)}
               placeholder="Pilih Tanggal"
