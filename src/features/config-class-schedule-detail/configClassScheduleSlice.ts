@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
+import { addMinutes } from './components/ClassScheduleForm';
 
 export interface ClassScheduleEntry {
   index?: number;
@@ -48,17 +49,20 @@ export const configClassSchedSlice = createSlice({
             index: 0,
             subject_id: 0,
             teacher_id: 0,
-            start_hour: '08:00',
-            end_hour: '08:00',
+            start_hour: '07:30',
+            end_hour: '08:10',
           }],
         });
       } else {
+        const prevEntry = selectedDaySchedule?.entries[selectedDaySchedule?.entries.length - 1];
+        const startHour = prevEntry ? prevEntry.end_hour : '07:30';
+        const endHour = addMinutes(startHour, 40);
         selectedDaySchedule.entries.push({
           index: selectedDaySchedule.entries.length,
           subject_id: 0,
           teacher_id: 0,
-          start_hour: '08:00',
-          end_hour: '08:00',
+          start_hour: startHour,
+          end_hour: endHour,
         });
       }
     },

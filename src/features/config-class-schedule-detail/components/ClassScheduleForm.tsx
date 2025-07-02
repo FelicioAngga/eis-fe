@@ -25,30 +25,34 @@ function ClassScheduleForm() {
     })) || [];
   }, [subjectData, classDetail]);
 
-  const isValidTime = (value: string) => {return value >= "06:00" && value <= "18:00";};
+  const isValidTime = (value: string) => {return value >= "07:30" && value <= "14.00";};
 
   function handleStartHourChange(e: React.ChangeEvent<HTMLInputElement>, entry: ClassScheduleEntry) {
-    if (!isValidTime(e.target.value)) {
+    const startHour: string = e.target.value;
+    if (!isValidTime(startHour)) {
       showAlert({
         title: "Waktu tidak valid",
         type: "error",
-        message: "Waktu mulai harus antara 06:00 dan 18:00.",
+        message: "Waktu mulai harus antara 07:30 dan 14.00.",
       })
       return;
     }
-    dispatch(updateStartHourByIndex({ index: entry.index, id: entry.id, start_hour: e.target.value }))
-  }
+    
+    const currentIndex = selectedDay?.entries.findIndex(e => e.index === entry.index) || -1;
+    const prevEntry = selectedDay?.entries[currentIndex - 1];
 
-  function handleEndHourChange(e: React.ChangeEvent<HTMLInputElement>, entry: ClassScheduleEntry) {
-    if (!isValidTime(e.target.value)) {
+    if (prevEntry && timeToMinutes(startHour) < timeToMinutes(prevEntry.end_hour)) {
       showAlert({
         title: "Waktu tidak valid",
         type: "error",
-        message: "Waktu selesai harus antara 06:00 dan 18:00.",
-      })
+        message: `Waktu mulai tidak boleh sebelum ${prevEntry.end_hour}`,
+      });
       return;
     }
-    dispatch(updateEndHourByIndex({ index: entry.index, id: entry.id, end_hour: e.target.value }))
+    
+    const endHour = addMinutes(startHour, 40);
+    dispatch(updateStartHourByIndex({ index: entry.index, id: entry.id, start_hour: startHour }))
+    dispatch(updateEndHourByIndex({ index: entry.index, id: entry.id, end_hour: endHour }))
   }
 
   return (
@@ -81,10 +85,7 @@ function ClassScheduleForm() {
             />
           </div>
           <div className="w-2/12 pr-3">
-            <CustomTimeInput 
-              onChange={(e) => handleEndHourChange(e, entry)} 
-              value={entry.end_hour} 
-            />
+            <p>{entry.end_hour}</p>
           </div>
           <div className="w-4/12 relative pr-3">
             <select
@@ -124,3 +125,19 @@ function ClassScheduleForm() {
 }
 
 export default ClassScheduleForm;
+
+export function addMinutes(time: string, minsToAdd: number): string {
+    const [hours, minutes] = time.split(":").map(Number);
+    const date = new Date();
+    date.setHours(hours);
+    date.setMinutes(minutes + minsToAdd);
+
+    const newHours = String(date.getHours()).padStart(2, '0');
+    const newMinutes = String(date.getMinutes()).padStart(2, '0');
+    return `${newHours}:${newMinutes}`;
+  }
+
+export function timeToMinutes(time: string): number {
+  const [hours, minutes] = time.split(":").map(Number);
+  return hours * 60 + minutes;
+}
