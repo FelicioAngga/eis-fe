@@ -37,6 +37,21 @@ export const useApproveRegistration = () => {
   });
 }
 
+export const useApproveDocRegistration = () => {
+  const apiCall = useApiCall<ResponseModel<any>>({
+    method: "POST",
+    url: `${BASE_URL}/approve`,
+  });
+
+  return useMutation({
+    mutationFn: async (id: number) => {
+      return await apiCall({ 
+        url: `${BASE_URL}/applicants/approve-document/${id}`,
+      });
+    },
+  });
+}
+
 export const useRejectRegistration = () => {
   const apiCall = useApiCall<ResponseModel<any>>({
     method: "POST",

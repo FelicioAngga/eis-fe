@@ -5,6 +5,7 @@ import Swal from "sweetalert2";
 import { useAlert } from "../../../contexts/AlertContext";
 import { useQueryClient } from "@tanstack/react-query";
 import {
+  useApproveDocRegistration,
   useApproveRegistration,
   useRegistrationQuery,
   useRejectRegistration,
@@ -28,6 +29,7 @@ function RegistrationTable({
   const { showAlert } = useAlert();
   const queryClient = useQueryClient();
   const { mutateAsync: mutateApprove } = useApproveRegistration();
+  const { mutateAsync: mutateApproveDoc } = useApproveDocRegistration();
   const { mutateAsync: mutateReject } = useRejectRegistration();
 
   const { data } = useRegistrationQuery({
@@ -68,6 +70,8 @@ function RegistrationTable({
     }
   }
 
+
+
   const handleApprove = async (id: number) => {
     const modalResult = await Swal.fire({
       title: "Konfirmasi",
@@ -78,6 +82,28 @@ function RegistrationTable({
     });
     if (!modalResult.isConfirmed) return;
     const response = await mutateApprove(id);
+    if (response.status === 200) {
+      queryClient.invalidateQueries({
+        queryKey: ["applicants"],
+      });
+      showAlert({
+        title: "Berhasil",
+        message: response.message,
+        type: "success",
+      });
+    }
+  };
+  
+  const handleApproveDoc = async (id: number) => {
+    const modalResult = await Swal.fire({
+      title: "Konfirmasi",
+      text: "Apakah anda yakin ingin menyetujui data dokumen siswa agar calon siswa bisa melanjutkan pembayaran?",
+      icon: "warning",
+      confirmButtonText: "Ya",
+      showCancelButton: true,
+    });
+    if (!modalResult.isConfirmed) return;
+    const response = await mutateApproveDoc(id);
     if (response.status === 200) {
       queryClient.invalidateQueries({
         queryKey: ["applicants"],
@@ -120,6 +146,19 @@ function RegistrationTable({
       {
         accessorKey: "state",
         header: () => "Status",
+        cell: ({ row }) => {
+          let state = "";
+          if (row.original.state === "draft") {
+            state = "Menunggu verifikasi dokumen";
+          } else if (row.original.state === "draft_payment") {
+            state = "Menunggu verifikasi pembayaran";
+          } else if (row.original.state === "approved") {
+            state = "Diterima";
+          } else if (row.original.state === "rejected") {
+            state = "Ditolak";
+          }
+          return state
+        }
       },
       {
         accessorKey: "created_at",
@@ -143,10 +182,18 @@ function RegistrationTable({
         header: () => "Action",
         cell: ({ row }) => (
           <div>
-            {row.original.state === "draft" ? (
+            {row.original.state === "draft" || row.original.state === "draft_payment" ? (
               <div className="flex gap-2">
                 <Button className="bg-danger" onClick={() => handleReject(row.original.id)}>Tolak</Button>
-                <Button onClick={() => handleApprove(row.original.id)}>Setujui</Button>
+                <Button 
+                  onClick={() => {
+                    if (row.original.state === "draft") {
+                      handleApproveDoc(row.original.id);
+                    } else if (row.original.state === "draft_payment") {
+                      handleApprove(row.original.id);
+                    }
+                  }}
+                >Setujui</Button>
               </div>
             ) : (
               <div>
