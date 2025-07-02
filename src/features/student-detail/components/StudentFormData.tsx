@@ -227,10 +227,15 @@ function StudentFormData({ studentFormData, setCurrentTab, setStudentFormData }:
           </div>
           <div className="flex gap-8">
             <Input 
-              type="text"
+              type="select"
               name="child_status"
               label="Status Dalam Keluarga"
               placeholder='Status diri dalam keluarga'
+              options={[
+                { value: 'Anak Kandung', label: 'Anak Kandung' },
+                { value: 'Anak Angkat', label: 'Anak Angkat' },
+                { value: 'Anak Tiri', label: 'Anak Tiri' },
+              ]}
               required
             />
             <Input 

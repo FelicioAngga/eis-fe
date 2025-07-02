@@ -53,26 +53,26 @@ export default function () {
           </div>
         ) : (
           <>
-            <div className="overflow-x-auto shrink-0">
+            <div className="overflow-x-auto shrink-0 min-w-[180px]">
               {studentAbsenceReport?.data?.levels?.map((level, index) => (
                 <table key={index} className="w-full table-auto border-collapse border border-gray-300">
                   <thead>
                     <tr>
-                      <th colSpan={4} className="border border-gray-300 px-1.5 py-2 text-center">{level.level}</th>
+                      <th colSpan={search.status == "" ? 4 : 1} className="border border-gray-300 px-1.5 py-2 text-center">{level.level}</th>
                     </tr>
                     <tr>
-                      <th className="border border-gray-300 px-1.5 py-2">Hadir</th>
-                      <th className="border border-gray-300 px-1.5 py-2">Sakit</th>
-                      <th className="border border-gray-300 px-1.5 py-2">Izin</th>
-                      <th className="border border-gray-300 px-1.5 py-2">Alpha</th>
+                      {(search.status === "" || search.status === "Hadir") && <th className="border border-gray-300 px-1.5 py-2">Hadir</th>}
+                      {(search.status === "Sakit" || search.status == "") && <th className="border border-gray-300 px-1.5 py-2">Sakit</th>}
+                      {(search.status === "Izin" || search.status == "") && <th className="border border-gray-300 px-1.5 py-2">Izin</th>}
+                      {(search.status === "Alpha" || search.status == "") && <th className="border border-gray-300 px-1.5 py-2">Alpha</th>}
                     </tr>
                   </thead>
                   <tbody>
                     <tr>
-                      <td className="border border-gray-300 px-1.5 py-2 text-center">{level.present_count}</td>
-                      <td className="border border-gray-300 px-1.5 py-2 text-center">{level.sick_count}</td>
-                      <td className="border border-gray-300 px-1.5 py-2 text-center">{level.permission_count}</td>
-                      <td className="border border-gray-300 px-1.5 py-2 text-center">{level.alpha_count}</td>
+                      {(search.status === "" || search.status === "Hadir") && <td className="border text-center border-gray-300 px-1.5 py-2">{level.present_count}</td>}
+                      {(search.status === "Sakit" || search.status == "") && <td className="border text-center border-gray-300 px-1.5 py-2">{level.sick_count}</td>}
+                      {(search.status === "Izin" || search.status == "") && <td className="border text-center border-gray-300 px-1.5 py-2">{level.permission_count}</td>}
+                      {(search.status === "Alpha" || search.status == "") && <td className="border text-center border-gray-300 px-1.5 py-2">{level.alpha_count}</td>}
                     </tr>
                   </tbody>
                 </table>
@@ -84,20 +84,20 @@ export default function () {
                 <thead>
                   <tr>
                     <th className="border border-gray-300 px-1.5 py-2 text-left">Nama Siswa</th>
-                    <th className="border border-gray-300 px-1.5 py-2">Kehadiran</th>
-                    <th className="border border-gray-300 px-1.5 py-2">Sakit</th>
-                    <th className="border border-gray-300 px-1.5 py-2">Izin</th>
-                    <th className="border border-gray-300 px-1.5 py-2">Alpha</th>
+                    {(search.status === "" || search.status === "Hadir") && <th className="border border-gray-300 px-1.5 py-2">Hadir</th>}
+                    {(search.status === "Sakit" || search.status == "") && <th className="border border-gray-300 px-1.5 py-2">Sakit</th>}
+                    {(search.status === "Izin" || search.status == "") && <th className="border border-gray-300 px-1.5 py-2">Izin</th>}
+                    {(search.status === "Alpha" || search.status == "") && <th className="border border-gray-300 px-1.5 py-2">Alpha</th>}
                   </tr>
                 </thead>
                 <tbody>
                   {studentAbsenceReport?.data?.entries?.map((entry, index) => (
                     <tr key={index}>
                       <td className="border border-gray-300 px-1.5 py-2">{entry.student}</td>
-                      <td className="border border-gray-300 px-1.5 py-2 text-center">{entry.present_count}</td>
-                      <td className="border border-gray-300 px-1.5 py-2 text-center">{entry.sick_count}</td>
-                      <td className="border border-gray-300 px-1.5 py-2 text-center">{entry.permission_count}</td>
-                      <td className="border border-gray-300 px-1.5 py-2 text-center">{entry.alpha_count}</td>
+                      {(search.status === "" || search.status === "Hadir") && <td className="border text-center border-gray-300 px-1.5 py-2">{entry.present_count}</td>}
+                      {(search.status === "Sakit" || search.status == "") && <td className="border text-center border-gray-300 px-1.5 py-2">{entry.sick_count}</td>}
+                      {(search.status === "Izin" || search.status == "") && <td className="border text-center border-gray-300 px-1.5 py-2">{entry.permission_count}</td>}
+                      {(search.status === "Alpha" || search.status == "") && <td className="border text-center border-gray-300 px-1.5 py-2">{entry.alpha_count}</td>}
                     </tr>
                   ))}
                 </tbody>
