@@ -100,8 +100,8 @@ function AdminClassNote() {
     <div>
       <div className="flex justify-between">
         <div>
-          <p className="font-semibold text-2xl">Jadwal Mata Pelajaran</p>
-          <table className="font-medium mt-5">
+          <p className="font-semibold text-2xl">Catatan Kelas</p>
+          <table className="font-medium mt-5 text-sm">
             <tbody>
               <tr>
                 <td className="pr-8 pb-2">Tanggal</td>
