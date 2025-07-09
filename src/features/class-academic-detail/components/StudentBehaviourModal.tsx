@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import useYupValidationResolver from "../../../hooks/useYupValidationResolver";
 import * as Yup from "yup";
@@ -7,6 +7,7 @@ import Button from "../../../components/Button";
 import { Modal } from "antd";
 import Form from "../../../components/Form";
 import { StudentBehaviourModel } from "../../../api-hooks/student-behaviour/models/StudentBehaviourModel";
+import { useSubjectsQuery } from "../../../api-hooks/subjects/api";
 
 type StudentBehaviourPopUpModel = {
   student_name: string;
@@ -30,6 +31,25 @@ function StudentBehaviourModal({
   onClose,
   handleSaveModal,
 }: StudentBehaviourModalProps) {
+  const { data: subjectData } = useSubjectsQuery({
+    pagination: {
+      limit: 9999,
+      page: 1,
+      sortColumn: "name",
+      sortOrder: "asc",
+    },
+    search: "",
+  });
+  const extracurricularList = useMemo(() => {
+    if (!subjectData?.data) return [];
+    return subjectData.data
+      .filter((subject) => subject.is_extracurricular)
+      .map((subject) => ({
+        label: subject.name,
+        value: subject.name,
+      }));
+  }, [subjectData?.data]);
+
   const yupSchema = Yup.object().shape({
     craft: Yup.string(),
     neatness: Yup.string(),
@@ -142,24 +162,24 @@ function StudentBehaviourModal({
         <table className="font-medium">
           <tbody>
             <tr>
-              <td className="pr-4 pb-3">Nama Lengkap</td>
-              <td className="pr-4 pb-3">:</td>
-              <td className="pr-4 pb-3">{editData?.student_name}</td>
+              <td className="pb-3 pr-4">Nama Lengkap</td>
+              <td className="pb-3 pr-4">:</td>
+              <td className="pb-3 pr-4">{editData?.student_name}</td>
             </tr>
             <tr>
-              <td className="pr-4 pb-3">NIS</td>
-              <td className="pr-4 pb-3">:</td>
-              <td className="pr-4 pb-3">{editData?.student_nis || "-"}</td>
+              <td className="pb-3 pr-4">NIS</td>
+              <td className="pb-3 pr-4">:</td>
+              <td className="pb-3 pr-4">{editData?.student_nis || "-"}</td>
             </tr>
             <tr>
-              <td className="pr-4 pb-3">Bulanan Ke</td>
-              <td className="pr-4 pb-3">:</td>
-              <td className="pr-4 pb-3">{month}</td>
+              <td className="pb-3 pr-4">Bulanan Ke</td>
+              <td className="pb-3 pr-4">:</td>
+              <td className="pb-3 pr-4">{month}</td>
             </tr>
           </tbody>
         </table>
 
-        <div className="mt-2 flex flex-col gap-3">
+        <div className="flex flex-col gap-3 mt-2">
           <Input
             type="select"
             name="behaviour"
@@ -203,10 +223,11 @@ function StudentBehaviourModal({
             placeholder="Masukkan Catatan"
           />
           <Input
-            type="text"
+            type="select"
             name="extracurricular_first"
             label="Nama Ekstrakurikuler 1"
-            placeholder="Masukkan Nama Ekstrakurikuler 1"
+            placeholder="Pilih Nama Ekstrakurikuler 1"
+            options={extracurricularList.filter(item => item.value !== methods.watch("extracurricular_second"))}
           />
           <Input
             type="select"
@@ -221,10 +242,11 @@ function StudentBehaviourModal({
             ]}
           />
           <Input
-            type="text"
+            type="select"
             name="extracurricular_second"
             label="Nama Ekstrakurikuler 2"
-            placeholder="Masukkan Nama Ekstrakurikuler 2"
+            placeholder="Pilih Nama Ekstrakurikuler 2"
+            options={extracurricularList.filter(item => item.value !== methods.watch("extracurricular_first"))}
           />
           <Input
             type="select"

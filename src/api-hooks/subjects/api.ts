@@ -11,6 +11,7 @@ export const useSubjectsQuery = (params?: SubjectParams) => {
     inputOptions: {
       ...params?.pagination,
       ...(params?.search ? { search: params.search } : {}),
+      ...(params?.is_extracurricular !== null ? { is_extracurricular: params?.is_extracurricular } : {}),
     }
   });
 
@@ -29,7 +30,7 @@ export const useCreateSubject = () => {
   });
 
   return useMutation({
-    mutationFn: async (data: { name: string }) => {
+    mutationFn: async (data: { name: string, code: string; is_extracurricular: boolean }) => {
       return await apiCall({ 
         body: data
       });

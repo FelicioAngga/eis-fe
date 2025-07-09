@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import { addMinutes } from './components/ClassScheduleForm';
+import { addMinutes } from '../../utils/formatDate';
 
 export interface ClassScheduleEntry {
   index?: number;

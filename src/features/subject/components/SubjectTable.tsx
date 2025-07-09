@@ -11,10 +11,11 @@ import { usePermissionAccess } from "../../../hooks/useAccessRight";
 
 interface SubjectTableProps {
   search: string;
+  type: string;
   paginationModel: PaginationModelProps;
 }
 
-function SubjectTable({ paginationModel, search }: SubjectTableProps) {
+function SubjectTable({ paginationModel, type, search }: SubjectTableProps) {
   const { showAlert } = useAlert();
   const queryClient = useQueryClient();
   const { mutateAsync: mutateDeleteSubject } = useDeleteSubject();
@@ -28,6 +29,7 @@ function SubjectTable({ paginationModel, search }: SubjectTableProps) {
       sortOrder: paginationModel.sortOrder,
     },
     search: search || "",
+    is_extracurricular: type === "Mata Pelajaran" ? false : type === "Ekstrakurikuler" ? true : null,
   });
 
   const handleDelete = async (id: number) => {
@@ -64,6 +66,11 @@ function SubjectTable({ paginationModel, search }: SubjectTableProps) {
         accessorKey: "name",
         header: () => "Kode - Nama",
         enableSorting: true,
+        cell: ({ row }) => (
+          <div >
+            {row.original.name} {row.original.is_extracurricular ? "(Ekstrakurikuler)" : ""}
+          </div>
+        ),
       },
       {
         accessorKey: "action",
@@ -71,7 +78,7 @@ function SubjectTable({ paginationModel, search }: SubjectTableProps) {
         cell: ({ row }) => (
           <div>
             <FiTrash2
-              className="text-danger size-5 cursor-pointer"
+              className="cursor-pointer text-danger size-5"
               onClick={() => handleDelete(row.original.id)}
             />
           </div>

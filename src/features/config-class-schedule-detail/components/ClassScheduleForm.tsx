@@ -8,6 +8,7 @@ import { RootState } from '../../../store';
 import { addLessonByDay, ClassScheduleEntry, deleteLessonByIndex, updateEndHourByIndex, updateStartHourByIndex, updateSubjectIdByIndex, updateTeacherIdByIndex } from '../configClassScheduleSlice';
 import { useMemo } from 'react';
 import { useAlert } from '../../../contexts/AlertContext';
+import { addMinutes, timeToMinutes } from '../../../utils/formatDate';
 
 function ClassScheduleForm() {
   const dispatch = useDispatch();
@@ -57,25 +58,25 @@ function ClassScheduleForm() {
 
   return (
     <div className="mt-8">
-      <div className="flex items-center border-b-2 border-b-gray-300 pb-2 space-x-2">
-        <div className="w-1/12 font-semibold text-xs text-gray-600">Aksi</div>
-        <div className="w-2/12 font-semibold text-xs text-gray-600">
+      <div className="flex items-center pb-2 space-x-2 border-b-2 border-b-gray-300">
+        <div className="w-1/12 text-xs font-semibold text-gray-600">Aksi</div>
+        <div className="w-2/12 text-xs font-semibold text-gray-600">
           Mulai
         </div>
-        <div className="w-2/12 font-semibold text-xs text-gray-600">
+        <div className="w-2/12 text-xs font-semibold text-gray-600">
           Selesai
         </div>
-        <div className="w-4/12 font-semibold text-xs text-gray-600">
+        <div className="w-4/12 text-xs font-semibold text-gray-600">
           Mata Pelajaran
         </div>
-        <div className="w-4/12 font-semibold text-xs text-gray-600">
+        <div className="w-4/12 text-xs font-semibold text-gray-600">
           Pengajar
         </div>
       </div>
 
       {selectedDay?.entries.map((entry, idx) => (
         <div key={idx} className="flex items-center py-3 space-x-2 text-sm">
-          <div className="w-1/12 text-danger text-xl">
+          <div className="w-1/12 text-xl text-danger">
             <button onClick={() => dispatch(deleteLessonByIndex({ id: entry.id, index: entry.index }))} className="cursor-pointer"><MdClose /></button>
           </div>
           <div className="w-2/12 pr-3">
@@ -87,7 +88,7 @@ function ClassScheduleForm() {
           <div className="w-2/12 pr-3">
             <p>{entry.end_hour}</p>
           </div>
-          <div className="w-4/12 relative pr-3">
+          <div className="relative w-4/12 pr-3">
             <select
               value={entry.subject_id}
               onChange={(e) => dispatch(updateSubjectIdByIndex({ index: entry.index, id: entry.id, subject_id: Number(e.target.value) }))}
@@ -98,11 +99,11 @@ function ClassScheduleForm() {
                 <option value={subject.id} key={subject.id}>{subject.name}</option>
               ))}
             </select>
-            <div className="absolute inset-y-0 right-5 flex items-center px-2 pointer-events-none">
+            <div className="absolute inset-y-0 flex items-center px-2 pointer-events-none right-5">
               <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
             </div>
           </div>
-          <div className="w-4/12 relative pr-3">
+          <div className="relative w-4/12 pr-3">
             <select 
               value={entry.teacher_id} 
               onChange={(e) => dispatch(updateTeacherIdByIndex({ index: entry.index, id: entry.id, teacher_id: Number(e.target.value) }))} 
@@ -113,7 +114,7 @@ function ClassScheduleForm() {
                 <option value={teacher.id} key={teacher.id}>{teacher.name}</option>
               ))}
             </select>
-            <div className="absolute inset-y-0 right-5 flex items-center px-2 pointer-events-none">
+            <div className="absolute inset-y-0 flex items-center px-2 pointer-events-none right-5">
               <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
             </div>
           </div>
@@ -125,19 +126,3 @@ function ClassScheduleForm() {
 }
 
 export default ClassScheduleForm;
-
-export function addMinutes(time: string, minsToAdd: number): string {
-    const [hours, minutes] = time.split(":").map(Number);
-    const date = new Date();
-    date.setHours(hours);
-    date.setMinutes(minutes + minsToAdd);
-
-    const newHours = String(date.getHours()).padStart(2, '0');
-    const newMinutes = String(date.getMinutes()).padStart(2, '0');
-    return `${newHours}:${newMinutes}`;
-  }
-
-export function timeToMinutes(time: string): number {
-  const [hours, minutes] = time.split(":").map(Number);
-  return hours * 60 + minutes;
-}
