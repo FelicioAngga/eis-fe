@@ -146,6 +146,7 @@ function ClassMarks({ setTermId, termId }: ClassMarksProps) {
       subject_name: subject.subject,
       students: classDetail?.students?.map(student => {
         const studentMark = getStudentMark(subject.subject_id || 0, student.id || 0);
+
         return {
           id: studentMark?.id || 0,
           student_id: student.id,
@@ -156,6 +157,7 @@ function ClassMarks({ setTermId, termId }: ClassMarksProps) {
           second_quiz: studentMark?.second_quiz || "",
           second_month: studentMark?.second_month || "",
           finals: studentMark?.finals || "",
+          final_grade: calculateFinalGrade(studentMark || {}),
         }
       }) as StudentGradesEntryModel[],
     }));
@@ -248,35 +250,35 @@ function ClassMarks({ setTermId, termId }: ClassMarksProps) {
       <div className="flex justify-between">
         <div>
           <p className="text-xl font-medium">Data Nilai Siswa</p>
-          <table className="font-medium mt-5">
+          <table className="mt-5 font-medium">
             <tbody>
               <tr>
-                <td className="pr-8 pb-3">Kelas</td>
-                <td className="pr-8 pb-3">:</td>
-                <td className="pr-8 pb-3">{classDetail?.display_name}</td>
+                <td className="pb-3 pr-8">Kelas</td>
+                <td className="pb-3 pr-8">:</td>
+                <td className="pb-3 pr-8">{classDetail?.display_name}</td>
               </tr>
               <tr>
-                <td className="pr-8 pb-3">Jenjang</td>
-                <td className="pr-8 pb-3">:</td>
-                <td className="pr-8 pb-3">{classDetail?.level_name}</td>
+                <td className="pb-3 pr-8">Jenjang</td>
+                <td className="pb-3 pr-8">:</td>
+                <td className="pb-3 pr-8">{classDetail?.level_name}</td>
               </tr>
               <tr>
-                <td className="pr-8 pb-3">Jurusan</td>
-                <td className="pr-8 pb-3">:</td>
-                <td className="pr-8 pb-3">{classDetail?.major}</td>
+                <td className="pb-3 pr-8">Jurusan</td>
+                <td className="pb-3 pr-8">:</td>
+                <td className="pb-3 pr-8">{classDetail?.major}</td>
               </tr>
               <tr>
-                <td className="pr-8 pb-3">Wali Kelas</td>
-                <td className="pr-8 pb-3">:</td>
-                <td className="pr-8 pb-3">{classDetail?.homeroom_teacher}</td>
+                <td className="pb-3 pr-8">Wali Kelas</td>
+                <td className="pb-3 pr-8">:</td>
+                <td className="pb-3 pr-8">{classDetail?.homeroom_teacher}</td>
               </tr>
               <tr>
-                <td className="pr-8 pb-2">Semester</td>
-                <td className="pr-8 pb-2">:</td>
-                <td className="pr-8 pb-2">
+                <td className="pb-2 pr-8">Semester</td>
+                <td className="pb-2 pr-8">:</td>
+                <td className="pb-2 pr-8">
                   <div className="relative pr-3">
                     <select
-                      className="w-full border border-gray-300 appearance-none rounded-md px-3 py-2 cursor-pointer"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md appearance-none cursor-pointer"
                       onChange={(e) => setTermId(parseInt(e.currentTarget.value))}
                       value={termId}
                     >
@@ -284,7 +286,7 @@ function ClassMarks({ setTermId, termId }: ClassMarksProps) {
                         <option value={term.id} key={term.id}>{term.name}</option>
                       )}
                     </select>
-                    <div className="absolute inset-y-0 right-5 flex items-center px-2 pointer-events-none">
+                    <div className="absolute inset-y-0 flex items-center px-2 pointer-events-none right-5">
                       <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
                     </div>
                   </div>
@@ -299,7 +301,7 @@ function ClassMarks({ setTermId, termId }: ClassMarksProps) {
         </div>
       </div>
       
-      <div className="flex gap-4 justify-end">
+      <div className="flex justify-end gap-4">
         <Button onClick={handleDownload}>Download</Button>
         <Button onClick={() => inputFileRef.current?.click()}>Import</Button>
         <input
@@ -312,18 +314,18 @@ function ClassMarks({ setTermId, termId }: ClassMarksProps) {
         />
       </div>
 
-      <div className="overflow-x-auto w-full">
-        <table className="mt-5 w-full min-w-max font-medium text-sm">
+      <div className="w-full overflow-x-auto">
+        <table className="w-full mt-5 text-sm font-medium min-w-max">
           <tbody>
             <tr>
-              <td className="border border-gray-400 px-3 py-2">No</td>
-              <td className="border border-gray-400 px-3 py-2">NIS</td>
-              <td className="border border-gray-400 px-3 py-2">Nama Lengkap</td>
-              <td className="border border-gray-400 px-3 py-2">Nilai</td>
+              <td className="px-3 py-2 border border-gray-400">No</td>
+              <td className="px-3 py-2 border border-gray-400">NIS</td>
+              <td className="px-3 py-2 border border-gray-400">Nama Lengkap</td>
+              <td className="px-3 py-2 border border-gray-400">Nilai</td>
               {uniqueSubjectList.map((subject) => (
                 <React.Fragment key={subject.subject_id}>
                   <td className="border border-gray-400 px-3 py-2 min-w-[140px]">{subject.subject}</td>
-                  <td className="border border-gray-400 px-3 py-2">Aksi</td>
+                  <td className="px-3 py-2 border border-gray-400">Aksi</td>
                 </React.Fragment>
               ))}
             </tr>
@@ -340,18 +342,18 @@ function ClassMarks({ setTermId, termId }: ClassMarksProps) {
                     <tr key={`${student.id}-${markType.dataKey}`}>
                       {markIdx === 0 && (
                         <>
-                          <td rowSpan={markTypes.length + 1} className="border border-gray-400 px-3 py-2 align-top">
+                          <td rowSpan={markTypes.length + 1} className="px-3 py-2 align-top border border-gray-400">
                             {studentIdx + 1}
                           </td>
-                          <td rowSpan={markTypes.length + 1} className="border border-gray-400 px-3 py-2 align-top">
+                          <td rowSpan={markTypes.length + 1} className="px-3 py-2 align-top border border-gray-400">
                             {student.nis || "-"}
                           </td>
-                          <td rowSpan={markTypes.length + 1} className="border border-gray-400 px-3 py-2 align-top">
+                          <td rowSpan={markTypes.length + 1} className="px-3 py-2 align-top border border-gray-400">
                             {student.full_name}
                           </td>
                         </>
                       )}
-                      <td className="border border-gray-400 px-3 py-2">{markType.label}</td>
+                      <td className="px-3 py-2 border border-gray-400">{markType.label}</td>
                       
                       {uniqueSubjectList.map((subject) => {
                         const currentStudentMark = studentMarksBySubject[subject.subject_id];
@@ -361,11 +363,11 @@ function ClassMarks({ setTermId, termId }: ClassMarksProps) {
                               {currentStudentMark?.[markType.dataKey] || ""}
                             </td>
                             {markIdx === 0 && (
-                              <td rowSpan={markTypes.length} className="border border-gray-400 px-3 py-2 align-middle text-center">
+                              <td rowSpan={markTypes.length} className="px-3 py-2 text-center align-middle border border-gray-400">
                                 <button 
                                   type="button"
                                   onClick={() => openModal(subject, student, currentStudentMark)} 
-                                  className="p-1 hover:bg-gray-200 rounded cursor-pointer"
+                                  className="p-1 rounded cursor-pointer hover:bg-gray-200"
                                   aria-label={`Edit marks for ${student.full_name} in ${subject.subject}`}
                                 >
                                   <FiEdit className="size-5" />
@@ -379,13 +381,13 @@ function ClassMarks({ setTermId, termId }: ClassMarksProps) {
                   ))}
                   {(getPermissionAccess("academic_all_score").write && classDetail.homeroom_teacher_id == loggedInTeacher?.data?.id) ? (
                     <tr>
-                      <td className="border border-gray-400 px-3 py-2 align-top">
-                        <div className="flex gap-2 items-center">
+                      <td className="px-3 py-2 align-top border border-gray-400">
+                        <div className="flex items-center gap-2">
                           <p>Catatan Wali Kelas</p>
                           <FiEdit onClick={() => openNoteModal(student)} className="cursor-pointer size-4" />
                         </div>
                       </td>
-                      <td colSpan={uniqueSubjectList.length * 2} className="border border-gray-400 px-3 py-2 align-top overflow-hidden">
+                      <td colSpan={uniqueSubjectList.length * 2} className="px-3 py-2 overflow-hidden align-top border border-gray-400">
                         {isFirstTerm ? studentNotes.find(note => note.student_id === student.id)?.first_term_notes 
                         : studentNotes.find(note => note.student_id === student.id)?.second_term_notes || ""}
                       </td>
@@ -402,3 +404,10 @@ function ClassMarks({ setTermId, termId }: ClassMarksProps) {
 }
 
 export default ClassMarks;
+
+export const calculateFinalGrade = (studentMark: StudentGradesEntryModel) => {
+  const monthlyMark = (+(studentMark?.first_month || 0) + +(studentMark?.second_month || 0)) / 2
+  const quizMark = (+(studentMark?.first_quiz || 0) + +(studentMark?.second_quiz || 0)) / 2;
+  const finalGrade = ((monthlyMark + quizMark) / 2 + +(studentMark?.finals || 0)) / 2;
+  return Math.round(finalGrade);
+}

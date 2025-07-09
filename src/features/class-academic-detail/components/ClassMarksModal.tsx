@@ -7,6 +7,7 @@ import { Input } from "../../../components/input/Input";
 import Button from "../../../components/Button";
 import { StudentGradesEntryModel } from "../../../api-hooks/student-grades/models/StudentGradesModel";
 import { useEffect } from "react";
+import { calculateFinalGrade } from "./ClassMarks";
 
 type StudentGradesPopUpModel = {
   student_name: string;
@@ -56,6 +57,7 @@ function ClassMarksModal({ isOpen, onClose, editData, handleSaveModal }: ClassMa
       second_quiz: data.second_quiz ? parseFloat(data.second_quiz.toString()) : undefined,
       second_month: data.second_month ? parseFloat(data.second_month.toString()) : undefined,
       finals: data.finals ? parseFloat(data.finals.toString()) : undefined,
+      final_grade: calculateFinalGrade(data),
       remarks: data.remarks,
     }, editData?.subject_id || 0);
     handleClose();

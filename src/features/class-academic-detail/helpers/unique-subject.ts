@@ -27,6 +27,7 @@ export const markTypes: MarkType[] = [
   { label: "Tugas Bulanan 2", dataKey: "second_quiz" },
   { label: "Ujian Bulanan 2", dataKey: "second_month" },
   { label: "Ujian Akhir", dataKey: "finals" },
+  { label: "Nilai Akhir", dataKey: "final_grade" },
 ];
 
 /**

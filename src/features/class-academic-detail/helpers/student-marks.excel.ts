@@ -202,6 +202,11 @@ export const handleImportStudentMarks = async (
         }
         if (studentMark && (rowNumber - 6) % 6 === 0 && rowNumber >= 6) {
           studentMark.finals = rowValues[5 + i] || undefined;
+
+          const monthlyMark = ((studentMark?.first_month || 0) + (studentMark?.second_month || 0)) / 2
+          const quizMark = ((studentMark?.first_quiz || 0) + (studentMark?.second_quiz || 0)) / 2;
+          const finalGrade = ((monthlyMark + quizMark) / 2 + (studentMark?.finals || 0)) / 2;
+          studentMark.final_grade = Math.round(finalGrade);
         }
         if (studentMark && (rowNumber - 7) % 6 === 0 && rowNumber >= 7) {
           const studentNote = studentNotes.find(note => note.student_id === studentMark.student_id)
