@@ -1,10 +1,14 @@
 import { useNavigate, useParams } from 'react-router-dom'
 import { useClassDetail } from '../../../api-hooks/class/api';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Button from '../../../components/Button';
 import { useBrowseAbsenceByAcademicIdAndTermId, useUpdateAbsence } from '../../../api-hooks/absence/api';
 import { useAlert } from '../../../contexts/AlertContext';
 import { useQueryClient } from '@tanstack/react-query';
+import { getDayOfWeek } from '../../../utils/formatDate';
+import { useGetTeacherByToken } from '../../../api-hooks/teacher/api';
+import { ConfigClassSchedModel } from '../../../api-hooks/config-class-schedule/models/ConfigClassScheduleModel';
+import { useAuth } from '../../../hooks/useAuth';
 
 type OptionValue = "Present" | "Sick" | "Permission" | "Alpha";
 
@@ -14,13 +18,17 @@ type RadioState = {
 
 function AbsenceDetail() {
   const { id } = useParams();
+  const { getUser } = useAuth();
   const { showAlert } = useAlert();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { data: classDetail } = useClassDetail(id ? parseInt(id) : 0);
+  const { data: loggedInTeacher } = useGetTeacherByToken();
   const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split("T")[0] || "");
   const [termId, setTermId] = useState<number>(0);
   const [radioValues, setRadioValues] = useState<RadioState>({});
+  const [subjectsToBeTaught, setSubjectsToBeTaught] = useState<ConfigClassSchedModel[] | undefined>([]);
+  const selectedDay = useMemo(() => getDayOfWeek(selectedDate), [selectedDate]);
 
   const { data: absenceData } = useBrowseAbsenceByAcademicIdAndTermId(
     id ? parseInt(id) : 0, 
@@ -73,6 +81,9 @@ function AbsenceDetail() {
     absenceData?.data?.students?.forEach((absence) => {
       initialValues[absence.student_id] = absence.status as OptionValue;
     });
+    const selectedSchedule = classDetail?.data?.subject_schedules?.find(schedule => schedule.day == selectedDay);
+    const subjectsToBeTaught = selectedSchedule?.entries?.filter(entry => entry.teacher_id === loggedInTeacher?.data?.id);
+    setSubjectsToBeTaught(subjectsToBeTaught);
     setRadioValues(initialValues);
   }, [classDetail, selectedDate, absenceData, termId]);
 
@@ -84,80 +95,84 @@ function AbsenceDetail() {
     <div>
       <div className="flex justify-between">
         <div>
-          <p className="font-semibold text-2xl">Absensi Kelas Siswa</p>
+          <p className="text-2xl font-semibold">Absensi Kelas Siswa</p>
           <table className="mt-2">
-            <tbody className="font-medium text-sm">
+            <tbody className="text-sm font-medium">
               <tr>
-                <td className="pr-8 pb-2">Tanggal</td>
-                <td className="pr-8 pb-2">:</td>
-                <td className="pr-8 pb-2">
+                <td className="pb-2 pr-8">Tanggal</td>
+                <td className="pb-2 pr-8">:</td>
+                <td className="pb-2 pr-8">
                   <input
                     type="date"
-                    className="border border-gray-300 rounded-lg px-3 py-1 w-full"
+                    className="w-full px-3 py-1 border border-gray-300 rounded-lg"
                     value={selectedDate || ""}
                     onChange={(e) => setSelectedDate(e.currentTarget.value || "")}
                   />
                 </td>
               </tr>
               <tr>
-                <td className="pr-8 pb-2">Semester</td>
-                <td className="pr-8 pb-2">:</td>
-                <td className="pr-8 pb-2">
+                <td className="pb-2 pr-8">Semester</td>
+                <td className="pb-2 pr-8">:</td>
+                <td className="pb-2 pr-8">
                   <div className="relative pr-3">
                     <select
-                      className="w-full border border-gray-300 appearance-none rounded-md px-3 py-2 cursor-pointer"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md appearance-none cursor-pointer"
                       onChange={(e) => setTermId(parseInt(e.currentTarget.value))}
                     >
                       {classDetail?.data?.terms?.map(term => 
                         <option value={term.id} key={term.id}>{term.name}</option>
                       )}
                     </select>
-                    <div className="absolute inset-y-0 right-5 flex items-center px-2 pointer-events-none">
+                    <div className="absolute inset-y-0 flex items-center px-2 pointer-events-none right-5">
                       <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
                     </div>
                   </div>
                 </td>
               </tr>
               <tr>
-                <td className="pr-8 pb-3">Kelas</td>
-                <td className="pr-8 pb-3">:</td>
-                <td className="pr-8 pb-3">{classDetail?.data.classroom}</td>
+                <td className="pb-3 pr-8">Kelas</td>
+                <td className="pb-3 pr-8">:</td>
+                <td className="pb-3 pr-8">{classDetail?.data.classroom}</td>
               </tr>
               <tr>
-                <td className="pr-8 pb-3">Jenjang</td>
-                <td className="pr-8 pb-3">:</td>
-                <td className="pr-8 pb-3">{classDetail?.data.level_name}</td>
+                <td className="pb-3 pr-8">Jenjang</td>
+                <td className="pb-3 pr-8">:</td>
+                <td className="pb-3 pr-8">{classDetail?.data.level_name}</td>
               </tr>
               <tr>
-                <td className="pr-8 pb-3">Jurusan</td>
-                <td className="pr-8 pb-3">:</td>
-                <td className="pr-8 pb-3">{classDetail?.data.major}</td>
+                <td className="pb-3 pr-8">Jurusan</td>
+                <td className="pb-3 pr-8">:</td>
+                <td className="pb-3 pr-8">{classDetail?.data.major}</td>
               </tr>
               <tr>
-                <td className="pr-8 pb-3">Wali Kelas</td>
-                <td className="pr-8 pb-3">:</td>
-                <td className="pr-8 pb-3">
+                <td className="pb-3 pr-8">Wali Kelas</td>
+                <td className="pb-3 pr-8">:</td>
+                <td className="pb-3 pr-8">
                   {classDetail?.data.homeroom_teacher || "-"}
                 </td>
               </tr>
             </tbody>
           </table>
         </div>
-        {(classDetail?.data?.subject_schedules?.length || 0) > 0 && 
-          <div className="flex gap-5">
-            <Button onClick={() => navigate("/absence")} className="w-full" variant="outline">Batal</Button>
-            <Button onClick={handleSubmit} className="w-full">Simpan</Button>
-          </div>
+        {(classDetail?.data?.subject_schedules?.length || 0) <= 0 
+          || (subjectsToBeTaught?.length == 0 && getUser().role_name == "Teacher") ?
+          <></>
+          : <div className="flex gap-5">
+              <Button onClick={() => navigate("/absence")} className="w-full" variant="outline">Batal</Button>
+              <Button onClick={handleSubmit} className="w-full">Simpan</Button>
+            </div>
         }
       </div>
-
-      {(classDetail?.data?.subject_schedules?.length || 0) <= 0 ? (
+      
+      {(classDetail?.data?.subject_schedules?.length || 0) <= 0 
+      || (subjectsToBeTaught?.length == 0 && getUser().role_name == "Teacher") ? (
         <div className="mt-5 text-center text-gray-500">
-          Tidak ada jadwal pelajaran untuk kelas ini. Silakan atur jadwal terlebih dahulu.
+          {(classDetail?.data?.subject_schedules?.length || 0) <= 0 && "Tidak ada jadwal pelajaran untuk kelas ini. Silakan atur jadwal terlebih dahulu."}
+          {subjectsToBeTaught?.length == 0 && getUser().role_name == "Teacher" && "Anda tidak memiliki jadwal mengajar pada hari ini."}
         </div>
       ) : (
         <div>
-          <div className="mt-5 font-medium text-sm flex py-3 border border-gray-300 bg-gray-100">
+          <div className="flex py-3 mt-5 text-sm font-medium bg-gray-100 border border-gray-300">
             <div className="w-1/12 text-center">No</div>
             <div className="w-2/12">Nama Lengkap</div>
             <div className="w-2/12">NISN</div>
@@ -171,7 +186,7 @@ function AbsenceDetail() {
           {classDetail?.data.students?.map((student, index) => (
             <div
               key={index}
-              className="font-medium text-sm flex py-3 border-b border-r border-l border-gray-300"
+              className="flex py-3 text-sm font-medium border-b border-l border-r border-gray-300"
             >
               <div className="w-1/12 text-center">{index + 1}</div>
               <div className="w-2/12">{student.full_name}</div>

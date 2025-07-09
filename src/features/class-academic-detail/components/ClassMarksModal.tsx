@@ -91,24 +91,24 @@ function ClassMarksModal({ isOpen, onClose, editData, handleSaveModal }: ClassMa
         <table className="font-medium">
           <tbody>
             <tr>
-              <td className="pr-4 pb-3">Nama Lengkap</td>
-              <td className="pr-4 pb-3">:</td>
-              <td className="pr-4 pb-3">{editData?.student_name}</td>
+              <td className="pb-3 pr-4">Nama Lengkap</td>
+              <td className="pb-3 pr-4">:</td>
+              <td className="pb-3 pr-4">{editData?.student_name}</td>
             </tr>
             <tr>
-              <td className="pr-4 pb-3">NIS</td>
-              <td className="pr-4 pb-3">:</td>
-              <td className="pr-4 pb-3">{editData?.student_nis || "-"}</td>
+              <td className="pb-3 pr-4">NIS</td>
+              <td className="pb-3 pr-4">:</td>
+              <td className="pb-3 pr-4">{editData?.student_nis || "-"}</td>
             </tr>
             <tr>
-              <td className="pr-4 pb-3">Mata Pelajaran</td>
-              <td className="pr-4 pb-3">:</td>
-              <td className="pr-4 pb-3">{editData?.subject_name}</td>
+              <td className="pb-3 pr-4">Mata Pelajaran</td>
+              <td className="pb-3 pr-4">:</td>
+              <td className="pb-3 pr-4">{editData?.subject_name}</td>
             </tr>
           </tbody>
         </table>
 
-        <div className="mt-2 flex flex-col gap-3">
+        <div className="flex flex-col gap-3 mt-2">
           <Input
             type="number"
             name="first_quiz"
@@ -145,9 +145,10 @@ function ClassMarksModal({ isOpen, onClose, editData, handleSaveModal }: ClassMa
             max={100}
           />
         </div>
-        <div className="flex gap-5 mt-5">
+        <p className="mt-3 text-xs font-medium text-yellow-600">Anda perlu klik button simpan di bagian atas page untuk menyimpan</p>
+        <div className="flex gap-5 mt-2">
           <Button onClick={handleClose} className="w-full" type="button" variant="outline">Batal</Button>
-          <Button className="w-full">Simpan</Button>
+          <Button className="w-full">Ubah</Button>
         </div>
       </Form>
     </Modal>
