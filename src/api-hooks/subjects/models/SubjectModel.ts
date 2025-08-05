@@ -2,7 +2,7 @@ import { PaginationParams } from "../../method";
 
 export type SubjectParams = {
   search: string;
-  is_extracurricular: boolean | null;
+  is_extracurricular?: boolean | null;
   pagination: PaginationParams;
 }
 
