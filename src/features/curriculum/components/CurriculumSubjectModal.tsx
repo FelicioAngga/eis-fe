@@ -17,7 +17,7 @@ interface CurriculumSubjectModalProps {
 
 function CurriculumSubjectModal({ isOpen, onClose, curriculumSubjectList, setCurriculumSubjectList, editData }: CurriculumSubjectModalProps) {
   const { showAlert } = useAlert();
-  const { data: subjectData } = useSubjectsQuery({ pagination: { limit: 99999 }, search: "" });
+  const { data: subjectData } = useSubjectsQuery({ pagination: { limit: 99999 }, search: "", is_extracurricular: false });
   const { control } = useFormContext();
   
   const { field: subject_id } = useController({ control, name: "subject_id" });
@@ -116,12 +116,12 @@ function CurriculumSubjectModal({ isOpen, onClose, curriculumSubjectList, setCur
           value: subject.id.toString(),
         }))}
       />
-      <div className="flex items-center mt-4 border border-gray-300 rounded px-2">
+      <div className="flex items-center px-2 mt-4 border border-gray-300 rounded">
         <div className="w-14 h-[88px] flex flex-col items-center justify-center shrink-0 border-r border-gray-300 pr-2 mr-4">
           <p>Nilai</p>
           <p>90-100</p>
         </div>
-        <div className="py-2 w-full">
+        <div className="w-full py-2">
           <Input
             type="text"
             name="competence1"
@@ -131,12 +131,12 @@ function CurriculumSubjectModal({ isOpen, onClose, curriculumSubjectList, setCur
           />
         </div>
       </div>
-      <div className="flex items-center mt-4 border border-gray-300 rounded px-2">
+      <div className="flex items-center px-2 mt-4 border border-gray-300 rounded">
         <div className="w-14 h-[88px] flex flex-col items-center justify-center shrink-0 border-r border-gray-300 pr-2 mr-4">
           <p>Nilai</p>
           <p>80-90</p>
         </div>
-        <div className="py-2 w-full">
+        <div className="w-full py-2">
           <Input
             type="text"
             name="competence2"
@@ -146,12 +146,12 @@ function CurriculumSubjectModal({ isOpen, onClose, curriculumSubjectList, setCur
           />
         </div>
       </div>
-      <div className="flex items-center mt-4 border border-gray-300 rounded px-2">
+      <div className="flex items-center px-2 mt-4 border border-gray-300 rounded">
         <div className="w-14 h-[88px] flex flex-col items-center justify-center shrink-0 border-r border-gray-300 pr-2 mr-4">
           <p>Nilai</p>
           <p>70-80</p>
         </div>
-        <div className="py-2 w-full">
+        <div className="w-full py-2">
           <Input
             type="text"
             name="competence3"
@@ -161,12 +161,12 @@ function CurriculumSubjectModal({ isOpen, onClose, curriculumSubjectList, setCur
           />
         </div>
       </div>
-      <div className="flex items-center mt-4 border border-gray-300 rounded px-2">
+      <div className="flex items-center px-2 mt-4 border border-gray-300 rounded">
         <div className="w-14 h-[88px] flex flex-col items-center justify-center shrink-0 border-r border-gray-300 pr-2 mr-4">
           <p>Nilai</p>
           <p>{"<"}70</p>
         </div>
-        <div className="py-2 w-full">
+        <div className="w-full py-2">
           <Input
             type="text"
             name="competence4"
@@ -177,7 +177,7 @@ function CurriculumSubjectModal({ isOpen, onClose, curriculumSubjectList, setCur
         </div>
       </div>
 
-      <div className="flex gap-6 justify-between mt-6">
+      <div className="flex justify-between gap-6 mt-6">
         <Button className="w-full" type="button" variant="outline" onClick={handleClose}>Batal</Button>
         <Button onClick={handleAddCurriculumSubject} className="w-full" type="button">Tambah</Button>
       </div>
