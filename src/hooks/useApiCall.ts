@@ -54,6 +54,7 @@ export const useApiCall = <T>(defaultConfig: ApiCallConfig) => {
         ...(defaultConfig.isPublic ? {} : { 
           Authorization: `Bearer ${token}`,
         }),
+        "ngrok-skip-browser-warning": "true",
         ...finalConfig.headers,
       };
 
