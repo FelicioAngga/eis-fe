@@ -11,14 +11,16 @@ import { useAlert } from '../../../contexts/AlertContext';
 import { useQueryClient } from '@tanstack/react-query';
 import { useCreateGuardian, useUpdateGuardian } from '../../../api-hooks/students/api';
 import dayjs from 'dayjs';
+import { StudentModel } from '../../../api-hooks/students/models/StudentModel';
 
 interface ParentsFormDataProps {
   setParentsFormData: React.Dispatch<React.SetStateAction<GuardianModel[]>>;
   setCurrentTab: React.Dispatch<React.SetStateAction<string>>
+  studentFormData: StudentModel | null;
   parentsFormData: GuardianModel[];
 }
 
-function ParentsFormData({ parentsFormData, setCurrentTab, setParentsFormData }: ParentsFormDataProps) {
+function ParentsFormData({ parentsFormData, setCurrentTab, setParentsFormData, studentFormData }: ParentsFormDataProps) {
   const { id } = useParams();
   const { showAlert } = useAlert();
   const queryClient = useQueryClient();
@@ -47,6 +49,7 @@ function ParentsFormData({ parentsFormData, setCurrentTab, setParentsFormData }:
     return {
       id: dadData?.id || '',
       name: dadData?.name,
+      address: dadData?.address,
       place_of_birth: dadData?.place_of_birth,
       date_of_birth: dadData?.date_of_birth,
       religion: dadData?.religion,
@@ -55,6 +58,7 @@ function ParentsFormData({ parentsFormData, setCurrentTab, setParentsFormData }:
       phone: dadData?.phone,
       momId: momData?.id || '',
       momName: momData?.name,
+      momAddress: momData?.address,
       momPlaceOfBirth: momData?.place_of_birth,
       momDateOfBirth: momData?.date_of_birth,
       momReligion: momData?.religion,
@@ -86,6 +90,7 @@ function ParentsFormData({ parentsFormData, setCurrentTab, setParentsFormData }:
       phone: data.phone,
       address: data.address,
       relation: 'father',
+      student_id: studentFormData?.id || +(id || 0),
     });
     guardians.push({
       id: data.momId || undefined,
@@ -98,9 +103,10 @@ function ParentsFormData({ parentsFormData, setCurrentTab, setParentsFormData }:
       phone: data.momPhone,
       address: data.address,
       relation: 'mother',
+      student_id: studentFormData?.id || +(id || 0),
     });
 
-    if (id) {
+    if (id && parentsFormData.find(g => g.relation === 'father') && parentsFormData.find(g => g.relation === 'mother')) {
       guardians = guardians.map(g => ({ ...g, date_of_birth: dayjs(g.date_of_birth).format('YYYY-MM-DD') }));
       const response = await updateGuardian(guardians);
       if (response[1].status === 200) {
@@ -115,7 +121,7 @@ function ParentsFormData({ parentsFormData, setCurrentTab, setParentsFormData }:
         navigate(`/student-data`);
       }
     } else {
-      setParentsFormData(guardians);
+      setParentsFormData(prev => ([...prev, ...guardians]));
       const responseGuard = await mutateGuardian(guardians);
       if (responseGuard[0].status === 200) {
         showAlert({
@@ -124,6 +130,9 @@ function ParentsFormData({ parentsFormData, setCurrentTab, setParentsFormData }:
           type: 'success',
         });
         setCurrentTab('guardian');
+        queryClient.invalidateQueries({
+          queryKey: ['student'],
+        });
       } else {
         showAlert({
           title: 'Gagal',
@@ -136,8 +145,8 @@ function ParentsFormData({ parentsFormData, setCurrentTab, setParentsFormData }:
 
   return (
     <Form methods={methods} onSubmit={handleSubmit}>
-      <div className="mt-5 flex gap-4 mx-auto w-full">
-        <div className="flex flex-col gap-3 w-full">
+      <div className="flex w-full gap-4 mx-auto mt-5">
+        <div className="flex flex-col w-full gap-3">
           <p className="font-medium">Data Ayah Siswa</p>
           <Input 
             type="text"
@@ -215,7 +224,7 @@ function ParentsFormData({ parentsFormData, setCurrentTab, setParentsFormData }:
           />
         </div>
 
-        <div className="flex flex-col gap-3 w-full">
+        <div className="flex flex-col w-full gap-3">
           <p className="font-medium">Data Ibu Siswa</p>
           <Input 
             type="text"
@@ -293,7 +302,7 @@ function ParentsFormData({ parentsFormData, setCurrentTab, setParentsFormData }:
           />
         </div>
       </div>
-      <Button className="w-fit px-20 mx-auto mt-10">{id ? "Simpan" : "Berikutnya"}</Button>
+      <Button className="px-20 mx-auto mt-10 w-fit">{id ? "Simpan" : "Berikutnya"}</Button>
     </Form>
   );
 }

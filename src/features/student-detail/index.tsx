@@ -26,7 +26,7 @@ export default function () {
       ...g,
       date_of_birth: g.date_of_birth ? new Date(g.date_of_birth).toString() : "",
     })));
-  }, [detailStudent])
+  }, [detailStudent?.data.guardians])
 
   return (
     <div>
@@ -61,7 +61,7 @@ export default function () {
         </div>
       </div>
       {currentTab === "student-data" && <StudentFormData studentFormData={studentFormData} setCurrentTab={setCurrentTab} setStudentFormData={setStudentFormData} />}
-      {currentTab === "parents" && <ParentsFormData parentsFormData={parentsFormData} setCurrentTab={setCurrentTab} setParentsFormData={setParentsFormData} />}
+      {currentTab === "parents" && <ParentsFormData studentFormData={studentFormData} parentsFormData={parentsFormData} setCurrentTab={setCurrentTab} setParentsFormData={setParentsFormData} />}
       {currentTab === "guardian" && <GuardianFormData guardianFormData={parentsFormData} studentFormData={studentFormData} setCurrentTab={setCurrentTab} setStudentFormData={setStudentFormData} />}
       {currentTab === "document" && <DocumentData documentData={studentFormData?.documents} studentId={studentFormData?.id} />}
     </div>

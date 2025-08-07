@@ -81,17 +81,15 @@ function GuardianFormData({ guardianFormData, studentFormData, setCurrentTab }: 
     if (!data.name) {
       setCurrentTab('document');
     }
-    const response = await mutateGuardian([{ ...data, date_of_birth: dayjs(data.date_of_birth).format('YYYY-MM-DD') }])
+    const response = await mutateGuardian([{ ...data, date_of_birth: dayjs(data.date_of_birth).format('YYYY-MM-DD'), relation: 'guardian', student_id: studentFormData?.id || +(id || 0) }]);
     if (response[0]?.status === 200) {
       showAlert({
         title: 'Success',
         type: 'success',
         message: 'Data berhasil disimpan.',
       });
-      queryClient.invalidateQueries({
-        queryKey: ['students', id ? parseInt(id) : 0],
-      });
       setCurrentTab('document');
+      queryClient.invalidateQueries({ queryKey: ['student'] });
     } else {
       if (!data.date_of_birth || !data.place_of_birth || !data.religion || !data.job || !data.highest_education || !data.address) {
         showAlert({
@@ -101,6 +99,7 @@ function GuardianFormData({ guardianFormData, studentFormData, setCurrentTab }: 
         });
         return;
       }
+      queryClient.invalidateQueries({ queryKey: ['student'] });
       showAlert({
         title: 'Error',
         type: 'error',
@@ -118,14 +117,15 @@ function GuardianFormData({ guardianFormData, studentFormData, setCurrentTab }: 
       })
       return;
     }
-    if (id) await updateGuardian(data);
+    const guardianData = guardianFormData?.find(g => g.relation === 'guardian');
+    if (id && guardianData?.id) await updateGuardian(data);
     else await createGuardian(data);
   }
 
   return (
     <Form methods={methods} onSubmit={handleSubmit}>
-      <div className="mt-5 flex gap-4 mx-auto w-1/2">
-        <div className="flex flex-col gap-3 w-full">
+      <div className="flex w-1/2 gap-4 mx-auto mt-5">
+        <div className="flex flex-col w-full gap-3">
           <p className="font-medium">Data Wali Siswa</p>
           <Input
             type="text"
@@ -196,7 +196,7 @@ function GuardianFormData({ guardianFormData, studentFormData, setCurrentTab }: 
           />
         </div>
       </div>
-      <Button className="mt-10 w-1/2 mx-auto" disabled={isGuardianPending}>Simpan</Button>
+      <Button className="w-1/2 mx-auto mt-10" disabled={isGuardianPending}>Simpan</Button>
     </Form>
   );
 }
