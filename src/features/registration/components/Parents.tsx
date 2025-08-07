@@ -6,38 +6,42 @@ function Parents({ selectedData }: { selectedData?: RegistrationModel | null }) 
   const momData = selectedData?.guardians.find(g => g.relation === "mother");
 
   return (
-    <div className="font-medium mt-5">
+    <div className="mt-5 font-medium">
       <p className="font-semibold text-gray-600">Data Ayah Siswa</p>
       <div className="pl-2 mt-1">
         <table>
           <tbody>
             <tr>
               <td className="pb-2">Nama Ayah</td>
-              <td className="pl-5 pb-2">{dadData?.address || "-"}</td>
+              <td className="pb-2 pl-5">{dadData?.name || "-"}</td>
+            </tr>
+            <tr>
+              <td className="pb-2">Alamat Ayah</td>
+              <td className="pb-2 pl-5">{dadData?.address || "-"}</td>
             </tr>
             <tr>
               <td className="pb-2">Tempat Lahir</td>
-              <td className="pl-5 pb-2">{dadData?.place_of_birth || "-"}</td>
+              <td className="pb-2 pl-5">{dadData?.place_of_birth || "-"}</td>
             </tr>
             <tr>
               <td className="pb-2">Tanggal Lahir</td>
-              <td className="pl-5 pb-2">{formatDate(dadData?.date_of_birth || "") || "-"}</td>
+              <td className="pb-2 pl-5">{formatDate(dadData?.date_of_birth || "") || "-"}</td>
             </tr>
             <tr>
               <td className="pb-2">Agama</td>
-              <td className="pl-5 pb-2">{dadData?.religion || "-"}</td>
+              <td className="pb-2 pl-5">{dadData?.religion || "-"}</td>
             </tr>
             <tr>
               <td className="pb-2">Pendidikan Tertinggi</td>
-              <td className="pl-5 pb-2">{dadData?.highest_education || "-"}</td>
+              <td className="pb-2 pl-5">{dadData?.highest_education || "-"}</td>
             </tr>
             <tr>
               <td className="pb-2">Pekerjaan</td>
-              <td className="pl-5 pb-2">{dadData?.job || "-"}</td>
+              <td className="pb-2 pl-5">{dadData?.job || "-"}</td>
             </tr>
             <tr>
               <td className="pb-2">No Telp</td>
-              <td className="pl-5 pb-2">{dadData?.phone || "-"}</td>
+              <td className="pb-2 pl-5">{dadData?.phone || "-"}</td>
             </tr>
           </tbody>
         </table>
@@ -48,31 +52,35 @@ function Parents({ selectedData }: { selectedData?: RegistrationModel | null }) 
           <tbody>
             <tr>
               <td className="pb-2">Nama Ibu</td>
-              <td className="pl-5 pb-2">{momData?.address || "-"}</td>
+              <td className="pb-2 pl-5">{momData?.name || "-"}</td>
+            </tr>
+            <tr>
+              <td className="pb-2">Alamat Ibu</td>
+              <td className="pb-2 pl-5">{momData?.address || "-"}</td>
             </tr>
             <tr>
               <td className="pb-2">Tempat Lahir</td>
-              <td className="pl-5 pb-2">{momData?.place_of_birth || "-"}</td>
+              <td className="pb-2 pl-5">{momData?.place_of_birth || "-"}</td>
             </tr>
             <tr>
               <td className="pb-2">Tanggal Lahir</td>
-              <td className="pl-5 pb-2">{formatDate(momData?.date_of_birth || "") || "-"}</td>
+              <td className="pb-2 pl-5">{formatDate(momData?.date_of_birth || "") || "-"}</td>
             </tr>
             <tr>
               <td className="pb-2">Agama</td>
-              <td className="pl-5 pb-2">{momData?.religion || "-"}</td>
+              <td className="pb-2 pl-5">{momData?.religion || "-"}</td>
             </tr>
             <tr>
               <td className="pb-2">Pendidikan Tertinggi</td>
-              <td className="pl-5 pb-2">{momData?.highest_education || "-"}</td>
+              <td className="pb-2 pl-5">{momData?.highest_education || "-"}</td>
             </tr>
             <tr>
               <td className="pb-2">Pekerjaan</td>
-              <td className="pl-5 pb-2">{momData?.job || "-"}</td>
+              <td className="pb-2 pl-5">{momData?.job || "-"}</td>
             </tr>
             <tr>
               <td className="pb-2">No Telp</td>
-              <td className="pl-5 pb-2">{momData?.phone || "-"}</td>
+              <td className="pb-2 pl-5">{momData?.phone || "-"}</td>
             </tr>
           </tbody>
         </table>
