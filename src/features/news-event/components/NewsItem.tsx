@@ -30,15 +30,15 @@ function NewsItem({
   };
 
   return (
-    <div className="mt-6 flex flex-col gap-2 w-full md:w-1/3 xl:w-1/4">
+    <div className="flex flex-col w-full gap-2 mt-6 md:w-1/3 xl:w-1/4">
       <div className="cursor-pointer" onClick={() => navigate(`/news-event/${id}`)}>
         <img
           src={thumbnail}
           alt=""
-          className="rounded-lg w-56 max-h-42 object-cover"
+          className="object-cover w-56 rounded-lg h-42"
           loading="lazy"
         />
-        <p className="text-lg md:text-xl font-bold">{title}</p>
+        <p className="text-lg font-bold md:text-xl">{title}</p>
         <div className="text-xs text-[#878787] w-56 truncate">
           {parse(content, options)}
         </div>

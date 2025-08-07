@@ -29,7 +29,7 @@ export default function NewsForm() {
   const { mutateAsync: deleteNews } = useDeleteNews();
 
   async function handleSubmit() {
-    if (!title || !value || !selectedFile || !previewUrl) {
+    if (!title || !value || !previewUrl) {
       showAlert({
         title: "Gagal menyimpan berita",
         type: "error",
@@ -38,7 +38,7 @@ export default function NewsForm() {
       return;
     }
 
-    const file64 = await fileToBase64(selectedFile);
+    const file64 = selectedFile ? await fileToBase64(selectedFile) : newsDetail?.data?.thumbnail || "";
     const mutateAsync = id ? updateNews : addNews;
     const response = await mutateAsync({
       id: id ? +id : 0 ,
@@ -109,30 +109,30 @@ export default function NewsForm() {
         className="mb-2 transition-all duration-[400ms] flex items-center gap-1 hover:gap-3 text-primary cursor-pointer"
       >
         <BiChevronLeft className="text-2xl" />
-        <p className="font-semibold text-sm">Kembali</p>
+        <p className="text-sm font-semibold">Kembali</p>
       </div>
-      <div className="flex gap-4 justify-between">
+      <div className="flex justify-between gap-4">
         <div className="w-full">
-          <p className="text-sm font-medium mb-2">Judul</p>
+          <p className="mb-2 text-sm font-medium">Judul</p>
           {getPermissionAccess("news").write ? (
             <input
-              className="border border-gray-300 rounded-lg px-3 py-2 w-full mb-5"
+              className="w-full px-3 py-2 mb-5 border border-gray-300 rounded-lg"
               value={title}
               placeholder="Judul Berita"
               onChange={(e) => setTitle(e.target.value)}
             />
           ) : (
-            <p className="text-lg font-semibold mb-5">{title}</p>
+            <p className="mb-5 text-lg font-semibold">{title}</p>
           )}
           {getPermissionAccess("news").write ? (
             <TextEditor value={value} setValue={setValue} />
           ) : (
-            <div className="text-sm font-medium mb-2">{parse(value)}</div>
+            <div className="mb-2 text-sm font-medium">{parse(value)}</div>
           )}
         </div>
         {getPermissionAccess("news").write ? <FileUploader selectedFile={selectedFile} setSelectedFile={setSelectedFile} previewUrl={previewUrl} setPreviewUrl={setPreviewUrl} />
           : (
-            <div className="w-80 h-80 rounded-lg flex items-center justify-center overflow-hidden">
+            <div className="flex items-center justify-center overflow-hidden rounded-lg w-80 h-80">
               <img src={previewUrl || ""} className="object-cover w-full" />
             </div>
         )}
@@ -140,7 +140,7 @@ export default function NewsForm() {
       {getPermissionAccess("news").write && (
         <div className="flex justify-between mt-20">
           {id ? <Button onClick={handleDelete} variant="primary" className="bg-danger hover:border-danger">Hapus</Button> : <div></div>}
-          <div className="flex gap-4 justify-end">
+          <div className="flex justify-end gap-4">
             <Button onClick={() => navigate("/news-event")} variant="outline">Batal</Button>
             <Button onClick={handleSubmit} disabled={isCreating || isUpdating}>Simpan</Button>
           </div>
