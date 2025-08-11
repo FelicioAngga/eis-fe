@@ -55,6 +55,7 @@ function ClassNoteModal({ isOpen, onClose, editData, selectedDate }: ClassNoteMo
         subj_sched_id: editData?.id || 0,
         materials: data.materials,
         note_id: selectedClassNoteDate?.id || 0,
+        teacher_id: editData?.teacher_act_id || 0,
       });
     } else {
       response = await mutateCreate({

@@ -107,9 +107,17 @@ function StudentBehaviour({ setTermId, termId }: StudentBehaviourProps) {
       }
     }
     if (studentBehaviourData.length === 0) return;
-    const mutate = fetchedStudentBehaviour?.data?.some(item => item?.id) ? mutateUpdate : mutateCreate;
-    const response = await mutate(studentBehaviourData);
-    if (response.status === 201 || response.status === 200) {
+    const existingStudentBehaviourData = studentBehaviourData.filter(item => item.id)
+    const newStudentBehaviourData = studentBehaviourData.filter(item => !item.id).map(x => ({ ...x, academic_id: classDetail?.id || 0, term_id: termId }))
+
+    let response;
+    if (existingStudentBehaviourData.length > 0) {
+      response = await mutateUpdate(existingStudentBehaviourData);
+    }
+    if (newStudentBehaviourData.length > 0) {
+      response = await mutateCreate(newStudentBehaviourData);
+    }
+    if (response?.status === 201 || response?.status === 200) {
       showAlert({
         title: "Berhasil",
         message: "Data kepribadian dan ekstrakurikuler siswa berhasil disimpan",
@@ -119,21 +127,22 @@ function StudentBehaviour({ setTermId, termId }: StudentBehaviourProps) {
     } else {
       showAlert({
         title: "Gagal",
-        message: response.message || "Gagal menyimpan data",
+        message: response?.message || "Gagal menyimpan data",
         type: "error",
       });
     }
   }
 
   const handleDownload = () => {
-    downloadStudentBehaviourExcel(studentBehaviourData, month);
+    if (!classDetail?.students ) return;
+    downloadStudentBehaviourExcel(classDetail.students, studentBehaviourData, month);
   }
   
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0];
     if (!selectedFile) return;
     inputFileRef.current!.value = "";
-    const result = await handleImportStudentBehaviourExcel(selectedFile, studentBehaviourData);
+    const result = await handleImportStudentBehaviourExcel(selectedFile, studentBehaviourData, classDetail?.students || []);
     setStudentBehaviourData([...result]);
   }
 
