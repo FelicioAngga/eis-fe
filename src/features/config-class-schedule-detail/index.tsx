@@ -9,6 +9,7 @@ import { useCreateClassScheduleConfig, useUpdateClassScheduleConfig } from "../.
 import { DailyClassSchedule, resetClassSchedule } from "./configClassScheduleSlice";
 import { useEffect } from "react";
 import { changeClassDetail } from "../class-academic-detail/classAcademicSlice";
+import { useAuth } from "../../hooks/useAuth";
 
 export default function ConfigClassScheduleDetail() {
   const { id } = useParams();
@@ -18,6 +19,7 @@ export default function ConfigClassScheduleDetail() {
   const { data: academicDetail } = useClassDetail(id ? parseInt(id) : 0);
   const { class_schedule_list } = useSelector((state: RootState) => state.configClassSched);
   const requiredDays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+  const { getUser } = useAuth();
 
   function isClassScheduleValid(): boolean {
     const isValid = class_schedule_list
@@ -153,10 +155,12 @@ export default function ConfigClassScheduleDetail() {
           </table>
         </div>
 
-        <div className="flex gap-5">
-          <Button disabled={isCreatePending || isUpdatePending} onClick={handleSubmit} className="px-8 !py-5">Simpan</Button>
-          <Button onClick={handleBack} variant="outline" className="px-8 !py-5">Batal</Button>
-        </div>
+        {getUser().role_name === "Principal" ? <></> :
+          <div className="flex gap-5">
+            <Button disabled={isCreatePending || isUpdatePending} onClick={handleSubmit} className="px-8 !py-5">Simpan</Button>
+            <Button onClick={handleBack} variant="outline" className="px-8 !py-5">Batal</Button>
+          </div>
+        }
       </div>
 
       <ClassScheduleList />

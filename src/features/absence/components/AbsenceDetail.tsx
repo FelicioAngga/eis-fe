@@ -155,7 +155,7 @@ function AbsenceDetail() {
           </table>
         </div>
         {(classDetail?.data?.subject_schedules?.length || 0) <= 0 
-          || (subjectsToBeTaught?.length == 0 && getUser().role_name == "Teacher") ?
+          || (subjectsToBeTaught?.length == 0 && getUser().role_name == "Teacher") || getUser().role_name == "Principal" ?
           <></>
           : <div className="flex gap-5">
               <Button onClick={() => navigate("/absence")} className="w-full" variant="outline">Batal</Button>
