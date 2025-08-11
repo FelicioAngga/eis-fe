@@ -14,6 +14,7 @@ import { formatDateTime } from "../../../utils/formatDate";
 import Button from "../../../components/Button";
 import { BsEye } from "react-icons/bs";
 import { RegistrationModel } from "../../../api-hooks/registration/models/RegistrationModel";
+import { usePermissionAccess } from "../../../hooks/useAccessRight";
 
 interface RegistrationTableProps {
   search: string;
@@ -31,6 +32,7 @@ function RegistrationTable({
   const { mutateAsync: mutateApprove } = useApproveRegistration();
   const { mutateAsync: mutateApproveDoc } = useApproveDocRegistration();
   const { mutateAsync: mutateReject } = useRejectRegistration();
+  const { getPermissionAccess } = usePermissionAccess();
 
   const { data } = useRegistrationQuery({
     pagination: {
@@ -181,6 +183,7 @@ function RegistrationTable({
         accessorKey: "action",
         header: () => "Action",
         cell: ({ row }) => (
+          getPermissionAccess("registration").write &&
           <div>
             {row.original.state === "draft" || row.original.state === "draft_payment" ? (
               <div className="flex gap-2">
