@@ -12,6 +12,7 @@ import Swal from "sweetalert2";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAlert } from "../../../contexts/AlertContext";
 import { MdArchive, MdUnarchive } from "react-icons/md";
+import { usePermissionAccess } from "../../../hooks/useAccessRight";
 
 interface TeacherProps {
   search: string;
@@ -35,6 +36,8 @@ function TeacherTable({
     },
     search: search || "",
   });
+
+  const { getPermissionAccess } = usePermissionAccess();
 
   const { mutateAsync } = useDeleteTeacher();
   const { mutateAsync: updateTeacherMutate } = useUpdateTeacher();
@@ -131,6 +134,7 @@ function TeacherTable({
         accessorKey: "action",
         header: () => "Action",
         cell: ({ row }) => (
+          getPermissionAccess("teacher").write &&
           <div className="flex gap-2">
             {row.original.deleted_at ? (
               <MdUnarchive
